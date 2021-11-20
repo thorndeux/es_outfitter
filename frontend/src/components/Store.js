@@ -24,7 +24,8 @@ const initialState = {
   allBuilds: [],
   currentHull: {},
   defaultBuild: {},
-  currentBuild: [],
+  currentBuild: {},
+  editMode: false,
 }
 
 export default initialState

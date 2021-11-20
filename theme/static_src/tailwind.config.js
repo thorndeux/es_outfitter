@@ -60,7 +60,8 @@ module.exports = {
                 ...defaultTheme.screens,
             },
             colors: {
-                trueGray: colors.trueGray
+                gray: colors.trueGray,
+                lime: colors.lime,
             },
             minHeight: {
                 '16': '4rem',

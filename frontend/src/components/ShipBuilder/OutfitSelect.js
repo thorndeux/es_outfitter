@@ -22,8 +22,6 @@ const OutfitSelect = () => {
     { value: 'Wanderer', label: 'Wanderer' },
   ]
 
-  const defaultFaction = { value: 'Human', label: 'Human' }
-
   const changeFaction = e => {
     dispatch({ type: 'filterOutfitFaction', payload: e })
   }
@@ -73,8 +71,6 @@ const OutfitSelect = () => {
     { value: 'bunks', label: 'Bunks' },
   ]
 
-  const defaultSortType = { value: 'name', label: 'Name' }
-
   const changeSortType = e => {
     dispatch({ type: 'sortOutfits', payload: e})
   }
@@ -99,7 +95,7 @@ const OutfitSelect = () => {
         <Select
           id="spoilerSelect"
           options={spoilerOptions}
-          defaultValue={spoilerOptions[0]}
+          value={state.spoiler}
           onChange={changeSpoiler}
         />
       </div>
@@ -118,7 +114,7 @@ const OutfitSelect = () => {
         <Select
           id="categorySelect"
           options={categoryOptions}
-          defaultValue={categoryOptions[0]}
+          value={state.outfitCategory}
           onChange={changeCategory}
         />
       </div>
@@ -127,7 +123,7 @@ const OutfitSelect = () => {
         <Select
           id="sortSelect"
           options={sortOptions}
-          defaultValue={defaultSortType}
+          value={state.outfitSortType}
           onChange={changeSortType}
         />
       </div>

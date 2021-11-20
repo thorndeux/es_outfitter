@@ -127,7 +127,7 @@ const SelectMenu = () => {
           id="releaseSelect"
           cacheOptions
           loadOptions={getReleases}
-          defaultValue={defaultRelease}
+          value={state.release}
           defaultOptions
           onChange={changeRelease}
         />
@@ -137,7 +137,7 @@ const SelectMenu = () => {
         <Select
           id="spoilerSelect"
           options={spoilerOptions}
-          defaultValue={spoilerOptions[0]}
+          value={state.spoiler}
           onChange={changeSpoiler}
         />
       </div>
@@ -156,7 +156,7 @@ const SelectMenu = () => {
         <Select
           id="categorySelect"
           options={categoryOptions}
-          defaultValue={categoryOptions[0]}
+          value={state.hullCategory}
           onChange={changeCategory}
         />
       </div>
@@ -165,7 +165,7 @@ const SelectMenu = () => {
         <Select
           id="sortSelect"
           options={sortOptions}
-          defaultValue={defaultSortType}
+          value={state.hullSortType}
           onChange={changeSortType}
         />
       </div>

@@ -121,7 +121,7 @@ const App = () => {
   return (
     <DispatchContext.Provider value={dispatch}>
       <StateContext.Provider value={state}>
-        <div className="bg-gray-300 min-h-screen font-mono">
+        <div className="bg-gray-300 min-h-screen font-sans">
           {hullSelect && <HullSelect />}
           {shipBuilder && <ShipBuilder />}
           <ScrollToTop />

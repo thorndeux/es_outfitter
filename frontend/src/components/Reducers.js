@@ -5,7 +5,8 @@ const reducer = (state, action) => {
         hullSelect: true,
         shipBuilder: false,
         currentHull: [],
-        defaultBuild: [],
+        defaultBuild: {},
+        currentBuild: {},
       }
     case 'getHulls': 
       return { ...state, allHulls: action.payload }
@@ -60,6 +61,16 @@ const reducer = (state, action) => {
       return { ...state, allBuilds: action.payload }
     case 'setDefaultBuild':
       return { ...state, defaultBuild: action.payload }
+    case 'toggleEdit':
+      return { ...state, editMode: action.payload }
+    case 'setCurrentBuild':
+      return { ...state, currentBuild: action.payload }
+    case 'setBuildName':
+      return { ...state, currentBuild: { ...state.currentBuild, name: action.payload } }
+    case 'clearBuild':
+      return { ...state, currentBuild: { ...state.currentBuild, outfits: [], name: `New ${state.currentHull.name} build` } }
+    case 'setBuildOutfits':
+      return { ...state, currentBuild: { ...state.currentBuild, outfits: action.payload }}
     default:
       return state
   }  

@@ -6,6 +6,7 @@ const OutfitCard = ({ outfit }) => {
   // Fields to exclude from list of attributes
   const excludedAttributes = [
     "id",
+    "spoiler",
     "name",
     "release",
     "plural",
@@ -21,14 +22,14 @@ const OutfitCard = ({ outfit }) => {
       bg-gradient-to-br from-gray-600 to-gray-500 
       border border-gray-400 rounded-sm 
       w-full sm:w-96 h-auto
-      text-sm
+      text-base
       p-2
       filter hover:brightness-110"
     >
-      <h2 className="text-lg">{outfit.name}</h2>
+      <h2 className="text-xl font-medium">{outfit.name}</h2>
       <p className="mb-2">{outfit.description}</p>
       <div className="relative min-h-40">
-        <h3 className="text-base">Base Stats</h3>
+        <h3 className="text-lg font-medium">Base Stats</h3>
         <table>
           <tbody>
             {Object.keys(outfit).map((attribute) => {

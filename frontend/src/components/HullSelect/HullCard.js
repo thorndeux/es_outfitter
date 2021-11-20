@@ -9,6 +9,7 @@ const HullCard = ({ hull }) => {
   // Fields to exclude from list of attributes
   const excludedAttributes = [
     "id",
+    "spoiler",
     "name",
     "release",
     "plural",
@@ -31,15 +32,15 @@ const HullCard = ({ hull }) => {
       bg-gradient-to-br from-gray-600 to-gray-500 
       border border-gray-400 rounded-sm 
       w-full sm:w-96 h-auto
-      text-sm
+      text-base
       p-2
       filter hover:brightness-110"
       onClick={() => loadShipBuilder(hull)}
     >
-      <h2 className="text-lg">{hull.name}</h2>
+      <h2 className="text-xl font-medium">{hull.name}</h2>
       <p className="mb-2">{hull.description}</p>
       <div className="relative">
-        <h3 className="text-base">Base Stats</h3>
+        <h3 className="text-lg font-medium">Base Stats</h3>
         <table>
           <tbody>
             {Object.keys(hull).map((attribute) => {
