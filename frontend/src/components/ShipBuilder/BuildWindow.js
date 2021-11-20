@@ -17,25 +17,38 @@ const BuildWindow = () => {
     getBuild()
   }, [state.currentHull, state.allBuilds])
 
-  // Fetch hull default build
-  const fetchDefaultBuild = async () => {
-    if (state.currentHull) {
-      let res
-      try {
-        res = await fetch("http://localhost:8000/api/builds/" + state.currentHull.default_build)
-      } catch (e) {
-        console.log("Could not fetch default build for hull '" + state.currentHull.name + "':", e)
+  // Get default build from state.allBuilds
+  const getDefaultBuild = () => {
+    for (const build of state.allBuilds) {
+      if (build.id === state.currentHull.default_build) {
+        dispatch({ type: 'setDefaultBuild', payload: parseBuild(build) })
+        break
       }
-      const data = await res.json()
-      return data
     }
   }
 
-  // Get default build from state.allBuilds
-  const getDefaultBuild =  () => {
-    state.allBuilds.forEach(build => {
-      build.id === state.currentHull.default_build && dispatch({ type: 'setDefaultBuild', payload: build })
-    });
+  // Replace outfit IDs with outfit objects
+  const parseBuild = (build) => {
+    // Make a copy of all outfit sets (consisting of amount and outfit id)
+    const outfit_sets = [...build.outfits]
+    // Loop over copy
+    for (const outfit_set of outfit_sets) {
+      // Find the right outfit
+      for (const outfit of state.allOutfits) {
+        if (outfit.id === outfit_set.outfit) {
+          // Remove first outfit_set from original outfit sets
+          const old_set = build.outfits.shift()
+          // Make a new outfit_set containing the outfit object
+          const new_set = {
+            "amount": old_set.amount,
+            "outfit": outfit
+            }
+          // Add it to the end of original outfit sets
+          build.outfits.push(new_set)
+        } 
+      }
+    }
+    return build
   }
 
   // Make sure build window has enough height to accomodate the hull sprite, even before the build has fully loaded
