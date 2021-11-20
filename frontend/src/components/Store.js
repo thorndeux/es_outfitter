@@ -1,0 +1,28 @@
+const initialState = {
+  hullSelect: true,
+  allHulls: [],
+  currentHulls: [],
+  hullSearchResults: [],
+  release: { value: '0.9.14', label: '0.9.14' },
+  spoiler: { value: '0', label: 'No Spoilers' },
+  hullFaction: { value: 'Human', label: 'Human' },
+  hullCategory: { value: '', label: 'All Categories' },
+  hullSearchQuery: '',
+  hullSortType: { value: 'name', label: 'Name' },
+
+  shipBuilder: false,
+  allOutfits: [],
+  currentOutfits: [],
+  outfitSearchResults: [],
+  outfitFaction: { value: 'Human', label: 'Human' },
+  outiftCategory: { value: '', label: 'All Categories' },
+  outfitSearchQuery: '',
+  outfitSortType: { value: 'name', label: 'Name' },
+
+  allBuilds: [],
+  currentHull: {},
+  defaultBuild: {},
+  currentBuild: [],
+}
+
+export default initialState
