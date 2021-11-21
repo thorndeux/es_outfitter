@@ -30,7 +30,6 @@ class OutfitDetailsSerializer(serializers.ModelSerializer):
   class Meta:
     model = Outfit_details
     fields = ['outfit', 'amount']
-    # depth = 1
 
 class BuildSerializer(serializers.ModelSerializer):
   outfits = OutfitDetailsSerializer(read_only=True, many=True, source='outfit_details')

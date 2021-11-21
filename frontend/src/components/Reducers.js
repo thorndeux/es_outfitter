@@ -42,6 +42,7 @@ const reducer = (state, action) => {
         outfitCategory: { value: '', label: 'All Categories' },
         outfitSortType: { value: 'name', label: 'Name' },
         outfitSearchQuery: '',
+        editMode: false,
       }
     case 'getOutfits':
       return { ...state, allOutfits: action.payload }
@@ -71,6 +72,9 @@ const reducer = (state, action) => {
       return { ...state, currentBuild: { ...state.currentBuild, outfits: [], name: `New ${state.currentHull.name} build` } }
     case 'setBuildOutfits':
       return { ...state, currentBuild: { ...state.currentBuild, outfits: action.payload }}
+
+    case 'setBuildAggregates':
+      return { ...state, buildAggregates: action.payload }
     default:
       return state
   }  

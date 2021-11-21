@@ -26,6 +26,7 @@ const initialState = {
   defaultBuild: {},
   currentBuild: {},
   editMode: false,
+  buildAggregates: {},
 }
 
 export default initialState
