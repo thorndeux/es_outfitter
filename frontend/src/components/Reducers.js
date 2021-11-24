@@ -7,6 +7,7 @@ const reducer = (state, action) => {
         currentHull: [],
         defaultBuild: {},
         currentBuild: {},
+        userBuild: false,
       }
     case 'getHulls': 
       return { ...state, allHulls: action.payload }
@@ -68,10 +69,16 @@ const reducer = (state, action) => {
       return { ...state, currentBuild: action.payload }
     case 'setBuildName':
       return { ...state, currentBuild: { ...state.currentBuild, name: action.payload } }
+    case 'startUserBuild':
+      return { ...state, 
+        userBuild: true, 
+        currentBuild: { ...state.currentBuild, id: Date.now() } }
+    case 'resetUserBuild':
+      return { ...state, userBuild: false }
     case 'clearBuild':
       return { ...state, currentBuild: { ...state.currentBuild, outfits: [], name: `New ${state.currentHull.name} build` } }
     case 'setBuildOutfits':
-      return { ...state, currentBuild: { ...state.currentBuild, outfits: action.payload }}
+      return { ...state, currentBuild: { ...state.currentBuild, outfits: action.payload } }
 
     case 'setBuildAggregates':
       return { ...state, buildAggregates: action.payload }

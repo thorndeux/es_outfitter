@@ -56,9 +56,7 @@ const BuildWindow = () => {
     let image_height = document.getElementById("currentHullSprite").height
     document.getElementById("buildContainer").style.minHeight = `${image_height + 30}px`
   }
-
   
-
 
   return (
     <div className="lg:col-span-4 xl:col-span-5 p-2">
