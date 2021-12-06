@@ -90,6 +90,7 @@ const SelectMenu = () => {
     { value: 'cost', label: 'Cost' },
     { value: 'shields', label: 'Shields' },
     { value: 'hull', label: 'Hull' },
+    { value: 'totalHP', label: 'Hull + Shields'},
     { value: 'outfit_space', label: 'Outfit space' },
     { value: 'engine_capacity', label: 'Engine capacity' },
     { value: 'weapon_capacity', label: 'Weapon capacity' },

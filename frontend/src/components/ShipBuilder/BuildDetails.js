@@ -29,6 +29,10 @@ const BuildDetails = () => {
     state.userBuild && dispatch({ type: 'resetUserBuild' })
   }
 
+  const loadSaves = () => {
+
+  }
+
   const addOutfit = (e, outfit) => {
     // Validation logic goes here:
     // Outfit space
@@ -81,7 +85,6 @@ const BuildDetails = () => {
   }
 
   return (
-    <>    
     <div className="lg:col-span-2 p-2">
       {
         !state.editMode ? 
@@ -146,9 +149,15 @@ const BuildDetails = () => {
           className="col-span-2 border border-gray-300 bg-gray-700 rounded p-2 hover:bg-gray-600"
           onClick={loadDefault}
         >Load default build</button>
+        <button
+          className="col-span-2 border border-gray-300 bg-gray-700 rounded p-2 hover:bg-gray-600"
+          onClick={loadSaves}
+        >Load saved</button>
+      </div>
+      <div>Put build choices here
       </div>
     </div>
-    </>
+
   )
 }
 

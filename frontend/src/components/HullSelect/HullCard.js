@@ -34,7 +34,8 @@ const HullCard = ({ hull }) => {
       w-full sm:w-96 h-auto
       text-base
       p-2
-      filter hover:brightness-110"
+      filter hover:brightness-110
+      hover: cursor-pointer"
       onClick={() => loadShipBuilder(hull)}
     >
       <h2 className="text-xl font-medium">{hull.name}</h2>

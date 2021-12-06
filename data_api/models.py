@@ -124,6 +124,7 @@ class Outfit(models.Model):
     cargo_space = models.IntegerField(default=0)
     gun_ports = models.IntegerField(default=0)
     turret_mounts = models.IntegerField(default=0)
+    spinal_mounts = models.IntegerField(default=0)
     fuel_capacity = models.IntegerField(default=0)
     
     bunks = models.IntegerField(default=0)
@@ -219,6 +220,21 @@ class Outfit(models.Model):
     disruption_damage = models.DecimalField(default=0, max_digits=4, decimal_places=2)
     hit_force = models.IntegerField(default=0)
     piercing = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+
+    # Aggregate values
+    range = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    shots_per_second = models.DecimalField(default=0, max_digits=5, decimal_places=2)
+    shield_dps = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    hull_dps = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    heat_dps = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    ion_dps = models.DecimalField(default=0, max_digits=9, decimal_places=2)
+    slowing_dps = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    disruption_dps = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    hit_force_per_second = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    anti_missile_per_second = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    energy_per_second = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    heat_per_second = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    fuel_per_second = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
     missile_capacity = models.IntegerField(default=0)
     missile_strength = models.IntegerField(default=0)
@@ -227,7 +243,7 @@ class Outfit(models.Model):
                              blank=True,
                              default=None,
                              on_delete=models.CASCADE,
-                             related_name='lauchners')
+                             related_name='launcher')
     acceleration = models.DecimalField(default=0, max_digits=6, decimal_places=5)
     drag = models.DecimalField(default=0, max_digits=4, decimal_places=3)
     homing = models.IntegerField(default=0)

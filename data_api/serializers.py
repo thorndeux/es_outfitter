@@ -16,12 +16,12 @@ class NonEmptySerializer(serializers.ModelSerializer):
                 non_null_ret.pop(key)
         return non_null_ret
 
-class HullSerializer(NonEmptySerializer):
+class HullSerializer(serializers.ModelSerializer):
   class Meta:
     model = Hull
     fields = '__all__'
 
-class OutfitSerializer(NonEmptySerializer):
+class OutfitSerializer(serializers.ModelSerializer):
   class Meta:
     model = Outfit
     fields = '__all__'

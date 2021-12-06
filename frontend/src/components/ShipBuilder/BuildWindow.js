@@ -66,7 +66,7 @@ const BuildWindow = () => {
           &lt; Back to hull selection
         </button>
       </div>
-      <div id="buildContainer" className="grid grid-cols-1 lg:grid-cols-4
+      <div id="buildContainer" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
         bg-gradient-to-br from-gray-600 to-gray-500 
         border border-gray-400 rounded-sm gap-2">
         <div className="lg:relative p-2">
