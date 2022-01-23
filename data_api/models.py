@@ -33,6 +33,11 @@ class Hull(models.Model):
     shields = models.IntegerField(default=0)
     hull = models.IntegerField(default=0)
 
+    # some aggregates
+    total_hp = models.IntegerField(default=0)
+    speed_rating = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    agility_rating = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+
     required_crew = models.IntegerField(default=0)
     bunks = models.IntegerField(default=0)
 
@@ -49,30 +54,30 @@ class Hull(models.Model):
     ramscoop = models.IntegerField(default=0)
 
     energy_capacity = models.IntegerField(default=0)
-    energy_generation = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    energy_generation = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     heat_generation = models.IntegerField(default=0)
     
-    hull_repair_rate = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    hull_energy = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    hull_repair_rate = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    hull_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     hull_delay = models.IntegerField(default=0)
     
-    shield_generation = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    shield_energy = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    shield_heat = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    shield_generation = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    shield_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    shield_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
-    cooling = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    active_cooling = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    cooling_energy = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    active_cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    cooling_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
     cloak = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    cloaking_energy = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    cloaking_fuel = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    cloaking_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    cloaking_fuel = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
-    thrust = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    turn = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    reverse_thrust = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    reverse_thrusting_energy = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    reverse_thrusting_heat = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    thrust = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    turn = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    reverse_thrust = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    reverse_thrusting_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    reverse_thrusting_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 
     outfit_scan_power = models.IntegerField(default=0)
     outfit_scan_speed = models.IntegerField(default=0)
@@ -89,10 +94,10 @@ class Hull(models.Model):
     gaslining = models.BooleanField(default=False)
     remnant_node = models.IntegerField(default=0)
 
-    max_guns = models.IntegerField(default=0)
-    max_turrets = models.IntegerField(default=0)
-    max_fighters = models.IntegerField(default=0)
-    max_drones = models.IntegerField(default=0)
+    gun_ports = models.IntegerField(default=0)
+    turret_mounts = models.IntegerField(default=0)
+    fighter_bays = models.IntegerField(default=0)
+    drone_bays = models.IntegerField(default=0)
     spinal_mount = models.IntegerField(default=0)
 
     def __str__(self):
@@ -130,30 +135,38 @@ class Outfit(models.Model):
     bunks = models.IntegerField(default=0)
     required_crew = models.IntegerField(default=0)
     
-    cooling = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    active_cooling = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    cooling_energy = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    active_cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    combined_cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    combined_cooling_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    cooling_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     cooling_inefficiency = models.IntegerField(default=0)
     heat_dissipation = models.DecimalField(default=0, max_digits=6, decimal_places=2)
     depleted_shield_delay = models.IntegerField(default=0)
 
     energy_capacity = models.IntegerField(default=0)
-    solar_collection = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    energy_generation = models.DecimalField(default=0, max_digits=5, decimal_places=2)
-    heat_generation = models.DecimalField(default=0, max_digits=5, decimal_places=2)
-    energy_consumption = models.DecimalField(default=0, max_digits=5, decimal_places=3)
+    energy_capacity_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    solar_collection = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    energy_generation = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    total_energy_generation = models.DecimalField(default=0, max_digits=9, decimal_places=2)
+    total_energy_generation_per_space = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    heat_generation = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    energy_consumption = models.DecimalField(default=0, max_digits=8, decimal_places=3)
 
-    shield_generation = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    shield_energy = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    shield_heat = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    shield_generation = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    shield_generation_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    shield_energy = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    shield_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 
-    hull_repair_rate = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    hull_energy = models.DecimalField(default=0, max_digits=3, decimal_places=2)
-    hull_heat = models.DecimalField(default=0, max_digits=3, decimal_places=2)
+    hull_repair_rate = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    hull_repair_rate_per_space = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    hull_energy = models.DecimalField(default=0, max_digits=5, decimal_places=2)
+    hull_heat = models.DecimalField(default=0, max_digits=5, decimal_places=2)
 
     radar_jamming = models.IntegerField(default=0)
     
     ramscoop = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+    ramscoop_per_space = models.DecimalField(default=0, max_digits=4, decimal_places=2)
     
     jump_fuel = models.IntegerField(default=0)
     hyperdrive = models.IntegerField(default=0)
@@ -174,28 +187,32 @@ class Outfit(models.Model):
     scan_interference = models.DecimalField(default=0, max_digits=4, decimal_places=2)
 
     cloak = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    cloaking_energy = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    cloaking_fuel = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+    cloaking_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    cloaking_fuel = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 
     capture_attack = models.DecimalField(default=0, max_digits=4, decimal_places=2)
     capture_defense = models.DecimalField(default=0, max_digits=5, decimal_places=2)
     
-    thrust = models.DecimalField(default=0, max_digits=5, decimal_places=2)
-    thrusting_energy = models.DecimalField(default=0, max_digits=6, decimal_places=4)
-    thrusting_heat = models.DecimalField(default=0, max_digits=6, decimal_places=3)
+    thrust = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    thrust_per_space = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    thrusting_energy = models.DecimalField(default=0, max_digits=8, decimal_places=3)
+    thrusting_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
-    turn = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    turning_energy = models.DecimalField(default=0, max_digits=6, decimal_places=4)
-    turning_heat = models.DecimalField(default=0, max_digits=7, decimal_places=4)
+    turn = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    turn_per_space = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    turning_energy = models.DecimalField(default=0, max_digits=8, decimal_places=3)
+    turning_heat = models.DecimalField(default=0, max_digits=8, decimal_places=3)
     
-    reverse_thrust = models.DecimalField(default=0, max_digits=5, decimal_places=2)
-    reverse_thrusting_energy = models.DecimalField(default=0, max_digits=6, decimal_places=4)
-    reverse_thrusting_heat = models.DecimalField(default=0, max_digits=6, decimal_places=3)
+    reverse_thrust = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    reverse_thrust_per_space = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    reverse_thrusting_energy = models.DecimalField(default=0, max_digits=8, decimal_places=3)
+    reverse_thrusting_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
-    afterburner_thrust = models.DecimalField(default=0, max_digits=5, decimal_places=2)
-    afterburner_fuel = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    afterburner_heat = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    afterburner_energy = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+    afterburner_thrust = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    afterburner_thrust_per_space = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    afterburner_fuel = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    afterburner_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    afterburner_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
     illegal = models.IntegerField(default=0)
 
@@ -205,7 +222,7 @@ class Outfit(models.Model):
     lifetime = models.IntegerField(default=0)    
     range_override = models.IntegerField(default=0)   
     velocity_override = models.DecimalField(default=0, max_digits=7, decimal_places=3)
-    reload_time = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    reload = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
     firing_energy = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     firing_heat = models.DecimalField(default=0, max_digits=7, decimal_places=2)
@@ -214,29 +231,42 @@ class Outfit(models.Model):
     
     shield_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     hull_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    average_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     heat_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
-    ion_damage = models.DecimalField(default=0, max_digits=6, decimal_places=2)
-    slowing_damage = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    disruption_damage = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+    ion_damage = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    slowing_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    disruption_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     hit_force = models.IntegerField(default=0)
     piercing = models.DecimalField(default=0, max_digits=4, decimal_places=2)
 
     # Aggregate values
     range = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     shots_per_second = models.DecimalField(default=0, max_digits=5, decimal_places=2)
+    # DPS values
     shield_dps = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     hull_dps = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    average_dps = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     heat_dps = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     ion_dps = models.DecimalField(default=0, max_digits=9, decimal_places=2)
     slowing_dps = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     disruption_dps = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     hit_force_per_second = models.DecimalField(default=0, max_digits=7, decimal_places=2)
-    anti_missile_per_second = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    anti_missile_dps = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    # Resource use per second
     energy_per_second = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     heat_per_second = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     fuel_per_second = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    # DPS per outfit space
+    shield_dps_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    hull_dps_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    average_dps_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    heat_dps_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
+    ion_dps_per_space = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    slowing_dps_per_space = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    disruption_dps_per_space = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    anti_missile_dps_per_space = models.DecimalField(default=0, max_digits=6, decimal_places=2)
     
-    missile_capacity = models.IntegerField(default=0)
+    ammo_capacity = models.IntegerField(default=0)
     missile_strength = models.IntegerField(default=0)
     ammo = models.ForeignKey("self",
                              null=True,
@@ -244,7 +274,7 @@ class Outfit(models.Model):
                              default=None,
                              on_delete=models.CASCADE,
                              related_name='launcher')
-    acceleration = models.DecimalField(default=0, max_digits=6, decimal_places=5)
+    acceleration = models.DecimalField(default=0, max_digits=8, decimal_places=5)
     drag = models.DecimalField(default=0, max_digits=4, decimal_places=3)
     homing = models.IntegerField(default=0)
     tracking = models.DecimalField(default=0, max_digits=2, decimal_places=1)
@@ -276,15 +306,6 @@ class Outfit(models.Model):
         # phasing
 
     anti_missile = models.IntegerField(default=0)
-
-    # submunition for proton gun?
-    # => handle while parsing: use submunition values,
-    # multiplied by number of submunitions where appropriate
-        # inaccuracy (additive ?)
-        # lifetime (additive)
-        # hit force
-        # shield damage
-        # hull damage
 
     turret_turn = models.DecimalField(default=0, max_digits=4, decimal_places=2)
 

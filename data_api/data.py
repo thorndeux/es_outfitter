@@ -234,20 +234,26 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
 
     Args:
         filename (Path): Path to the filename containing the outfit (to get the faction)
-        outfit_string (str): String containg the data for an outfit
+        outfit_string (str): String containing the data for the outfit
         release (str): Release containing the outfit
     """
+    # Groups of attributes to parse
+    int_attributes = ['cost', 'outfit_space', 'engine_capacity', 'weapon_capacity', 'cargo_space', 'gun_ports', 'turret_mounts', 'spinal_mounts', 'fuel_capacity', 'bunks', 'required_crew', 'cooling_inefficiency', 'depleted_shield_delay', 'energy_capacity', 'radar_jamming', 'jump_fuel', 'hyperdrive', 'jumpdrive', 'cargo_scan_power', 'cargo_scan_speed', 'outfit_scan_power', 'outfit_scan_speed', 'asteroid_scan_power', 'atmosphere_scan', 'tactical_scan_power', 'illegal', 'lifetime', 'range_override', 'firing_force', 'hit_force', 'missile_strength', 'homing', 'trigger_radius', 'blast_radius', 'anti_missile', 'burst_count', 'burst_reload']
+    float_attributes = ['mass', 'heat_dissipation', 'ramscoop', 'scan_interference', 'cloak', 'cloaking_energy', 'cloaking_fuel', 'capture_attack', 'capture_defense', 'inaccuracy', 'velocity', 'velocity_override', 'reload', 'firing_fuel', 'firing_heat', 'firing_energy', 'shield_damage', 'hull_damage', 'heat_damage', 'piercing', 'acceleration', 'drag', 'tracking', 'infrared_tracking', 'radar_tracking', 'optical_tracking', 'turret_turn', 'ion_resistance', 'slowing_resistance']
+    float_multi_60 = ['cooling', 'active_cooling', 'cooling_energy', 'solar_collection', 'energy_generation', 'heat_generation', 'energy_consumption', 'shield_generation', 'shield_energy', 'shield_heat', 'hull_repair_rate', 'hull_energy', 'hull_heat', 'thrusting_energy', 'thrusting_heat', 'turn', 'turning_energy', 'turning_heat', 'reverse_thrusting_energy', 'reverse_thrusting_heat', 'afterburner_fuel', 'afterburner_heat', 'afterburner_energy']
+    float_multi_3600 = ['thrust', 'reverse_thrust', 'afterburner_thrust']
+    float_multi_100 = ['ion_damage', 'slowing_damage', 'disruption_damage']
+    bool_attributes = ['automaton', 'unplunderable', 'cluster', 'stream']
 
     outfit = Outfit()
     
     outfit.release = release
     
     name = re.search('^outfit +?"([^"]*)"', outfit_string)
-
-    if not name:
-        name = re.search('^outfit +?`([^`]*)`', outfit_string)
-
-    outfit.name = name[1]
+    if name:
+        outfit.name = name[1]
+    else:
+        outfit.name = re.search('^outfit +?`([^`]*)`', outfit_string)[1]
     logger.debug("Current outfit is " + outfit.name)
     
     plural = re.search('^\tplural +?((?:"[^"]*")|(?:`[^`]*`))', outfit_string, re.M)
@@ -290,338 +296,38 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
     if thumbnail:
         outfit.thumbnail = release + '/' + thumbnail[1] + '.png'
 
-    if re.search('^\t"automaton"', outfit_string, re.M):
-        outfit.automaton = True
-    
-    if re.search('^\t"?unplunderable"?', outfit_string, re.M):
-        outfit.unplunderable = True
-    
-    cost = re.search(r'^\t"?cost"? +?(\d*)$', outfit_string, re.M)
-    if cost:
-        outfit.cost = int(cost[1])
+    for attribute in int_attributes:
+        value = parse_attribute_value(attribute, outfit_string)
+        value and setattr(outfit, attribute, int(value[1]))
 
-    mass = re.search(r'^\t(?:"mass"|mass) +?([\d\.-]*)$', outfit_string, re.M)
-    if mass:
-        outfit.mass = float(mass[1])
+    for attribute in float_attributes:
+        value = parse_attribute_value(attribute, outfit_string)
+        value and setattr(outfit, attribute, float(value[1]))
 
-    outfit_space = re.search(r'^\t"outfit space" +?([\d\.-]*)$', outfit_string, re.M)
-    if outfit_space:
-        outfit.outfit_space = int(outfit_space[1])
+    for attribute in float_multi_60:
+        value = parse_attribute_value(attribute, outfit_string)
+        value and setattr(outfit, attribute, float(value[1]) * 60)
 
-    engine_capacity = re.search(r'^\t"engine capacity" +?([\d\.-]*)$', outfit_string, re.M)
-    if engine_capacity:
-        outfit.engine_capacity = int(engine_capacity[1])
+    for attribute in float_multi_3600:
+        value = parse_attribute_value(attribute, outfit_string)
+        value and setattr(outfit, attribute, float(value[1]) * 3600)
 
-    weapon_capacity = re.search(r'^\t"weapon capacity" +?([\d\.-]*)$', outfit_string, re.M)
-    if weapon_capacity:
-        outfit.weapon_capacity = int(weapon_capacity[1])
+    for attribute in float_multi_100:
+        value = parse_attribute_value(attribute, outfit_string)
+        value and setattr(outfit, attribute, float(value[1]) * 100)
 
-    cargo_space = re.search(r'^\t"cargo space" +?([\d\.-]*)$', outfit_string, re.M)
-    if cargo_space:
-        outfit.cargo_space = int(cargo_space[1])
-    
-    gun_ports = re.search(r'^\t"gun ports" +?([\d\.-]*)$', outfit_string, re.M)
-    if gun_ports:
-        outfit.gun_ports = int(gun_ports[1])
+    for attribute in bool_attributes:
+        value = re.search(r'^\t+?"?{}"?$'.format(attribute), outfit_string, re.M)
+        value and setattr(outfit, attribute, True)
 
-    turret_mounts = re.search(r'^\t"turret mounts" +?([\d\.-]*)$', outfit_string, re.M)
-    if turret_mounts:
-        outfit.turret_mounts = int(turret_mounts[1])
+    # Calculate some aggregates
+    outfit.combined_cooling = float(outfit.cooling + outfit.active_cooling)
+    outfit.total_energy_generation = float(outfit.energy_generation + outfit.solar_collection)
+    outfit.average_damage = float(outfit.shield_damage + outfit.hull_damage) / 2
 
-    spinal_mounts = re.search(r'^\t"spinal mounts" +?([\d\.-]*)$', outfit_string, re.M)
-    if spinal_mounts:
-        outfit.spinal_mounts = int(spinal_mounts[1])
-
-    fuel_capacity = re.search(r'^\t"fuel capacity" +?([\d\.-]*)$', outfit_string, re.M)
-    if fuel_capacity:
-        outfit.fuel_capacity = int(fuel_capacity[1])
-
-    bunks = re.search(r'^\t"bunks" +?([\d\.-]*)$', outfit_string, re.M)
-    if bunks:
-        outfit.bunks = int(bunks[1])
-
-    required_crew = re.search(r'^\t"required crew" +?([\d\.-]*)$', outfit_string, re.M)
-    if required_crew:
-        outfit.required_crew = int(required_crew[1])
-
-    cooling = re.search(r'^\t"cooling" +?([\d\.-]*)$', outfit_string, re.M)
-    if cooling:
-        outfit.cooling = float(cooling[1])
-
-    active_cooling = re.search(r'^\t"active cooling" +?([\d\.-]*)$', outfit_string, re.M)
-    if active_cooling:
-        outfit.active_cooling = float(active_cooling[1])
-
-    cooling_energy = re.search(r'^\t"cooling energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if cooling_energy:
-        outfit.cooling_energy = float(cooling_energy[1])
-
-    cooling_inefficiency = re.search(r'^\t"cooling inefficiency" +?([\d\.-]*)$', outfit_string, re.M)
-    if cooling_inefficiency:
-        outfit.cooling_inefficiency = int(cooling_inefficiency[1])
-
-    heat_dissipation = re.search(r'^\t"heat dissipation" +?([\d\.-]*)$', outfit_string, re.M)
-    if heat_dissipation:
-        outfit.heat_dissipation = float(heat_dissipation[1])
-
-    depleted_shield_delay = re.search(r'^\t"depleted shield delay" +?([\d\.-]*)$', outfit_string, re.M)
-    if depleted_shield_delay:
-        outfit.depleted_shield_delay = int(depleted_shield_delay[1])
-
-    energy_capacity = re.search(r'^\t"energy capacity" +?([\d\.-]*)$', outfit_string, re.M)
-    if energy_capacity:
-        outfit.energy_capacity = int(energy_capacity[1])
-
-    solar_collection = re.search(r'^\t"solar collection" +?([\d\.-]*)$', outfit_string, re.M)
-    if solar_collection:
-        outfit.solar_collection = float(solar_collection[1])
-
-    energy_generation = re.search(r'^\t"energy generation" +?([\d\.-]*)$', outfit_string, re.M)
-    if energy_generation:
-        outfit.energy_generation = float(energy_generation[1])
-
-    heat_generation = re.search(r'^\t"heat generation" +?([\d\.-]*)$', outfit_string, re.M)
-    if heat_generation:
-        outfit.heat_generation = float(heat_generation[1])
-
-    energy_consumption = re.search(r'^\t"energy consumption" +?([\d\.-]*)$', outfit_string, re.M)
-    if energy_consumption:
-        outfit.energy_consumption = float(energy_consumption[1])
-
-    shield_generation = re.search(r'^\t"shield generation" +?([\d\.-]*)$', outfit_string, re.M)
-    if shield_generation:
-        outfit.shield_generation = float(shield_generation[1])
-
-    shield_energy = re.search(r'^\t"shield energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if shield_energy:
-        outfit.shield_energy = float(shield_energy[1])
-
-    shield_heat = re.search(r'^\t"shield heat" +?([\d\.-]*)$', outfit_string, re.M)
-    if shield_heat:
-        outfit.shield_heat = float(shield_heat[1])
-
-    hull_repair_rate = re.search(r'^\t"hull repair.*?" +?([\d\.-]*)$', outfit_string, re.M)
-    if hull_repair_rate:
-        outfit.hull_repair_rate = float(hull_repair_rate[1])
-
-    hull_energy = re.search(r'^\t"hull energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if hull_energy:
-        outfit.hull_energy = float(hull_energy[1])
-
-    hull_heat = re.search(r'^\t"hull heat" +?([\d\.-]*)$', outfit_string, re.M)
-    if hull_heat:
-        outfit.hull_heat = float(hull_heat[1])
-
-    radar_jamming = re.search(r'^\t"radar jamming" +?([\d\.-]*)$', outfit_string, re.M)
-    if radar_jamming:
-        outfit.radar_jamming = int(radar_jamming[1])
-
-    ramscoop = re.search(r'^\t"ramscoop" +?([\d\.-]*)$', outfit_string, re.M)
-    if ramscoop:
-        outfit.ramscoop = float(ramscoop[1])
-
-    jump_fuel = re.search(r'^\t"jump fuel" +?([\d\.-]*)$', outfit_string, re.M)
-    if jump_fuel:
-        outfit.jump_fuel = int(jump_fuel[1])
-
-    hyperdrive = re.search(r'^\t"hyperdrive" +?([\d\.-]*)$', outfit_string, re.M)
-    if hyperdrive:
-        outfit.hyperdrive = int(hyperdrive[1])
-
-    if hyperdrive and not jump_fuel:
+    # Handle some special cases
+    if outfit.hyperdrive and not outfit.jump_fuel:
         outfit.jump_fuel = 100
-
-    jumpdrive = re.search(r'^\t"jump drive" +?([\d\.-]*)$', outfit_string, re.M)
-    if jumpdrive:
-        outfit.jumpdrive = int(jumpdrive[1])
-
-    cargo_scan_power = re.search(r'^\t"cargo scan power" +?([\d\.-]*)$', outfit_string, re.M)
-    if cargo_scan_power:
-        outfit.cargo_scan_power = int(cargo_scan_power[1])
-
-    cargo_scan_speed = re.search(r'^\t"cargo scan speed" +?([\d\.-]*)$', outfit_string, re.M)
-    if cargo_scan_speed:
-        outfit.cargo_scan_speed = int(cargo_scan_speed[1])
-
-    outfit_scan_power = re.search(r'^\t"outfit scan power" +?([\d\.-]*)$', outfit_string, re.M)
-    if outfit_scan_power:
-        outfit.outfit_scan_power = int(outfit_scan_power[1])
-
-    outfit_scan_speed = re.search(r'^\t"outfit scan speed" +?([\d\.-]*)$', outfit_string, re.M)
-    if outfit_scan_speed:
-        outfit.outfit_scan_speed = int(outfit_scan_speed[1])
-
-    asteroid_scan_power = re.search(r'^\t"asteroid scan power" +?([\d\.-]*)$', outfit_string, re.M)
-    if asteroid_scan_power:
-        outfit.asteroid_scan_power = int(asteroid_scan_power[1])
-
-    atmosphere_scan = re.search(r'^\t"atmosphere scan" +?([\d\.-]*)$', outfit_string, re.M)
-    if atmosphere_scan:
-        outfit.atmosphere_scan = int(atmosphere_scan[1])
-
-    tactical_scan_power = re.search(r'^\t"tactical scan power" +?([\d\.-]*)$', outfit_string, re.M)
-    if tactical_scan_power:
-        outfit.tactical_scan_power = int(tactical_scan_power[1])
-
-    scan_interference = re.search(r'^\t"scan interference" +?([\d\.-]*)$', outfit_string, re.M)
-    if scan_interference:
-        outfit.scan_interference = float(scan_interference[1])
-
-    cloak = re.search(r'^\t"cloak" +?([\d\.-]*)$', outfit_string, re.M)
-    if cloak:
-        outfit.cloak = float(cloak[1])
-
-    cloaking_energy = re.search(r'^\t"cloaking energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if cloaking_energy:
-        outfit.cloaking_energy = float(cloaking_energy[1])
-
-    cloaking_fuel = re.search(r'^\t"cloaking fuel" +?([\d\.-]*)$', outfit_string, re.M)
-    if cloaking_fuel:
-        outfit.cloaking_fuel = float(cloaking_fuel[1])
-
-    capture_attack = re.search(r'^\t"capture attack" +?([\d\.-]*)$', outfit_string, re.M)
-    if capture_attack:
-        outfit.capture_attack = float(capture_attack[1])
-
-    capture_defense = re.search(r'^\t"capture defense" +?([\d\.-]*)$', outfit_string, re.M)
-    if capture_defense:
-        outfit.capture_defense = float(capture_defense[1])
-
-    thrust = re.search(r'^\t"thrust" +?([\d\.-]*)$', outfit_string, re.M)
-    if thrust:
-        outfit.thrust = float(thrust[1])
-
-    thrusting_energy = re.search(r'^\t"thrusting energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if thrusting_energy:
-        outfit.thrusting_energy = float(thrusting_energy[1])
-
-    thrusting_heat = re.search(r'^\t"thrusting heat" +?([\d\.-]*)$', outfit_string, re.M)
-    if thrusting_heat:
-        outfit.thrusting_heat = float(thrusting_heat[1])
-
-    turn = re.search(r'^\t+?"turn" +?([\d\.-]*)$', outfit_string, re.M)
-    if turn:
-        outfit.turn = float(turn[1])
-
-    turning_energy = re.search(r'^\t"turning energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if turning_energy:
-        outfit.turning_energy = float(turning_energy[1])
-
-    turning_heat = re.search(r'^\t"turning heat" +?([\d\.-]*)$', outfit_string, re.M)
-    if turning_heat:
-        outfit.turning_heat = float(turning_heat[1])
-
-    reverse_thrust = re.search(r'^\t"reverse thrust" +?([\d\.-]*)$', outfit_string, re.M)
-    if reverse_thrust:
-        outfit.reverse_thrust = float(reverse_thrust[1])
-
-    reverse_thrusting_energy = re.search(r'^\t"reverse thrusting energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if reverse_thrusting_energy:
-        outfit.reverse_thrusting_energy = float(reverse_thrusting_energy[1])
-
-    reverse_thrusting_heat = re.search(r'^\t"reverse thrusting heat" +?([\d\.-]*)$', outfit_string, re.M)
-    if reverse_thrusting_heat:
-        outfit.reverse_thrusting_heat = float(reverse_thrusting_heat[1])
-
-    afterburner_thrust = re.search(r'^\t"afterburner thrust" +?([\d\.-]*)$', outfit_string, re.M)
-    if afterburner_thrust:
-        outfit.afterburner_thrust = float(afterburner_thrust[1])
-
-    afterburner_fuel = re.search(r'^\t"afterburner fuel" +?([\d\.-]*)$', outfit_string, re.M)
-    if afterburner_fuel:
-        outfit.afterburner_fuel = float(afterburner_fuel[1])
-
-    afterburner_heat = re.search(r'^\t"afterburner heat" +?([\d\.-]*)$', outfit_string, re.M)
-    if afterburner_heat:
-        outfit.afterburner_heat = float(afterburner_heat[1])
-
-    afterburner_energy = re.search(r'^\t"afterburner energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if afterburner_energy:
-        outfit.afterburner_energy = float(afterburner_energy[1])
-
-    illegal = re.search(r'^\t"illegal" +?([\d\.-]*)$', outfit_string, re.M)
-    if illegal:
-        outfit.illegal = int(illegal[1])
-
-    inaccuracy = re.search(r'^\t+?"inaccuracy" +?([\d\.-]*)$', outfit_string, re.M)
-    if inaccuracy:
-        outfit.inaccuracy = float(inaccuracy[1])
-
-    velocity = re.search(r'^\t+?"velocity" +?([\d\.-]*)$', outfit_string, re.M)
-    if velocity:
-        outfit.velocity = float(velocity[1])
-
-    lifetime = re.search(r'^\t+?"lifetime" +?([\d\.-]*)$', outfit_string, re.M)
-    if lifetime:
-        outfit.lifetime = int(lifetime[1])
-
-    range_override = re.search(r'^\t+?"range override" +?([\d\.-]*)$', outfit_string, re.M)
-    if range_override:
-        outfit.range_override = int(range_override[1])
-    
-    velocity_override = re.search(r'^\t+?"velocity override" +?([\d\.-]*)$', outfit_string, re.M)
-    if velocity_override:
-        outfit.velocity_override = float(velocity_override[1])
-
-    reload_time = re.search(r'^\t+?"reload" +?([\d\.-]*)$', outfit_string, re.M)
-    if reload_time:
-        outfit.reload_time = float(reload_time[1])
-
-    firing_fuel = re.search(r'^\t+?"firing fuel" +?([\d\.-]*)$', outfit_string, re.M)
-    if firing_fuel:
-        outfit.firing_fuel = float(firing_fuel[1])
-
-    firing_heat = re.search(r'^\t+?"firing heat" +?([\d\.-]*)$', outfit_string, re.M)
-    if firing_heat:
-        outfit.firing_heat = float(firing_heat[1])
-
-    firing_energy = re.search(r'^\t+?"firing energy" +?([\d\.-]*)$', outfit_string, re.M)
-    if firing_energy:
-        outfit.firing_energy = float(firing_energy[1])
-
-    firing_force = re.search(r'^\t+?"firing force" +?([\d\.-]*)$', outfit_string, re.M)
-    if firing_force:
-        outfit.firing_force = int(firing_force[1])
-
-    shield_damage = re.search(r'^\t+?"shield damage" +?([\d\.-]*)$', outfit_string, re.M)
-    if shield_damage:
-        outfit.shield_damage = float(shield_damage[1])
-
-    hull_damage = re.search(r'^\t+?"hull damage" +?([\d\.-]*)$', outfit_string, re.M)
-    if hull_damage:
-        outfit.hull_damage = float(hull_damage[1])
-
-    heat_damage = re.search(r'^\t+?"heat damage" +?([\d\.-]*)$', outfit_string, re.M)
-    if heat_damage:
-        outfit.heat_damage = float(heat_damage[1])
-
-    ion_damage = re.search(r'^\t+?"ion damage" +?([\d\.-]*)$', outfit_string, re.M)
-    if ion_damage:
-        outfit.ion_damage = float(ion_damage[1])
-
-    slowing_damage = re.search(r'^\t+?"slowing damage" +?([\d\.-]*)$', outfit_string, re.M)
-    if slowing_damage:
-        outfit.slowing_damage = float(slowing_damage[1])
-
-    disruption_damage = re.search(r'^\t+?"disruption damage" +?([\d\.-]*)$', outfit_string, re.M)
-    if disruption_damage:
-        outfit.disruption_damage = float(disruption_damage[1])
-
-    hit_force = re.search(r'^\t+?"hit force" +?([\d\.-]*)$', outfit_string, re.M)
-    if hit_force:
-        outfit.hit_force = int(hit_force[1])
-
-    piercing = re.search(r'^\t+?"piercing" +?([\d\.-]*)$', outfit_string, re.M)
-    if piercing:
-        outfit.piercing = float(piercing[1])
-
-    missile_capacity = re.search(r'^\t"[\w ]+?(?<!energy|engine|weapon)(?<!fuel) capacity" +?([\d\.-]*)$', outfit_string, re.M)
-    if missile_capacity:
-        outfit.missile_capacity = int(missile_capacity[1])
-
-    missile_strength = re.search(r'^\t+?"missile strength" +?([\d\.-]*)$', outfit_string, re.M)
-    if missile_strength:
-        outfit.missile_strength = int(missile_strength[1])
 
     ammo = re.search('^\t+?ammo +?"([^"]*)"', outfit_string, re.M)
     if ammo and ammo[1] not in ["Nuclear Missile", "Ka'het MHD Generator"]:
@@ -630,75 +336,15 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
         except Outfit.DoesNotExist: 
             logger.error(f"No matching ammo type found for '{ammo[1]}'!")
 
-    acceleration = re.search(r'^\t+?"acceleration" +?([\d\.-]*)$', outfit_string, re.M)
-    if acceleration:
-        outfit.acceleration = float(acceleration[1])
+    ammo_capacity = re.search(r'^\t"[\w ]+?(?<!energy|engine|weapon)(?<!fuel) capacity" +?([\d\.-]*)$', outfit_string, re.M)
+    if ammo_capacity:
+        outfit.ammo_capacity = int(ammo_capacity[1])
 
-    drag = re.search(r'^\t+?"drag" +?([\d\.-]*)$', outfit_string, re.M)
-    if drag:
-        outfit.drag = float(drag[1])
+    # Give outfit a more useful category
+    determine_outfit_category(outfit)
 
-    homing = re.search(r'^\t+?"homing" +?([\d\.-]*)$', outfit_string, re.M)
-    if homing:
-        outfit.homing = int(homing[1])
-
-    tracking = re.search(r'^\t+?"tracking" +?([\d\.-]*)$', outfit_string, re.M)
-    if tracking:
-        outfit.tracking = float(tracking[1])
-
-    infrared_tracking = re.search(r'^\t+?"infrared tracking" +?([\d\.-]*)$', outfit_string, re.M)
-    if infrared_tracking:
-        outfit.infrared_tracking = float(infrared_tracking[1])
-
-    radar_tracking = re.search(r'^\t+?"radar tracking" +?([\d\.-]*)$', outfit_string, re.M)
-    if radar_tracking:
-        outfit.radar_tracking = float(radar_tracking[1])
-
-    optical_tracking = re.search(r'^\t+?"optical tracking" +?([\d\.-]*)$', outfit_string, re.M)
-    if optical_tracking:
-        outfit.optical_tracking = float(optical_tracking[1])
-
-    trigger_radius = re.search(r'^\t+?"trigger radius" +?([\d\.-]*)$', outfit_string, re.M)
-    if trigger_radius:
-        outfit.trigger_radius = int(trigger_radius[1])
-
-    blast_radius = re.search(r'^\t+?"blast radius" +?([\d\.-]*)$', outfit_string, re.M)
-    if blast_radius:
-        outfit.blast_radius = int(blast_radius[1])
-
-    anti_missile = re.search(r'^\t+?"anti-missile" +?([\d\.-]*)$', outfit_string, re.M)
-    if anti_missile:
-        outfit.anti_missile = int(anti_missile[1])
-
-    turret_turn = re.search(r'^\t+?"turret turn" +?([\d\.-]*)$', outfit_string, re.M)
-    if turret_turn:
-        outfit.turret_turn = float(turret_turn[1])
-
-    ion_resistance = re.search(r'^\t+?"ion resistance" +?([\d\.-]*)$', outfit_string, re.M)
-    if ion_resistance:
-        outfit.ion_resistance = float(ion_resistance[1])
-
-    slowing_resistance = re.search(r'^\t+?"slowing resistance" +?([\d\.-]*)$', outfit_string, re.M)
-    if slowing_resistance:
-        outfit.slowing_resistance = float(slowing_resistance[1])
-
-    burst_count = re.search(r'^\t+?"burst count" +?([\d\.-]*)$', outfit_string, re.M)
-    if burst_count:
-        outfit.burst_count = int(burst_count[1])
-
-    burst_reload = re.search(r'^\t+?"burst reload" +?([\d\.-]*)$', outfit_string, re.M)
-    if burst_reload:
-        outfit.burst_reload = int(burst_reload[1])
-
-    cluster = re.search(r'^\t+?"?cluster"?$', outfit_string, re.M)
-    if cluster:
-        outfit.cluster = True
-
-    stream = re.search(r'^\t+?"?stream"?$', outfit_string, re.M)
-    if stream:
-        outfit.stream = True
-
-    submunition = re.search(r'^\t+?"submunition" "([^"]*)" +?([\d\.-]*)$', outfit_string, re.M)
+    # Get submunition when applicable and copy relevant value to the outfit
+    submunition = re.search(r'^\t+?"submunition" "([^"]*)" *?([\d\.-]*)$', outfit_string, re.M)
     if submunition:
         submunition_object = Outfit()
         try:
@@ -706,7 +352,8 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
             outfit.submunition_type = submunition_object
         except Outfit.DoesNotExist: 
             logger.error(f"No matching submunition type found for '{submunition[1]}'!")
-        outfit.submunition_count = int(submunition[2])
+        if submunition[2]:
+            outfit.submunition_count = int(submunition[2])
 
         # Copy attributes from submunition to weapon
         copy_attributes = ["inaccuracy", "lifetime", "hull_damage", "shield_damage", "heat_damage", "ion_damage", "slowing_damage", "disruption_damage", "hit_force"]
@@ -714,50 +361,108 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
             submunition_value = getattr(submunition_object, attribute)
             if submunition_value != 0:
                 outfit_value = getattr(outfit, attribute)
-                logger.debug(f"Current value of {attribute} is {outfit_value}")
-                logger.debug(f"Adding {attribute} from {submunition_object} to {outfit}")
-                if isinstance(outfit_value, int):
-                    setattr(outfit, attribute, outfit_value + int(submunition_value if attribute == "lifetime" else submunition_value * outfit.submunition_count))
-                if isinstance(outfit_value, decimal.Decimal):
-                    setattr(outfit, attribute, outfit_value + decimal.Decimal(submunition_value if attribute == "lifetime" else submunition_value * outfit.submunition_count))
-                logger.debug(f"New value of {attribute} is {getattr(outfit, attribute)}")
+                if attribute in ["lifetime", "hitforce"]:
+                    setattr(outfit, attribute, int(outfit_value + submunition_value if attribute == "lifetime" else submunition_value or outfit.submunition_count == 0 * outfit.submunition_count))
+                else:
+                    setattr(outfit, attribute, float(outfit_value + submunition_value if attribute == "lifetime" else submunition_value or outfit.submunition_count == 0 * outfit.submunition_count))
 
-        
     # Calculate aggregate values for weapons
-    if outfit.category in ['Guns', 'Secondary Weapons', 'Turrets']:
+    if outfit.category in ['Guns', 'Secondary Weapons', 'Turrets', 'Anti-missile']:
+
         # Range
         outfit.range = int(round(outfit.lifetime * outfit.velocity))
         # Shots/second
-        outfit.shots_per_second = 60/outfit.reload_time
+        outfit.shots_per_second = 60/outfit.reload
 
         # Calculate dps values
-        # Shield
-        outfit.shield_dps = outfit.shield_damage * outfit.shots_per_second
-        # Hull
-        outfit.hull_dps = outfit.hull_damage * outfit.shots_per_second
-        # Heat
-        outfit.heat_dps = outfit.heat_damage * outfit.shots_per_second
-        # Ion
-        outfit.ion_dps = outfit.ion_damage * outfit.shots_per_second * 100
-        # Slowing
-        outfit.slowing_dps = outfit.slowing_damage * outfit.shots_per_second * 100
-        # Disruption
-        outfit.disruption_dps = outfit.disruption_damage * outfit.shots_per_second * 100
-        # Hit Force
-        outfit.hit_force_per_second = outfit.hit_force * outfit.shots_per_second
-        # Anti-missile
-        outfit.anti_missile_per_second = outfit.anti_missile * outfit.shots_per_second
+        if outfit.category == 'Anti-missile':
+            outfit.anti_missile_dps = outfit.anti_missile * outfit.shots_per_second
+            attribute_per_outfit_space(outfit, 'anti_missile_dps')
+        else:
+            outfit.shield_dps = outfit.shield_damage * outfit.shots_per_second
+            outfit.hull_dps = outfit.hull_damage * outfit.shots_per_second
+            outfit.average_dps = outfit.average_damage * outfit.shots_per_second
+            outfit.heat_dps = outfit.heat_damage * outfit.shots_per_second
+            outfit.ion_dps = outfit.ion_damage * outfit.shots_per_second
+            outfit.slowing_dps = outfit.slowing_damage * outfit.shots_per_second
+            outfit.disruption_dps = outfit.disruption_damage * outfit.shots_per_second
+            outfit.hit_force_per_second = outfit.hit_force * outfit.shots_per_second
+
+            # Calculate damage per outfit space
+            dps_values = ['shield_dps', 'hull_dps', 'average_dps', 'heat_dps', 'ion_dps', 'disruption_dps', 'disruption_dps']
+            for attribute in dps_values:
+                attribute_per_outfit_space(outfit, attribute)                
 
         # Calculate resource use
-        # Energy
         outfit.energy_per_second = outfit.firing_energy * outfit.shots_per_second
-        # Heat
         outfit.heat_per_second = outfit.firing_heat * outfit.shots_per_second
-        # Fuel
         outfit.fuel_per_second = outfit.firing_fuel * outfit.shots_per_second
     
+    generic_per_space = ['combined_cooling', 'energy_capacity', 'total_energy_generation', 'shield_generation', 'hull_repair_rate', 'ramscoop', 'thrust', 'turn', 'reverse_thrust', 'afterburner_thrust']
+    for attribute in generic_per_space:
+        attribute_per_outfit_space(outfit, attribute)
+
     outfit.save()
     logger.info("Created outfit '" + outfit.name + "'")
+
+
+def determine_outfit_category(outfit: Outfit):
+    """
+    Sub-divide outfits into more meaningful categories
+
+    Args:
+        outfit (Outfit): Outfit to be re-categorized
+    """
+    if outfit.category == 'Power':
+        outfit.category = 'Batteries' if outfit.energy_capacity > 0 and outfit.energy_generation == 0 else 'Generators'
+    if outfit.category == 'Systems':
+        if (outfit.shield_generation or outfit.hull_repair_rate) > 0:
+            outfit.category = 'Shields'
+        if (outfit.cooling or outfit.active_cooling) > 0:
+            outfit.category = 'Cooling'
+        if outfit.name in ['Hyperdrive', 'Scram Drive', 'Jump Drive']:
+            outfit.category = 'Hyperdrive'
+    if outfit.category == 'Engines':
+        if any((outfit.thrust > 0, outfit.reverse_thrust > 0, outfit.afterburner_thrust > 0)):
+            outfit.category = 'Thruster'
+        else: 
+            outfit.category = 'Steering'
+    if outfit.category == 'Turrets':
+        if outfit.anti_missile > 0:
+            outfit.category = 'Anti-missile'
+
+
+def parse_attribute_value(attribute_name: str, outfit_string: str):
+    """
+    Finds the value of the specified attribute in the provided
+    outfit string.
+
+    Args:
+        attribute_name (str): Name of the attribute
+        outfit_string (str): String containing outfit information
+
+    Returns:
+        Match object: Match object returned by the regex search
+                      where object[1] contains the actual value
+    """
+    search_term = 'anti-missile' if attribute_name == 'anti_missile' else re.sub(r'_', ' ', attribute_name)
+    return re.search(r'^\t+?"?{}"? +?([\d\.-]*)$'.format(search_term), outfit_string, re.M)
+
+
+def attribute_per_outfit_space(outfit: Outfit, attribute: str):
+    """
+    Calculates  and sets the attribute value per outfit space used by
+    the outfit, given the attribute name.
+
+    Args:
+        outfit (Outfit): Outfit for which to set the attribute/outfit space
+        attribute (str): Name of the attribute for which to calculate the attribute/outfit space
+    """
+    base_attribute_value = getattr(outfit, attribute)
+    if base_attribute_value and outfit.outfit_space:
+        attribute_name = f"{attribute}_per_space"
+        attribute_value = float(base_attribute_value / abs(outfit.outfit_space))
+        setattr(outfit, attribute_name, attribute_value)
 
 
 def parse_ships(filename: Path, release: str):
@@ -810,6 +515,7 @@ def parse_ships(filename: Path, release: str):
             hull_counter += 1
 
         logger.info(f"Created {hull_counter} hulls in total.")
+        
 
 def parse_full_ship(filename: Path, full_ship: str, release: str):
     """
@@ -859,7 +565,7 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     if hull.faction != 'Human':
         hull.spoiler = 2
     
-    if hull.license in ['Heliarch', 'Unfettered Militia', 'Wanderer Military', 'Remnant Capital'] or hull.name in ['Arfecta'] or hull.faction in ['Quarg']:
+    if hull.license in ['Heliarch', 'Unfettered Militia', 'Wanderer Military', 'Remnant Capital'] or hull.name in ['Arfecta'] or hull.faction in ['Sheragi']:
         hull.spoiler = 3
 
  
@@ -913,6 +619,8 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     if hull_strength:
         hull.hull = int(hull_strength[1])
 
+    hull.total_hp = hull.shields + hull.hull
+
     required_crew = re.search(r'^\t+?"required crew" +?([\d\.-]*)$', full_ship, re.M)
     if required_crew:
         hull.required_crew = int(required_crew[1])
@@ -953,6 +661,11 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     if engine_capacity:
         hull.engine_capacity = int(engine_capacity[1])
 
+    # some aggregates
+    max_mass = hull.mass + hull.outfit_space + hull.cargo_space
+    hull.speed_rating = hull.engine_capacity / hull.drag
+    hull.agility_rating = hull.engine_capacity / max_mass * 100
+
     ramscoop = re.search(r'^\t+?"ramscoop" +?([\d\.-]*)$', full_ship, re.M)
     if ramscoop:
         hull.ramscoop = float(ramscoop[1])
@@ -963,19 +676,19 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
 
     energy_generation = re.search(r'^\t+?"energy generation" +?([\d\.-]*)$', full_ship, re.M)
     if energy_generation:
-        hull.energy_generation = float(energy_generation[1])
+        hull.energy_generation = float(energy_generation[1]) * 60
 
     heat_generation = re.search(r'^\t+?"heat generation" +?([\d\.-]*)$', full_ship, re.M)
     if heat_generation:
-        hull.heat_generation = float(heat_generation[1])
+        hull.heat_generation = float(heat_generation[1]) * 60
 
     hull_repair_rate = re.search(r'^\t+?"hull repair.*?" +?([\d\.-]*)$', full_ship, re.M)
     if hull_repair_rate:
-        hull.hull_repair_rate = float(hull_repair_rate[1])
+        hull.hull_repair_rate = float(hull_repair_rate[1]) * 60
 
     hull_energy = re.search(r'^\t+?"hull energy" +?([\d\.-]*)$', full_ship, re.M)
     if hull_energy:
-        hull.hull_energy = float(hull_energy[1])
+        hull.hull_energy = float(hull_energy[1]) * 60
 
     hull_delay = re.search(r'^\t+?"hull delay" +?([\d\.-]*)$', full_ship, re.M)
     if hull_delay:
@@ -983,27 +696,27 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
 
     shield_generation = re.search(r'^\t+?"shield generation" +?([\d\.-]*)$', full_ship, re.M)
     if shield_generation:
-        hull.shield_generation = float(shield_generation[1])
+        hull.shield_generation = float(shield_generation[1]) * 60
 
     shield_energy = re.search(r'^\t+?"shield energy" +?([\d\.-]*)$', full_ship, re.M)
     if shield_energy:
-        hull.shield_energy = float(shield_energy[1])
+        hull.shield_energy = float(shield_energy[1]) * 60
 
     shield_heat = re.search(r'^\t+?"shield heat" +?([\d\.-]*)$', full_ship, re.M)
     if shield_heat:
-        hull.shield_heat = float(shield_heat[1])
+        hull.shield_heat = float(shield_heat[1]) * 60
 
     cooling = re.search(r'^\t+?"cooling" +?([\d\.-]*)$', full_ship, re.M)
     if cooling:
-        hull.cooling = float(cooling[1])
+        hull.cooling = float(cooling[1]) * 60
 
     active_cooling = re.search(r'^\t+?"active cooling" +?([\d\.-]*)$', full_ship, re.M)
     if active_cooling:
-        hull.active_cooling = float(active_cooling[1])
+        hull.active_cooling = float(active_cooling[1]) * 60
 
     cooling_energy = re.search(r'^\t+?"cooling energy" +?([\d\.-]*)$', full_ship, re.M)
     if cooling_energy:
-        hull.cooling_energy = float(cooling_energy[1])
+        hull.cooling_energy = float(cooling_energy[1]) * 60
 
     cloak = re.search(r'^\t+?"cloak" +?([\d\.-]*)$', full_ship, re.M)
     if cloak:
@@ -1011,31 +724,31 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
 
     cloaking_energy = re.search(r'^\t+?"cloaking energy" +?([\d\.-]*)$', full_ship, re.M)
     if cloaking_energy:
-        hull.cloaking_energy = float(cloaking_energy[1])
+        hull.cloaking_energy = float(cloaking_energy[1]) * 60
 
     cloaking_fuel = re.search(r'^\t+?"cloaking fuel" +?([\d\.-]*)$', full_ship, re.M)
     if cloaking_fuel:
-        hull.cloaking_fuel = float(cloaking_fuel[1])
+        hull.cloaking_fuel = float(cloaking_fuel[1]) * 60
 
     thrust = re.search(r'^\t+?"thrust" +?([\d\.-]*)$', full_ship, re.M)
     if thrust:
-        hull.thrust = float(thrust[1])
+        hull.thrust = float(thrust[1]) * 3600
 
     turn = re.search(r'^\t+?"turn" +?([\d\.-]*)$', full_ship, re.M)
     if turn:
-        hull.turn = float(turn[1])
+        hull.turn = float(turn[1]) * 60
 
     reverse_thrust = re.search(r'^\t+?"reverse thrust" +?([\d\.-]*)$', full_ship, re.M)
     if reverse_thrust:
-        hull.reverse_thrust = float(reverse_thrust[1])
+        hull.reverse_thrust = float(reverse_thrust[1]) * 3600
 
     reverse_thrusting_energy = re.search(r'^\t+?"reverse thrusting energy" +?([\d\.-]*)$', full_ship, re.M)
     if reverse_thrusting_energy:
-        hull.reverse_thrusting_energy = float(reverse_thrusting_energy[1])
+        hull.reverse_thrusting_energy = float(reverse_thrusting_energy[1]) * 60
 
     reverse_thrusting_heat = re.search(r'^\t+?"reverse thrusting heat" +?([\d\.-]*)$', full_ship, re.M)
     if reverse_thrusting_heat:
-        hull.reverse_thrusting_heat = float(reverse_thrusting_heat[1])
+        hull.reverse_thrusting_heat = float(reverse_thrusting_heat[1]) * 60
 
     outfit_scan_power = re.search(r'^\t+?"outfit scan power" +?([\d\.-]*)$', full_ship, re.M)
     if outfit_scan_power:
@@ -1083,17 +796,17 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     if re.search('^\t+?"remnant node"', full_ship, re.M):
         hull.remnant_node = True
 
-    hull.max_guns = len(re.findall('^\t+?gun ', full_ship, re.M))
-    hull.max_turrets = len(re.findall('^\t+?turret ', full_ship, re.M))
+    hull.gun_ports = len(re.findall('^\t+?gun ', full_ship, re.M))
+    hull.turret_mounts = len(re.findall('^\t+?turret ', full_ship, re.M))
 
     # Fighter and drone bays had a different syntax before 0.9.13
     fighters_old = len(re.findall('^\t+?fighter', full_ship, re.M))
     fighters_new = len(re.findall('^\t+?bay +?"Fighter"', full_ship, re.M))
-    hull.max_fighters = fighters_old if fighters_old > fighters_new else fighters_new
+    hull.fighter_bays = fighters_old if fighters_old > fighters_new else fighters_new
 
     drones_old = len(re.findall('^\t+?drone', full_ship, re.M))
     drones_new = len(re.findall('^\t+?bay +?"Drone"', full_ship, re.M))
-    hull.max_drones = drones_old if drones_old > drones_new else drones_new
+    hull.drone_bays = drones_old if drones_old > drones_new else drones_new
     
     hull.spinal_mount = len(re.findall('\t+?"spinal mount"', full_ship, re.M))
 
@@ -1139,7 +852,7 @@ def parse_build(hull: Hull, outfits_list: str, default=False):
 
     build.save()
 
-    for outfit_group in re.findall('^\t+"([^"]+)" ?(\d+)?$', outfits_list, re.M):
+    for outfit_group in re.findall('^\t+["`]([^`]+?)["`] ?(\d+)?$', outfits_list, re.M):
         amount = int(outfit_group[1]) if outfit_group[1] else 1
         try:
             outfit = Outfit.objects.filter(name=outfit_group[0], release=hull.release).get()
@@ -1235,17 +948,17 @@ def parse_hull_variant(filename: Path, hull_variant: str, release: str):
                 logger.error(f"Field '{field_name}' has unexpected (non-numerical) type '{type(field_value)}''.")
 
     # Count number of [guns, turrets, fighers, drones, spinal mounts], if any
-    max_guns = len(re.findall('^\t+?gun ', hull_variant, re.M))
-    max_turrets = len(re.findall('^\t+?turret ', hull_variant, re.M))
-    max_fighters = len(re.findall('^\t+?bay +?"Fighter"', hull_variant, re.M))
-    max_drones = len(re.findall('^\t+?bay +?"Drone"', hull_variant, re.M))
+    gun_ports = len(re.findall('^\t+?gun ', hull_variant, re.M))
+    turret_mounts = len(re.findall('^\t+?turret ', hull_variant, re.M))
+    fighter_bays = len(re.findall('^\t+?bay +?"Fighter"', hull_variant, re.M))
+    drone_bays = len(re.findall('^\t+?bay +?"Drone"', hull_variant, re.M))
     spinal_mount = len(re.findall('\t+?"spinal mount"', hull_variant, re.M))
-    weaponry = (max_guns > 0, max_turrets > 0, max_fighters > 0, max_drones > 0, spinal_mount > 0)
+    weaponry = (gun_ports > 0, turret_mounts > 0, fighter_bays > 0, drone_bays > 0, spinal_mount > 0)
     if any(weaponry):
-        hull.max_guns = max_guns
-        hull.max_turrets = max_turrets
-        hull.max_fighters = max_fighters
-        hull.max_drones = max_drones
+        hull.gun_ports = gun_ports
+        hull.turret_mounts = turret_mounts
+        hull.fighter_bays = fighter_bays
+        hull.drone_bays = drone_bays
         hull.spinal_mount = spinal_mount
 
     # Update description, if any
@@ -1268,6 +981,7 @@ def parse_hull_variant(filename: Path, hull_variant: str, release: str):
     else:
         default_build.pk = None
         default_build.name = hull.name + " Default Build"
+        default_build.hull = hull
         default_build.save()
         default_build.outfits.set(default_outfits)
         logger.info(f"Cloned '{default_build.name}' from parent default build")

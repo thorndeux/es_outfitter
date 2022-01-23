@@ -5,19 +5,12 @@
  * https://unpkg.com/browse/tailwindcss@latest/stubs/defaultConfig.stub.js
  */
 
-const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
+const colors = require('tailwindcss/colors')
 
 module.exports = {
-    /**
-     * Stylesheet generation mode.
-     *
-     * Set mode to "jit" if you want to generate your styles on-demand as you author your templates;
-     * Set mode to "aot" if you want to generate the stylesheet in advance and purge later (aka legacy mode).
-     */
-    mode: "jit",
-
-    purge: [
+    important: true,
+    content: [
         /**
          * HTML. Paths to Django template files that will contain Tailwind CSS classes.
          */
@@ -52,7 +45,6 @@ module.exports = {
          */
         // '../../**/*.py'
     ],
-    darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
             screens: {
@@ -60,8 +52,7 @@ module.exports = {
                 ...defaultTheme.screens,
             },
             colors: {
-                gray: colors.trueGray,
-                lime: colors.lime,
+                gray: colors.neutral,
             },
             minHeight: {
                 '16': '4rem',
@@ -71,9 +62,6 @@ module.exports = {
                 '56': '14rem',
             }
         }
-    },
-    variants: {
-        extend: {},        
     },
     plugins: [
         /**

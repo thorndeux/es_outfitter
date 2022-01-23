@@ -1,163 +1,150 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { DispatchContext, StateContext } from '../App'
+import { addOutfit, removeOutfit, stripe } from '../Utils'
+import BuildList from './BuildList'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretRight, faFloppyDisk, faMinus, faPlus,  faTrashCan } from '@fortawesome/free-solid-svg-icons'
+
+import ReactTooltip from 'react-tooltip'
 
 const BuildDetails = () => {
   const dispatch = useContext(DispatchContext)
   const state = useContext(StateContext)
 
-  const modifyBuild = () => {
-    !state.userBuild && dispatch({ type: 'setBuildName', payload: `New ${state.currentHull.name} build` })
-    !state.userBuild && dispatch({ type: 'startUserBuild' })
-    dispatch({ type: 'toggleEdit', payload: true })
-  }
+  /**
+   * Update local storage when saved hull builds change
+   */
+  useEffect(() => {
+    state.savedHullBuilds.length > 0 ? localStorage.setItem(state.currentHull.id, JSON.stringify(state.savedHullBuilds)) : localStorage.removeItem(state.currentHull.id)
+  }, [state.savedHullBuilds])
 
-  const saveBuild = () => {
-    localStorage.setItem(state.currentBuild.id, JSON.stringify(state.currentBuild))
-    dispatch({ type: 'toggleEdit', payload: false })
-  }
+  /**
+   * Stripe table and update tooltips when list of outfits changes
+   */
+  useEffect(() => {
+    const table = document.getElementById("buildOutfits")
+    stripe(table)
+    ReactTooltip.rebuild()
+  }, [state.currentBuild.outfits])
 
-  const clearBuild = () => {
-    !state.userBuild && dispatch({ type: 'setBuildName', payload: `New ${state.currentHull.name} build` })
-    !state.userBuild && dispatch({ type: 'startUserBuild' })
-    dispatch({ type: 'toggleEdit', payload:  true })
-    dispatch({ type: 'clearBuild' })
-  }
-
-  const loadDefault = () => {
-    dispatch({ type: 'setCurrentBuild', payload: _.cloneDeep(state.defaultBuild) })
-    state.editMode && dispatch({ type: 'setBuildName', payload: `New ${state.currentHull.name} build` })
-    state.userBuild && dispatch({ type: 'resetUserBuild' })
-  }
-
-  const loadSaves = () => {
-
-  }
-
-  const addOutfit = (e, outfit) => {
-    // Validation logic goes here:
-    // Outfit space
-    // Engine space
-    // Weapon space
-    // Cargo space
-    // Gun ports
-    // Turret slots
-    // Fighter bays
-    // Drone bays
-    // Spinal mount
-    
-    // If validation succeeds, determine new outfits
-    var amount = 1
-    e.shiftKey && (amount *= 5)
-    e.ctrlKey && (amount *= 20)
-    const newOutfits = _.cloneDeep(state.currentBuild.outfits)
-    const inBuild = newOutfits.find(outfit_set => outfit_set.outfit.id === outfit.id)
-    if (inBuild) {
-      inBuild.amount += amount
-      dispatch({ type: 'setBuildOutfits', payload: newOutfits})
+  /**
+   * Tries to add the outfit to the current build. Renders
+   * an error (to console atm) if outfit cannot be added,
+   * sets new outfits otherwise.
+   * 
+   * @param {Event} e Event triggering the add event
+   * @param {Outfit object} outfit Outfit to add to the build
+   * @returns Nothing at the moment
+   */
+  const handleAddOutfit = (e, outfit) => {
+    const result = addOutfit(e, outfit, state.currentBuild)
+    if (typeof result === 'string') {
+      console.log(result)
+      return
     }
     else {
-      const outfit_set = { "amount": amount, "outfit": outfit }
-      newOutfits.push(outfit_set)
-      dispatch({ type: 'setBuildOutfits', payload: newOutfits})
+      dispatch({ type: 'setBuildOutfits', payload: result})
     }
-    // Implement ordering of outfits
   }
 
-  const removeOutfit = (e, outfit) => {
-    // If validation succeeds, determine new outfits
-    var amount = 1
-    e.shiftKey && (amount *= 5)
-    e.ctrlKey && (amount *= 20)
-    const newOutfits = _.cloneDeep(state.currentBuild.outfits)
-    const outfit_set = newOutfits.find(outfit_set => outfit_set.outfit.id === outfit.id)
-    if (outfit_set.amount > amount) {
-      outfit_set.amount -= amount
+  const handleRemoveOutfit = (e, outfit) => {
+    const result = removeOutfit(e, outfit, state.currentBuild)
+    if (typeof result === 'string') {
+      console.log(result)
+      return
     }
     else {
-      // Remove outfit_set
-      newOutfits.splice(newOutfits.indexOf(outfit_set), 1)
+      dispatch({ type: 'setBuildOutfits', payload: result})
     }
-    dispatch({ type: 'setBuildOutfits', payload: newOutfits})    
   }
   
-  const showMulti = (e, show) => {
-    
-  }
-
   return (
-    <div className="lg:col-span-2 p-2">
-      {
-        !state.editMode ? 
-        <h3 className="text-xl font-medium mb-1">{state.currentBuild.name}</h3> : 
-        <input 
-          id="buildTitle" 
-          type="text" 
-          className="
-            text-xl leading-3 font-medium
+    <div>
+      <BuildList />
+      <div className="p-1 select-none">
+        <h3 className="text-xl font-medium mb-1 pl-3">Current Build</h3>
+        <div className="border-2 border-gray-200 rounded-lg p-2">
+          <input 
+            id="buildTitle" 
+            type="text" 
+            className="
+            w-full
+            text-base leading-4 font-medium
             bg-transparent
-            border-1 border-yellow-500 rounded
-            focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400  
-            px-3 mb-1" 
-          value={state.currentBuild.name}
-          onChange={e => dispatch({ type: 'setBuildName', payload: e.target.value })}/>
+            border-2 border-gray-500 rounded
+            focus:border-gray-400 focus:ring-1 focus:ring-gray-400
+            px-2 mb-1" 
+            value={state.currentBuild.name ? state.currentBuild.name : ""}
+            onChange={e => dispatch({ type: 'setBuildName', payload: e.target.value })}/>
 
-      }
-      <table className="mb-4">
-        <tbody>
-          {
-            state.currentBuild.outfits && 
-            (
-              state.currentBuild.outfits.length > 0 ?
-              state.currentBuild.outfits.map((outfit_set) => 
-              <tr key={outfit_set.outfit.id}>
-                <td>{outfit_set.outfit.name}</td>
-                <td className="pl-5 w-16">&times; {outfit_set.amount}</td>
-                {state.editMode &&
-                <>
-                <td className="text-3xl text-lime-600 leading-4 font-semibold cursor-pointer pl-4" 
-                  onClick={e => addOutfit(e, outfit_set.outfit)}
-                  onMouseOver={e => showMulti(e, true)}
-                  onMouseOut={e => showMulti(e, false)}>+</td>
-                <td className="text-3xl text-red-600 leading-4 font-semibold cursor-pointer pl-3" 
-                  onClick={e => removeOutfit(e, outfit_set.outfit)}>-</td>
-                </>
-                }
+          <table 
+            id="buildOutfits"
+            className="mb-2 w-full">
+            <tbody>
+              <tr className="nostripe font-bold">
+                <td></td>
+                <td></td>
+                <td colSpan={2} className="text-center">{state.multi ? <span> &times; {state.multi}</span> : <span className="opacity-0">&times; 1</span>}</td>
               </tr>
-              ) :
-              <tr><td>No outfits yet</td></tr>
-            )
-            
-          }
-        </tbody>
-      </table>
-      <div className="w-64 grid grid-cols-2 gap-1">
-        { !state.editMode &&
-          <button
-          className="border border-gray-300 bg-gray-700 rounded p-2 hover:bg-gray-600"
-          onClick={modifyBuild}
-        >Modify build</button>}
-        { state.editMode &&
-        <button
-          className="border border-gray-300 bg-gray-700 rounded p-2 hover:bg-gray-600"
-          onClick={saveBuild}
-        >Save build</button>}
-        <button
-          className="border border-gray-300 bg-gray-700 rounded p-2 hover:bg-gray-600"
-          onClick={clearBuild}
-        >Clear Outfits</button>
-        <button
-          className="col-span-2 border border-gray-300 bg-gray-700 rounded p-2 hover:bg-gray-600"
-          onClick={loadDefault}
-        >Load default build</button>
-        <button
-          className="col-span-2 border border-gray-300 bg-gray-700 rounded p-2 hover:bg-gray-600"
-          onClick={loadSaves}
-        >Load saved</button>
-      </div>
-      <div>Put build choices here
+              {
+                state.currentBuild.outfits && 
+                (
+                  state.currentBuild.outfits.length > 0 ?
+                  state.currentBuild.outfits.map((outfit_set) => 
+                  <tr key={outfit_set.outfit.id}>
+                    <td>{outfit_set.outfit.name}</td>
+                    <td className="pl-3 w-16">&times; {outfit_set.amount}</td>
+                    <td className="text-lg leading-none text-lime-600 hover:text-lime-500 cursor-pointer pl-3"
+                      data-tip="Add"
+                      onClick={e => handleAddOutfit(e, outfit_set.outfit)}>
+                      <FontAwesomeIcon icon={faPlus} />
+                    </td>
+                    <td className="text-lg leading-none text-red-600 hover:text-red-500 cursor-pointer pl-2"
+                      data-tip="Remove"
+                      onClick={e => handleRemoveOutfit(e, outfit_set.outfit)}>
+                      <FontAwesomeIcon icon={faMinus} />
+                    </td>
+                  </tr>
+                  ) :
+                  <tr><td>No outfits yet</td></tr>
+                  )
+                  
+                }
+            </tbody>
+          </table>
+
+          <div className="w-full grid grid-cols-3 gap-1">
+            <button
+              data-tip="Save"
+              className="border border-gray-300 rounded
+                brightness-90 hover:brightness-125
+                p-2"
+              onClick={() => dispatch({ type: 'saveBuild' })}
+              ><FontAwesomeIcon icon={faFloppyDisk}/>
+            </button>
+            <button
+              data-tip="Save as"
+              className="border border-gray-300 rounded
+              brightness-90 hover:brightness-125 hover:bg-gray-600
+              p-2"
+              onClick={() => dispatch({ type: 'saveNewBuild' }) }
+              ><FontAwesomeIcon icon={faFloppyDisk}/>
+              <FontAwesomeIcon className="px-1" icon={faCaretRight}/>
+              <FontAwesomeIcon icon={faFloppyDisk}/>
+            </button>
+            <button
+              data-tip="Clear"
+              className="border border-gray-300 rounded
+              brightness-90 hover:brightness-125 hover:bg-gray-600
+              p-2"
+              onClick={() => dispatch({ type: 'clearBuild' })}
+              ><FontAwesomeIcon icon={faTrashCan}/>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-
   )
 }
 

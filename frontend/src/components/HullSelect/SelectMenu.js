@@ -84,29 +84,29 @@ const SelectMenu = () => {
     dispatch({ type: 'filterHullCategory', payload: e})
   }
 
-  // Handles sorting select
-  const sortOptions = [
-    { value: 'name', label: 'Name' },
-    { value: 'cost', label: 'Cost' },
-    { value: 'shields', label: 'Shields' },
-    { value: 'hull', label: 'Hull' },
-    { value: 'totalHP', label: 'Hull + Shields'},
-    { value: 'outfit_space', label: 'Outfit space' },
-    { value: 'engine_capacity', label: 'Engine capacity' },
-    { value: 'weapon_capacity', label: 'Weapon capacity' },
-    { value: 'cargo_space', label: 'Cargo space' },
-    { value: 'bunks', label: 'Bunks' },
-    { value: 'max_guns', label: 'Gun slots' },
-    { value: 'max_turrets', label: 'Turret slots' },
-    { value: 'max_fighters', label: 'Fighter bays' },
-    { value: 'max_drones', label: 'Drone bays' },
-  ]
+  // // Handles sorting select
+  // const sortOptions = [
+  //   { value: 'name', label: 'Name' },
+  //   { value: 'cost', label: 'Cost' },
+  //   { value: 'shields', label: 'Shields' },
+  //   { value: 'hull', label: 'Hull' },
+  //   { value: 'totalHP', label: 'Hull + Shields'},
+  //   { value: 'outfit_space', label: 'Outfit space' },
+  //   { value: 'engine_capacity', label: 'Engine capacity' },
+  //   { value: 'weapon_capacity', label: 'Weapon capacity' },
+  //   { value: 'cargo_space', label: 'Cargo space' },
+  //   { value: 'bunks', label: 'Bunks' },
+  //   { value: 'max_guns', label: 'Gun slots' },
+  //   { value: 'max_turrets', label: 'Turret slots' },
+  //   { value: 'max_fighters', label: 'Fighter bays' },
+  //   { value: 'max_drones', label: 'Drone bays' },
+  // ]
 
-  const defaultSortType = { value: 'name', label: 'Name' }
+  // const defaultSortType = { value: 'name', label: 'Name' }
 
-  const changeSortType = e => {
-    dispatch({ type: 'sortHulls', payload: e })
-  }
+  // const changeSortType = e => {
+  //   dispatch({ type: 'sortHulls', payload: e })
+  // }
 
   // Handles search box
   const filterHulls = e => {
@@ -142,6 +142,7 @@ const SelectMenu = () => {
           onChange={changeSpoiler}
         />
       </div>
+      {state.spoiler.value > 1 &&
       <div>
         <label htmlFor="factionSelect" className="text-gray-300 pl-1 hidden sm:block">Select faction</label>
         <Select
@@ -149,9 +150,9 @@ const SelectMenu = () => {
           options={factionOptions}
           value={state.hullFaction}
           onChange={changeFaction}
-          isDisabled={state.spoiler.value < 2}
         />
       </div>
+        }
       <div>
         <label htmlFor="categorySelect" className="text-gray-300 pl-1 hidden sm:block">Select category</label>
         <Select
@@ -161,7 +162,7 @@ const SelectMenu = () => {
           onChange={changeCategory}
         />
       </div>
-      <div>
+      {/* <div>
         <label htmlFor="sortSelect" className="text-gray-300 pl-1 hidden sm:block">Sort by</label>
         <Select
           id="sortSelect"
@@ -169,7 +170,7 @@ const SelectMenu = () => {
           value={state.hullSortType}
           onChange={changeSortType}
         />
-      </div>
+      </div> */}
       <div>
         <label htmlFor="searchHulls" className="text-gray-300 pl-1 hidden sm:block">Search hulls</label>
         <input

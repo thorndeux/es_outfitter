@@ -45,35 +45,52 @@ const OutfitSelect = () => {
         { value: 'Guns', label: 'Guns' },
         { value: 'Secondary Weapons', label: 'Secondary Weapons' },
         { value: 'Turrets', label: 'Turrets' },
+        { value: 'Anti-missile', label: 'Anti-missile' },
         { value: 'Ammunition', label: 'Ammunition' },
         { value: 'Hand to Hand', label: 'Hand to Hand' },
       ]
     },
-    { value: 'Power', label: 'Power' },
-    { value: 'Engines', label: 'Engines' },
-    { value: 'Systems', label: 'Systems' },
+    { label: 'Power',
+      options: [
+        { value: 'Generators', label: 'Generators' },
+        { value: 'Batteries', label: 'Batteries' },
+      ]
+    },
+    { label: 'Engines',
+      options: [
+        { value: 'Thruster', label: 'Thrusters' },
+        { value: 'Steering', label: 'Steering' },
+      ]
+    },
+    { label: 'Systems',
+      options: [
+        { value: 'Cooling', label: 'Cooling' },
+        { value: 'Shields', label: 'Shields' },
+        { value: 'Systems', label: 'Other' },
+      ]
+    },
     { value: 'Special', label: 'Special' },
   ]
   const changeCategory = e => {
     dispatch({ type: 'filterOutfitCategory', payload: e })
   }
 
-  // Handles sorting select
-  const sortOptions = [
-    { value: 'name', label: 'Name' },
-    { value: 'cost', label: 'Cost' },
-    { value: 'shields', label: 'Shields' },
-    { value: 'hull', label: 'Hull' },
-    { value: 'outfit_space', label: 'Outfit space' },
-    { value: 'engine_capacity', label: 'Engine capacity' },
-    { value: 'weapon_capacity', label: 'Weapon capacity' },
-    { value: 'cargo_space', label: 'Cargo space' },
-    { value: 'bunks', label: 'Bunks' },
-  ]
+  // // Handles sorting select
+  // const sortOptions = [
+  //   { value: 'name', label: 'Name' },
+  //   { value: 'cost', label: 'Cost' },
+  //   { value: 'shields', label: 'Shields' },
+  //   { value: 'hull', label: 'Hull' },
+  //   { value: 'outfit_space', label: 'Outfit space' },
+  //   { value: 'engine_capacity', label: 'Engine capacity' },
+  //   { value: 'weapon_capacity', label: 'Weapon capacity' },
+  //   { value: 'cargo_space', label: 'Cargo space' },
+  //   { value: 'bunks', label: 'Bunks' },
+  // ]
 
-  const changeSortType = e => {
-    dispatch({ type: 'sortOutfits', payload: e})
-  }
+  // const changeSortType = e => {
+  //   dispatch({ type: 'sortOutfits', payload: e})
+  // }
 
   // Handles search box
   const filterOutfits = e => {
@@ -99,6 +116,7 @@ const OutfitSelect = () => {
           onChange={changeSpoiler}
         />
       </div>
+      {state.spoiler.value > 1 &&
       <div>
         <label htmlFor="factionSelect" className="text-gray-300 pl-1 hidden sm:block">Select faction</label>
         <Select
@@ -106,9 +124,9 @@ const OutfitSelect = () => {
           options={factionOptions}
           value={state.outfitFaction}
           onChange={changeFaction}
-          isDisabled={state.spoiler.value < 2}
         />
       </div>
+      }
       <div>
         <label htmlFor="categorySelect" className="text-gray-300 pl-1 hidden sm:block">Select category</label>
         <Select
@@ -118,7 +136,7 @@ const OutfitSelect = () => {
           onChange={changeCategory}
         />
       </div>
-      <div>
+      {/* <div>
         <label htmlFor="sortSelect" className="text-gray-300 pl-1 hidden sm:block">Sort by</label>
         <Select
           id="sortSelect"
@@ -126,7 +144,7 @@ const OutfitSelect = () => {
           value={state.outfitSortType}
           onChange={changeSortType}
         />
-      </div>
+      </div> */}
       <div>
         <label htmlFor="searchOutfits" className="text-gray-300 pl-1 hidden sm:block">Search outfits</label>
         <input

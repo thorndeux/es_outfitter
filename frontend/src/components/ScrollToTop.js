@@ -1,17 +1,27 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const ScrollToTop = () => {
+  // Scroll to top of page
   const scrollUp = () => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   }
 
-  window.onscroll = () => {
+  // Add event listener to fade in scroll button
+  useEffect(() => {
+    window.addEventListener('scroll', showScrollToTop, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', showScrollToTop)
+    }
+  }, [])
+
+  // Fade in scroll button when user scrolls down
+  const showScrollToTop = () => {
     const scrollButton = document.getElementById('scrollButton')
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-      scrollButton.style.display = "block";
+      scrollButton.classList.toggle('hidden', false)
     } else {
-      scrollButton.style.display = "none";
+      scrollButton.classList.toggle('hidden', true)
     }
   }
 

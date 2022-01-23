@@ -1,16 +1,26 @@
 import React, { useContext, useEffect } from 'react'
 
 import { DispatchContext, StateContext } from '../App'
+import { fieldSorter, sortByFieldSum } from '../Utils'
 import HullCard from './HullCard'
+
+import ReactTooltip from 'react-tooltip'
 
 const HullList = () => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
+
+  /**
+   * Rebuild tooltips whenever displayed hulls change
+   */
+  useEffect(() => {
+    ReactTooltip.rebuild()    
+  }, [state.displayedHulls])
     
   // Run filterHulls() whenever allHulls, spoiler, faction, or category changes
   useEffect(() => {
     filterHulls()
-  }, [state.allHulls, state.spoiler, state.hullFaction, state.hullCategory, state.hullSortType])
+  }, [state.allHulls, state.spoiler, state.hullFaction, state.hullCategory, state.hullSort])
   
   // Filter and sort hulls based on selection
   const filterHulls = () => {
@@ -18,47 +28,17 @@ const HullList = () => {
     state.hullFaction.value && (filteredHulls = filteredHulls.filter(hull => hull.faction === state.hullFaction.value))
     state.hullCategory.value ? (filteredHulls = filteredHulls.filter(hull => hull.category === state.hullCategory.value)) : filteredHulls = filteredHulls.filter(hull => hull.category)    
 
-    if (['cost', 'name'].includes(state.hullSortType.value)) {
-      filteredHulls = filteredHulls.sort(fieldSorter([state.hullSortType.value, 'name']))
+    if (['cost', 'name'].includes(state.hullSort)) {
+      filteredHulls = filteredHulls.sort(fieldSorter([state.hullSort, 'name']))
     }
-    else if (['totalHP'].includes(state.hullSortType.value)) {
+    else if (['totalHP'].includes(state.hullSort)) {
       filteredHulls = filteredHulls.sort(sortByFieldSum(['hull', 'shields'], 'desc'))
     }
     else {
-      filteredHulls = filteredHulls.sort(fieldSorter(['-' + state.hullSortType.value, 'name']))
+      filteredHulls = filteredHulls.sort(fieldSorter(['-' + state.hullSort, 'name']))
     }
 
     dispatch({ type: 'filterHulls', payload: filteredHulls })
-
-  }
- 
-  /**
-   * Utility function from Stackoverflow to sort by multiple fields
-   * where the fields array contains the field names. If a name is
-   * prepended with a '-', sort direction is reversed for that field.
-   * 
-   * @param {Array} fields  Array containing the names of fields to sort by
-   * @returns               Sort instruction (1, -1, or 0, depending on case)
-   */
-  const fieldSorter = (fields) => (a, b) => fields.map(o => {
-    let dir = 1;
-    if (o[0] === '-') { dir = -1; o=o.substring(1); }
-    return a[o] > b[o] ? dir : a[o] < b[o] ? -(dir) : 0;
-  }).reduce((p, n) => p ? p : n, 0);
-
-  /**
-   * Sorts by the sum of an array of fields, second, optional argument
-   * is the sort direction ('desc' for descending)
-   * 
-   * @param {Array} fields      Array of fields to sum up for each object
-   * @param {String} direction  (optional) Reverse sort direction for 'desc' 
-   * @returns                   Sort instruction (1, -1, or 0, depending on case)
-   */
-  const sortByFieldSum = (fields, direction='asc') => (a, b) => {
-    let dir = 1
-    direction === 'desc' && (dir = -1)
-    const fieldSum = (o, fields) => fields.reduce((p, n) => (o[p] ? Number(o[p]) : 0) + (o[n] ? Number(o[n]) : 0))
-    return fieldSum(a, fields) > fieldSum(b, fields) ? dir : fieldSum(a, fields) < fieldSum(b, fields) ? -(dir) : 0
   }
 
   // Runs search function when user types in the searchbox
@@ -75,7 +55,30 @@ const HullList = () => {
     
     dispatch({ type: 'showHullSearch', payload: filteredHulls })
   }
-  
+
+  // Load first page of hulls on page load and
+  // when the relevant hull selection changes
+  useEffect(() => {
+    dispatch({ type: 'resetDisplayedHulls' })
+    dispatch({ type: 'updateDisplayedHulls' })
+
+  }, [state.currentHulls, state.hullSearchResults])
+
+  // Add event listener to update hull list
+  useEffect(() => {
+    document.addEventListener('scroll', updateHullList, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', updateHullList)
+    }
+  }, [])
+
+  // Load another page when the user reaches bottom of window
+  const updateHullList = () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        dispatch({ type: 'updateDisplayedHulls' })
+    }
+  }
+
   return (
     <div className="
       lg:col-span-3 xl:col-span-4 
@@ -85,12 +88,12 @@ const HullList = () => {
       {
         state.hullSearchQuery 
         ? (state.hullSearchResults.length!=0
-          ? state.hullSearchResults.map((hull) => (
+          ? state.displayedHulls.map((hull) => (
             <HullCard key={hull.id} hull={hull} />
           ))
           : <p>There are no hulls for this search term</p>) 
         : (state.currentHulls.length!=0
-          ? state.currentHulls.map((hull) => (
+          ? state.displayedHulls.map((hull) => (
             <HullCard key={hull.id} hull={hull} />
           )) 
           : <p>There are no hulls for this selection</p>)

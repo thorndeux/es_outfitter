@@ -1,3 +1,4 @@
+import decimal
 import logging
 
 from django.conf import settings
@@ -9,11 +10,16 @@ from .models import Hull, Outfit, Build, Outfit_details
 
 logger = logging.getLogger(__name__)
 
-release = 'continuous'
+release = '0.9.14'
 
 class ParseOutfitsTest(TestCase):
   @classmethod
   def setUpTestData(cls):
+    
+    # Run parse_raw
+    parse_raw(release)
+
+    # To test specific files:
     # folder = "wanderer"
     # outfit_file = "wanderer outfits.txt"
     # hull_file = "wanderer ships.txt"
@@ -24,7 +30,6 @@ class ParseOutfitsTest(TestCase):
     # parse_outfits(outfit_path, release)
     # logger.info(f'# of outfits: {Outfit.objects.all().count()}')
     
-    parse_raw(release)
 
     # Display all values of each outfit    
     for outfit in Outfit.objects.all().values():
@@ -61,16 +66,16 @@ class ParseOutfitsTest(TestCase):
     penguin_sprite = Hull.objects.get(name="Penguin").sprite
     self.assertTrue(penguin_sprite == release + "/ship/penguin/penguin-00.png")
 
-  # def test_outfit_number(self):
-  #   self.assertTrue(Outfit.objects.all().count() == 21)
+  def test_flamethrower_damage(self):
+    flamethrower = Outfit.objects.get(name="Flamethrower")
+    self.assertEqual(flamethrower.shield_damage, decimal.Decimal('0.8'))
+    self.assertEqual(flamethrower.shield_dps, decimal.Decimal('48'))
+    self.assertEqual(flamethrower.hull_damage, decimal.Decimal('0.7'))
+    self.assertEqual(flamethrower.hull_dps, decimal.Decimal('42'))
+    self.assertEqual(flamethrower.heat_damage, decimal.Decimal('200'))
+    self.assertEqual(flamethrower.heat_dps, decimal.Decimal('12000'))
 
-  # def test_oufit_values_1(self):
-  #   tracker_pod = Outfit.objects.get(name="Hai Tracker Pod")
-  #   self.assertEqual(tracker_pod.release, "0.9.12")
-  #   self.assertEqual(tracker_pod.spoiler, 0)
-  #   self.assertEqual(tracker_pod.plural, "")
-  #   self.assertEqual(tracker_pod.faction, "Hai")
-  #   self.assertEqual(tracker_pod.description, "Trackers are fast and accurate homing weapons. Although not as powerful as most human missiles, Trackers boast a significant hit force, helping to prevent the escape of whoever is unfortunate enough to be on the receiving end. Their only weakness is their large turning radius: if a Tracker misses its target, it takes a long time to turn around.")
-  #   self.assertEqual(tracker_pod.category, "Secondary Weapons")
-  #   self.assertEqual(tracker_pod.license, "")
-  #   self.assertEqual(tracker_pod.outfit_space, -19)
+  def test_bullfrog_aggregates(self):
+    bullfrog = Outfit.objects.get(name="Bullfrog Anti-Missile")
+    self.assertEqual(bullfrog.shots_per_second, decimal.Decimal('3'))
+    self.assertEqual(bullfrog.anti_missile_dps, decimal.Decimal('36'))

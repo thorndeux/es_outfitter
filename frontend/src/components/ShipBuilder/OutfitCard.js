@@ -1,51 +1,25 @@
 import React, { useContext } from 'react'
 import { DispatchContext, StateContext } from '../App'
+import { addOutfit } from '../Utils'
 
 import FieldProp from '../FieldProp'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 const OutfitCard = ({ outfit }) => {
   const dispatch = useContext(DispatchContext)
   const state = useContext(StateContext)
 
-  const addOutfit = (outfit, amount) => {
-    // Validation logic goes here:
-        // Outfit space
-        // Engine space
-        // Weapon space
-        // Cargo space
-        // Gun ports
-        // Turret slots
-        // Fighter bays
-        // Drone bays
-        // Spinal mount
-    
-    // If validation succeeds, determine new outfits
-    const newOutfits = _.cloneDeep(state.currentBuild.outfits)
-    const inBuild = newOutfits.find(outfit_set => outfit_set.outfit.id === outfit.id)
-    if (inBuild) {
-      inBuild.amount += amount
-      dispatch({ type: 'setBuildOutfits', payload: newOutfits})
+  const handleAddOutfit = (e, outfit) => {
+    const result = addOutfit(e, outfit, state.currentBuild)
+    if (typeof result === 'string') {
+      console.log(result)
+      return
     }
     else {
-      const outfit_set = { "amount": amount, "outfit": outfit }
-      newOutfits.push(outfit_set)
-      dispatch({ type: 'setBuildOutfits', payload: newOutfits})
+      dispatch({ type: 'setBuildOutfits', payload: result})
     }
-    // Implement ordering of outfits
-  }
-
-  const removeOutfit = (outfit, amount) => {
-    // If validation succeeds, determine new outfits
-    const newOutfits = _.cloneDeep(state.currentBuild.outfits)
-    const outfit_set = newOutfits.find(outfit_set => outfit_set.outfit.id === outfit.id)
-    if (outfit_set.amount > amount) {
-      outfit_set.amount -= amount
-    }
-    else {
-      // Remove outfit_set
-      newOutfits.splice(newOutfits.indexOf(outfit_set), 1)
-    }
-    dispatch({ type: 'setBuildOutfits', payload: newOutfits})    
   }
 
   // Fields to exclude from list of attributes
@@ -59,6 +33,7 @@ const OutfitCard = ({ outfit }) => {
     "sprite",
     "description",
     "ammo",
+    "submunition_type",
   ]
 
   return (
@@ -74,16 +49,17 @@ const OutfitCard = ({ outfit }) => {
       
       <h2 className="text-xl font-medium">
         {outfit.name}
-        {state.editMode && 
           <button 
-          onClick={() => addOutfit(outfit, 1)}
+            data-tip="Add"
+            onClick={e => handleAddOutfit(e, outfit)}
             className="
               float-right
-              text-base text-lime-600 bg-gray-700
-              border border-2 border-lime-600 rounded p-1 mb-1
-              hover:bg-gray-600
-            ">Add to build</button>
-        }
+              text-xl leading-none
+              text-lime-600 hover:text-lime-500
+              p-1
+            ">
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
       </h2>
       <p className="mb-2 clear-both">{outfit.description}</p>
       <div className="relative min-h-40">
@@ -93,9 +69,10 @@ const OutfitCard = ({ outfit }) => {
             {Object.keys(outfit).map((attribute) => {
               if (outfit[attribute] && 
                 Number(outfit[attribute]) != 0 &&
-                !excludedAttributes.includes(attribute)) {
+                !excludedAttributes.includes(attribute) &&
+                (attribute === 'faction' ? state.spoiler.value > 1 ? true : false : true)) {
                   return (
-                    <FieldProp key={attribute} attribute={attribute} value={outfit[attribute]} />
+                    <FieldProp clickHandler={() => dispatch({ type: 'sortOutfits', payload: attribute })} key={attribute} attribute={attribute} value={outfit[attribute]} data_tip={`Sort by ${attribute}`}/>
                   )
                 }
               })
@@ -105,7 +82,8 @@ const OutfitCard = ({ outfit }) => {
         </table>
         {/* Absolute container to position image */}
         <div className="absolute flex inset-0 left-2/3 xs:left-1/2">
-          <img className="m-auto max-h-32 xs:max-h-56" src={`/static/${outfit.thumbnail}`} alt={outfit.name} />
+          {outfit.thumbnail &&
+            <img className="m-auto max-h-32 xs:max-h-56" src={`/static/${outfit.thumbnail}`} alt={outfit.name} />}
         </div>
       </div>
     </div>
