@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { DispatchContext, StateContext } from '../App'
-import { addOutfit } from '../Utils'
+import { addOutfit, stripe } from '../Utils'
 
 import FieldProp from '../FieldProp'
 
@@ -10,6 +10,12 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 const OutfitCard = ({ outfit }) => {
   const dispatch = useContext(DispatchContext)
   const state = useContext(StateContext)
+
+  useEffect(() => {
+    const table = document.getElementById(outfit.id)
+    stripe(table)
+  }, [state.displayedOutfits]);
+  
 
   const handleAddOutfit = (e, outfit) => {
     const result = addOutfit(e, outfit, state.currentBuild)
@@ -39,6 +45,7 @@ const OutfitCard = ({ outfit }) => {
   return (
     <div className="
       flex-grow
+      flex flex-col justify-between
       bg-gradient-to-br from-gray-600 to-gray-500 
       border border-gray-400 rounded-sm 
       w-full sm:w-96 h-auto
@@ -47,24 +54,32 @@ const OutfitCard = ({ outfit }) => {
       filter hover:brightness-110"
     >
       
-      <h2 className="text-xl font-medium">
-        {outfit.name}
-          <button 
-            data-tip="Add"
-            onClick={e => handleAddOutfit(e, outfit)}
-            className="
-              float-right
-              text-xl leading-none
-              text-lime-600 hover:text-lime-500
-              p-1
-            ">
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
-      </h2>
-      <p className="mb-2 clear-both">{outfit.description}</p>
-      <div className="relative min-h-40">
+      <div>
+        <h2 className="text-xl font-medium">
+          {outfit.name}
+            <div className="float-right">
+              {state.multi && <span className="pr-2"> &times; {state.multi}</span>}
+              <button
+                data-tip="Add"
+                onClick={e => handleAddOutfit(e, outfit)}
+                className="                  
+                  text-xl leading-none
+                  text-lime-600 hover:text-lime-500
+                  p-1
+                ">                
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
+        </h2>
+        <p className="text-justify">{outfit.description}</p>
+      </div>
+      <div className="flex">
+        {outfit.thumbnail &&
+          <img className="m-auto drop-shadow-xl py-5" src={`/static/${outfit.thumbnail}`} alt={outfit.name} />}
+      </div>
+      <div>
         <h3 className="text-lg font-medium">Base Stats</h3>
-        <table>
+        <table id={outfit.id} className="w-full mb-auto">
           <tbody>
             {Object.keys(outfit).map((attribute) => {
               if (outfit[attribute] && 
@@ -80,11 +95,6 @@ const OutfitCard = ({ outfit }) => {
             
           </tbody>
         </table>
-        {/* Absolute container to position image */}
-        <div className="absolute flex inset-0 left-2/3 xs:left-1/2">
-          {outfit.thumbnail &&
-            <img className="m-auto max-h-32 xs:max-h-56" src={`/static/${outfit.thumbnail}`} alt={outfit.name} />}
-        </div>
       </div>
     </div>
   )

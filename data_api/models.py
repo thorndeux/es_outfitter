@@ -136,7 +136,9 @@ class Outfit(models.Model):
     required_crew = models.IntegerField(default=0)
     
     cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    cooling_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     active_cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    active_cooling_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     combined_cooling = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     combined_cooling_per_space = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     cooling_energy = models.DecimalField(default=0, max_digits=8, decimal_places=2)

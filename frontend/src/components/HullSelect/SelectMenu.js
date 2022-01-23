@@ -84,30 +84,6 @@ const SelectMenu = () => {
     dispatch({ type: 'filterHullCategory', payload: e})
   }
 
-  // // Handles sorting select
-  // const sortOptions = [
-  //   { value: 'name', label: 'Name' },
-  //   { value: 'cost', label: 'Cost' },
-  //   { value: 'shields', label: 'Shields' },
-  //   { value: 'hull', label: 'Hull' },
-  //   { value: 'totalHP', label: 'Hull + Shields'},
-  //   { value: 'outfit_space', label: 'Outfit space' },
-  //   { value: 'engine_capacity', label: 'Engine capacity' },
-  //   { value: 'weapon_capacity', label: 'Weapon capacity' },
-  //   { value: 'cargo_space', label: 'Cargo space' },
-  //   { value: 'bunks', label: 'Bunks' },
-  //   { value: 'max_guns', label: 'Gun slots' },
-  //   { value: 'max_turrets', label: 'Turret slots' },
-  //   { value: 'max_fighters', label: 'Fighter bays' },
-  //   { value: 'max_drones', label: 'Drone bays' },
-  // ]
-
-  // const defaultSortType = { value: 'name', label: 'Name' }
-
-  // const changeSortType = e => {
-  //   dispatch({ type: 'sortHulls', payload: e })
-  // }
-
   // Handles search box
   const filterHulls = e => {
     dispatch({ type: 'searchHulls', payload: e.target.value })

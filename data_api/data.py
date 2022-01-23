@@ -389,7 +389,7 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
             outfit.hit_force_per_second = outfit.hit_force * outfit.shots_per_second
 
             # Calculate damage per outfit space
-            dps_values = ['shield_dps', 'hull_dps', 'average_dps', 'heat_dps', 'ion_dps', 'disruption_dps', 'disruption_dps']
+            dps_values = ['shield_dps', 'hull_dps', 'average_dps', 'heat_dps', 'ion_dps', 'slowing_dps', 'disruption_dps']
             for attribute in dps_values:
                 attribute_per_outfit_space(outfit, attribute)                
 
@@ -398,7 +398,8 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
         outfit.heat_per_second = outfit.firing_heat * outfit.shots_per_second
         outfit.fuel_per_second = outfit.firing_fuel * outfit.shots_per_second
     
-    generic_per_space = ['combined_cooling', 'energy_capacity', 'total_energy_generation', 'shield_generation', 'hull_repair_rate', 'ramscoop', 'thrust', 'turn', 'reverse_thrust', 'afterburner_thrust']
+    # Calculate value per outfit space for beneficial stats
+    generic_per_space = ['cooling', 'active_cooling', 'combined_cooling', 'energy_capacity', 'total_energy_generation', 'shield_generation', 'hull_repair_rate', 'ramscoop', 'thrust', 'turn', 'reverse_thrust', 'afterburner_thrust']
     for attribute in generic_per_space:
         attribute_per_outfit_space(outfit, attribute)
 
@@ -813,7 +814,7 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     hull.save()
     logger.info(f"Created hull '{hull.name}'")
     
-    outfits_list = re.search('\toutfits(.*?)(?=\t\w+)', full_ship, re.M|re.S)[1]
+    outfits_list = re.search('\toutfits(.*?)(?=^\t\w+)', full_ship, re.M|re.S)[1]
     
     hull.default_build = parse_build(hull, outfits_list, True)
 
@@ -842,7 +843,7 @@ def parse_build(hull: Hull, outfits_list: str, default=False):
     if not default:
         name = re.search('^ship +?(?:`[^`]*`) `([^`]*)`', outfits_list)
         if not name:
-            name = re.search('^ship +?(?:"[^"]*") "([^"]*)"', outfits_list)   
+            name = re.search('^ship +?(?:"[^"]*") "([^"]*)"', outfits_list)
     
     build.name = hull.name + " Default Build" if default else "Build variant " + name[1]
 
@@ -852,7 +853,7 @@ def parse_build(hull: Hull, outfits_list: str, default=False):
 
     build.save()
 
-    for outfit_group in re.findall('^\t+["`]([^`]+?)["`] ?(\d+)?$', outfits_list, re.M):
+    for outfit_group in re.findall('^\t{2}["`]?([\w"][^`\t$]+?)["`]? ?(\d+)?$', outfits_list, re.M):
         amount = int(outfit_group[1]) if outfit_group[1] else 1
         try:
             outfit = Outfit.objects.filter(name=outfit_group[0], release=hull.release).get()
@@ -972,7 +973,7 @@ def parse_hull_variant(filename: Path, hull_variant: str, release: str):
     logger.info(f"Created hull variant '{hull.name}'")
 
     # Determine default build  
-    outfits_list = re.search('\toutfits(.*?)(?=\t\w+)', hull_variant, re.M|re.S)
+    outfits_list = re.search('\toutfits(.*?)(?=^\t\w+)', hull_variant, re.M|re.S)
     # If outfit section exists
     if outfits_list:
         hull.default_build = parse_build(hull, outfits_list[1], True)

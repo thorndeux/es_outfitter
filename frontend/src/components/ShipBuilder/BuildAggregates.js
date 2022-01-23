@@ -624,7 +624,7 @@ const BuildAggregates = () => {
   }
 
   return (
-    <div className="select-none">
+    <div className="select-none flex flex-col">
       <AggregatesTable data={spaceData} />
       <AggregatesTable data={heatData} />
       <AggregatesTable data={energyData} />

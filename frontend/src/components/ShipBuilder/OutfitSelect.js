@@ -75,23 +75,6 @@ const OutfitSelect = () => {
     dispatch({ type: 'filterOutfitCategory', payload: e })
   }
 
-  // // Handles sorting select
-  // const sortOptions = [
-  //   { value: 'name', label: 'Name' },
-  //   { value: 'cost', label: 'Cost' },
-  //   { value: 'shields', label: 'Shields' },
-  //   { value: 'hull', label: 'Hull' },
-  //   { value: 'outfit_space', label: 'Outfit space' },
-  //   { value: 'engine_capacity', label: 'Engine capacity' },
-  //   { value: 'weapon_capacity', label: 'Weapon capacity' },
-  //   { value: 'cargo_space', label: 'Cargo space' },
-  //   { value: 'bunks', label: 'Bunks' },
-  // ]
-
-  // const changeSortType = e => {
-  //   dispatch({ type: 'sortOutfits', payload: e})
-  // }
-
   // Handles search box
   const filterOutfits = e => {
     dispatch({ type: 'searchOutfits', payload: e.target.value })

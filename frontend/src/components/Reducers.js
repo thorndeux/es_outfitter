@@ -53,13 +53,11 @@ const reducer = (state, action) => {
         hullFaction: Number(action.payload.value) < 2 ? { value: 'Human', label: 'Human' } : { value: '', label: 'All Factions' },
 
         outfitFaction: Number(action.payload.value) < 2 ? { value: 'Human', label: 'Human' } : { value: '', label: 'All Factions' },
-        outfitSort: 'name',
-        hullSort: 'name'
       } 
     case 'filterHullFaction':
-      return { ...state, hullFaction: action.payload, hullSort: 'name' }
+      return { ...state, hullFaction: action.payload }
     case 'filterHullCategory':
-      return { ...state, hullCategory: action.payload, hullSort: 'name' }
+      return { ...state, hullCategory: action.payload }
     case 'sortHulls': {
       // Determine which selection to sort (current hulls or search results)
       var relevantSelection = state.hullSearchQuery ? cloneDeep(state.hullSearchResults) : cloneDeep(state.currentHulls)      
@@ -103,7 +101,6 @@ const reducer = (state, action) => {
         shipBuilder: true,
         currentHull: action.payload,
         outfitCategory: { value: '', label: 'All Categories' },
-        outfitSortType: { value: 'name', label: 'Name' },
         outfitSearchQuery: '',
         outfitSort: 'name',
       }
@@ -112,9 +109,9 @@ const reducer = (state, action) => {
     case 'filterOutfits':
       return { ...state, currentOutfits: action.payload }
     case 'filterOutfitFaction':
-      return { ...state, outfitFaction: action.payload, outfitSort: 'name' }
+      return { ...state, outfitFaction: action.payload }
     case 'filterOutfitCategory':
-      return { ...state, outfitCategory: action.payload, outfitSort: 'name' }
+      return { ...state, outfitCategory: action.payload }
     case 'sortOutfits': {
       // Determine which selection to sort (current outfits or search results)
       var relevantSelection = state.outfitSearchQuery ? cloneDeep(state.outfitSearchResults) : cloneDeep(state.currentOutfits)      

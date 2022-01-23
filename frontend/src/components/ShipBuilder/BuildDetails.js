@@ -60,88 +60,86 @@ const BuildDetails = () => {
   }
   
   return (
-    <div>
+    <div className="select-none sm:px-1">
       <BuildList />
-      <div className="p-1 select-none">
-        <h3 className="text-xl font-medium mb-1 pl-3">Current Build</h3>
-        <div className="border-2 border-gray-200 rounded-lg p-2">
-          <input 
-            id="buildTitle" 
-            type="text" 
-            className="
-            w-full
-            text-base leading-4 font-medium
-            bg-transparent
-            border-2 border-gray-500 rounded
-            focus:border-gray-400 focus:ring-1 focus:ring-gray-400
-            px-2 mb-1" 
-            value={state.currentBuild.name ? state.currentBuild.name : ""}
-            onChange={e => dispatch({ type: 'setBuildName', payload: e.target.value })}/>
+      <div className="border-2 border-gray-200 text-gray-200 rounded-lg px-2 py-1 mt-1">
+        <h3 className="text-xl font-medium mb-2 pl-1">Current Build</h3>
+        <input 
+          id="buildTitle" 
+          type="text" 
+          className="
+          w-full
+          text-base leading-4 font-medium
+          bg-transparent
+          border-2 border-gray-500 rounded
+          focus:border-gray-400 focus:ring-1 focus:ring-gray-400
+          px-2" 
+          value={state.currentBuild.name ? state.currentBuild.name : ""}
+          onChange={e => dispatch({ type: 'setBuildName', payload: e.target.value })}/>
 
-          <table 
-            id="buildOutfits"
-            className="mb-2 w-full">
-            <tbody>
-              <tr className="nostripe font-bold">
-                <td></td>
-                <td></td>
-                <td colSpan={2} className="text-center">{state.multi ? <span> &times; {state.multi}</span> : <span className="opacity-0">&times; 1</span>}</td>
-              </tr>
-              {
-                state.currentBuild.outfits && 
-                (
-                  state.currentBuild.outfits.length > 0 ?
-                  state.currentBuild.outfits.map((outfit_set) => 
-                  <tr key={outfit_set.outfit.id}>
-                    <td>{outfit_set.outfit.name}</td>
-                    <td className="pl-3 w-16">&times; {outfit_set.amount}</td>
-                    <td className="text-lg leading-none text-lime-600 hover:text-lime-500 cursor-pointer pl-3"
-                      data-tip="Add"
-                      onClick={e => handleAddOutfit(e, outfit_set.outfit)}>
-                      <FontAwesomeIcon icon={faPlus} />
-                    </td>
-                    <td className="text-lg leading-none text-red-600 hover:text-red-500 cursor-pointer pl-2"
-                      data-tip="Remove"
-                      onClick={e => handleRemoveOutfit(e, outfit_set.outfit)}>
-                      <FontAwesomeIcon icon={faMinus} />
-                    </td>
-                  </tr>
-                  ) :
-                  <tr><td>No outfits yet</td></tr>
-                  )
-                  
-                }
-            </tbody>
-          </table>
+        <table 
+          id="buildOutfits"
+          className="mb-2 w-full">
+          <tbody>
+            <tr className="nostripe font-bold">
+              <td></td>
+              <td></td>
+              <td colSpan={2} className="text-center">{state.multi ? <span> &times; {state.multi}</span> : <span className="opacity-0">&times; 1</span>}</td>
+            </tr>
+            {
+              state.currentBuild.outfits && 
+              (
+                state.currentBuild.outfits.length > 0 ?
+                state.currentBuild.outfits.map((outfit_set) => 
+                <tr key={outfit_set.outfit.id}>
+                  <td>{outfit_set.outfit.name}</td>
+                  <td className="pl-3 w-16">&times; {outfit_set.amount}</td>
+                  <td className="text-lg leading-none text-lime-600 hover:text-lime-500 cursor-pointer pl-3"
+                    data-tip="Add"
+                    onClick={e => handleAddOutfit(e, outfit_set.outfit)}>
+                    <FontAwesomeIcon icon={faPlus} />
+                  </td>
+                  <td className="text-lg leading-none text-red-600 hover:text-red-500 cursor-pointer pl-2"
+                    data-tip="Remove"
+                    onClick={e => handleRemoveOutfit(e, outfit_set.outfit)}>
+                    <FontAwesomeIcon icon={faMinus} />
+                  </td>
+                </tr>
+                ) :
+                <tr><td>No outfits yet</td></tr>
+                )
+                
+              }
+          </tbody>
+        </table>
 
-          <div className="w-full grid grid-cols-3 gap-1">
-            <button
-              data-tip="Save"
-              className="border border-gray-300 rounded
-                brightness-90 hover:brightness-125
-                p-2"
-              onClick={() => dispatch({ type: 'saveBuild' })}
-              ><FontAwesomeIcon icon={faFloppyDisk}/>
-            </button>
-            <button
-              data-tip="Save as"
-              className="border border-gray-300 rounded
-              brightness-90 hover:brightness-125 hover:bg-gray-600
+        <div className="w-full grid grid-cols-3 gap-1 mb-1">
+          <button
+            data-tip="Save"
+            className="border border-gray-300 rounded
+              brightness-90 hover:brightness-125
               p-2"
-              onClick={() => dispatch({ type: 'saveNewBuild' }) }
-              ><FontAwesomeIcon icon={faFloppyDisk}/>
-              <FontAwesomeIcon className="px-1" icon={faCaretRight}/>
-              <FontAwesomeIcon icon={faFloppyDisk}/>
-            </button>
-            <button
-              data-tip="Clear"
-              className="border border-gray-300 rounded
-              brightness-90 hover:brightness-125 hover:bg-gray-600
-              p-2"
-              onClick={() => dispatch({ type: 'clearBuild' })}
-              ><FontAwesomeIcon icon={faTrashCan}/>
-            </button>
-          </div>
+            onClick={() => dispatch({ type: 'saveBuild' })}
+            ><FontAwesomeIcon icon={faFloppyDisk}/>
+          </button>
+          <button
+            data-tip="Save as"
+            className="border border-gray-300 rounded
+            brightness-90 hover:brightness-125 hover:bg-gray-600
+            p-2"
+            onClick={() => dispatch({ type: 'saveNewBuild' }) }
+            ><FontAwesomeIcon icon={faFloppyDisk}/>
+            <FontAwesomeIcon className="px-1" icon={faCaretRight}/>
+            <FontAwesomeIcon icon={faFloppyDisk}/>
+          </button>
+          <button
+            data-tip="Clear"
+            className="border border-gray-300 rounded
+            brightness-90 hover:brightness-125 hover:bg-gray-600
+            p-2"
+            onClick={() => dispatch({ type: 'clearBuild' })}
+            ><FontAwesomeIcon icon={faTrashCan}/>
+          </button>
         </div>
       </div>
     </div>

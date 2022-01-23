@@ -41,59 +41,57 @@ const BuildList = () => {
   }, [state.savedHullBuilds])
 
   return (
-    <div className="p-1 select-none">
-      <h3 className="text-xl font-medium mb-1 pl-3">Available Builds</h3>
-      <div className="border-2 border-gray-200 text-gray-200 rounded-lg px-2 py-1">
-        <h2 className="font-medium">In-game Builds</h2>
-        <table id="hullBuilds" className="w-full leading-snug mb-2">
-          <tbody>
-            { state.hullBuilds.length > 0 &&
-              state.hullBuilds.map((build) => 
-              <tr key={build.id}>
-                <td onDoubleClick={() => dispatch({ type:'cloneBuild', payload: build })}>
-                  {build.name}
-                </td>
-                <td
-                  data-tip="Clone"
-                  onClick={() => dispatch({ type:'cloneBuild', payload: build })} 
-                  className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
-                    <FontAwesomeIcon icon={faCopy} />
-                </td>
-              </tr>
-              )
-            }
-          </tbody>
-        </table>
-        <h2 className="font-medium">Your Builds</h2>
-        <table id="savedHullBuilds" className="w-full leading-snug">
-          <tbody>
-            { state.savedHullBuilds.length > 0 &&
-              state.savedHullBuilds.map((build) => 
-              <tr key={build.id}>
-                <td
-                  onDoubleClick={() => dispatch({ type:'loadBuild', payload: build })} 
-                  >{build.name}</td>
-                <td
-                  data-tip="Delete build"
-                  onClick={() => dispatch({ type:'deleteBuild', payload: build }, ReactTooltip.hide())} 
-                  className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
-                  <FontAwesomeIcon icon={faTrashCan} />
-                </td>
-                <td
-                  data-tip="Load build"
-                  onClick={() => dispatch({ type:'loadBuild', payload: build })} 
-                  className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
-                  <FontAwesomeIcon icon={faCloudArrowDown} />
-                </td>
-              </tr>
-              )
-            }
-          </tbody>
-        </table>
-        { state.savedHullBuilds.length === 0 &&
-          <p className="bg-gray-500">No saved builds yet</p>
-        }
-      </div>
+    <div className="border-2 border-gray-200 text-gray-200 rounded-lg px-2 py-1 mt-1">
+      <h3 className="text-xl font-medium mb-1 pl-1">Available Builds</h3>
+      <h2 className="font-medium">In-game Builds</h2>
+      <table id="hullBuilds" className="w-full leading-snug mb-2">
+        <tbody>
+          { state.hullBuilds.length > 0 &&
+            state.hullBuilds.map((build) => 
+            <tr key={build.id}>
+              <td onDoubleClick={() => dispatch({ type:'cloneBuild', payload: build })}>
+                {build.name}
+              </td>
+              <td
+                data-tip="Clone"
+                onClick={() => dispatch({ type:'cloneBuild', payload: build })} 
+                className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
+                  <FontAwesomeIcon icon={faCopy} />
+              </td>
+            </tr>
+            )
+          }
+        </tbody>
+      </table>
+      <h2 className="font-medium">Your Builds</h2>
+      <table id="savedHullBuilds" className="w-full leading-snug mb-1">
+        <tbody>
+          { state.savedHullBuilds.length > 0 &&
+            state.savedHullBuilds.map((build) => 
+            <tr key={build.id}>
+              <td
+                onDoubleClick={() => dispatch({ type:'loadBuild', payload: build })} 
+                >{build.name}</td>
+              <td
+                data-tip="Delete build"
+                onClick={() => dispatch({ type:'deleteBuild', payload: build }, ReactTooltip.hide())} 
+                className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
+                <FontAwesomeIcon icon={faTrashCan} />
+              </td>
+              <td
+                data-tip="Load build"
+                onClick={() => dispatch({ type:'loadBuild', payload: build })} 
+                className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
+                <FontAwesomeIcon icon={faCloudArrowDown} />
+              </td>
+            </tr>
+            )
+          }
+        </tbody>
+      </table>
+      { state.savedHullBuilds.length === 0 &&
+        <p className="bg-gray-500">No saved builds yet</p>
+      }
     </div>
   )
 }

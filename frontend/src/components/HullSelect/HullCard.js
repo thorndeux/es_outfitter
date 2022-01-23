@@ -1,11 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { DispatchContext, StateContext } from '../App';
 import FieldProp from '../FieldProp'
+import { stripe } from '../Utils';
 
 const HullCard = ({ hull }) => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
+
+  useEffect(() => {
+    const table = document.getElementById(hull.id)
+    stripe(table)
+  }, [state.displayedHulls]);
+  
 
   // Fields to exclude from list of attributes
   const excludedAttributes = [
@@ -29,7 +36,9 @@ const HullCard = ({ hull }) => {
 
   return (
     <div className="
-      flex-grow 
+      flex-grow
+      flex flex-col justify-between
+      text-gray-200
       bg-gradient-to-br from-gray-600 to-gray-500 
       border border-gray-400 rounded-sm 
       w-full sm:w-96 h-auto
@@ -37,11 +46,20 @@ const HullCard = ({ hull }) => {
       p-2
       filter hover:brightness-110"
     >
-      <h2 className="text-xl font-medium hover: cursor-pointer" onClick={() => loadShipBuilder(hull)}>{hull.name}</h2>
-      <p className="mb-2 hover: cursor-pointer" onClick={() => loadShipBuilder(hull)}>{hull.description}</p>
-      <div className="relative">
+      <div className="hover:cursor-pointer" data-tip={`Start new build with ${hull.name}`}>
+        <h2 className="text-xl font-medium" onClick={() => loadShipBuilder(hull)}>{hull.name}</h2>
+        <p className="text-justify" onClick={() => loadShipBuilder(hull)}>{hull.description}</p>
+      </div>
+      <div
+        className="flex hover:cursor-pointer"
+        onClick={() => loadShipBuilder(hull)}
+        data-tip={`Start new build with ${hull.name}`}
+      >
+        <img className="m-auto max-h-40 xs:max-h-56 drop-shadow-xl py-5" src={`/static/${hull.sprite}`} alt={hull.name} onClick={() => loadShipBuilder(hull)}/>
+      </div>
+      <div>
         <h3 className="text-lg font-medium">Base Stats</h3>
-        <table>
+        <table id={hull.id} className="w-full">
           <tbody>
             {Object.keys(hull).map((attribute) => {
               if (hull[attribute] && 
@@ -57,10 +75,6 @@ const HullCard = ({ hull }) => {
             
           </tbody>
         </table>
-        {/* Absolute container to position image */}
-        <div className="absolute flex inset-0 left-2/3 xs:left-1/2">
-          <img className="m-auto max-h-40 xs:max-h-56 hover: cursor-pointer" src={`/static/${hull.sprite}`} alt={hull.name} onClick={() => loadShipBuilder(hull)}/>
-        </div>
       </div>
     </div>
   )

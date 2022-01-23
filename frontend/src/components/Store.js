@@ -19,8 +19,6 @@ const initialState = {
   hullFaction: { value: 'Human', label: 'Human' },
   // Currently selected category for hull view
   hullCategory: { value: '', label: 'All Categories' },
-  // Currently selected sort type for hull view (from select menu)
-  hullSortType: { value: 'name', label: 'Name' },
   // Last attribute sorted by (from clicking on an attribute)
   hullSort: 'name',
   // Current search query for hull view
@@ -42,9 +40,7 @@ const initialState = {
   outfitFaction: { value: 'Human', label: 'Human' },
   // Currently selected category for outfit view
   outiftCategory: { value: '', label: 'All Categories' },
-  // Currently selected sort type for outfit view (from select menu)
-  outfitSortType: { value: 'name', label: 'Name' },
-  // Last attribute sorted by (from clicking on an attribute)
+  // Last attribute sorted by
   outfitSort: 'name',
   // Current search query for outfit view
   outfitSearchQuery: '',

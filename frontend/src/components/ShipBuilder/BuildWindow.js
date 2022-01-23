@@ -146,9 +146,9 @@ const BuildWindow = () => {
       </div>
       <div id="buildContainer" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
         bg-gradient-to-br from-gray-600 to-gray-500 
-        border border-gray-400 rounded-sm p-1">
-        <div className="p-1 select-none">
-          <div id="spriteContainer" className="sm:relative p-2 border-2 rounded-lg">
+        border border-gray-400 rounded-sm p-1 pb-2">
+        <div className="select-none sm:px-1 flex flex-col">
+          <div id="spriteContainer" className="grow sm:relative p-2 mt-1 border-2 rounded-lg">
             <div className="sm:absolute sm:inset-0 flex">
               <img id="currentHullSprite" className="m-auto max-h-72 xs:max-h-96 p-2" src={`/static/${state.currentHull.sprite}`} alt={state.currentHull.name} />
             </div>

@@ -7,8 +7,8 @@ const AggregatesTable = ({ data }) => {
     (!row.hideEmpty || row.values[row.values.length-1] > 0)))
 
   return (
-    <div className={`border-2 border-gray-200 rounded-lg px-2 py-1 leading-snug mt-1`}>
-        <table id={data.id} className="w-full">
+    <div className="grow border-2 border-gray-200 rounded-lg px-2 py-1 leading-snug mt-1">
+        <table id={data.id} className="w-full mb-1">
           <tbody>
             <tr className="text-sm text-gray-300 nostripe">
               <td className="text-base font-medium text-blue-400">{data.title}</td>
