@@ -30,7 +30,8 @@ const App = () => {
    */
   useEffect(() => {
     ReactTooltip.rebuild()
-  }, [state.hullSelect, state.ShipBuilder])
+    console.log("Tooltips rebuilt");
+  }, [state.hullSelect, state.shipBuilder])
 
   // Fetch hulls
   const fetchHulls = async () => {
@@ -131,6 +132,7 @@ const App = () => {
             effect="solid"
             delayShow={150}
             className="text-gray-200"
+            html={true}
           />          
           {state.hullSelect && <HullSelect />}
           {state.shipBuilder && <ShipBuilder />}

@@ -44,7 +44,7 @@ const BuildList = () => {
     <div className="border-2 border-gray-200 text-gray-200 rounded-lg px-2 py-1 mt-1">
       <h3 className="text-xl font-medium mb-1 pl-1">Available Builds</h3>
       <h2 className="font-medium">In-game Builds</h2>
-      <table id="hullBuilds" className="w-full leading-snug mb-2">
+      <table id="hullBuilds" className="w-full mb-2">
         <tbody>
           { state.hullBuilds.length > 0 &&
             state.hullBuilds.map((build) => 

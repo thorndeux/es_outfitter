@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useRef } from 'react'
+import ReactTooltip from 'react-tooltip'
 import { DispatchContext, StateContext } from '../App'
 import { compileAttributeTable, getAmmoData, getBuildAttribute, stripe } from '../Utils'
 
 import AggregatesTable from './AggregatesTable'
+import AggregatesTooltip from './AggregatesTooltip'
 
 const BuildAggregates = () => {
   const state = useContext(StateContext)
@@ -126,36 +128,43 @@ const BuildAggregates = () => {
   useEffect(() => {
     const table = document.getElementById("defenseAggregates")
     stripe(table)
+    ReactTooltip.rebuild()
   }, [state.defenseAggregates])
 
   useEffect(() => {
     const table = document.getElementById("mobilityAggregates")
     stripe(table)
+    ReactTooltip.rebuild()
   }, [state.mobilityAggregates])
 
   useEffect(() => {
     const table = document.getElementById("missionsAggregates")
     stripe(table)
+    ReactTooltip.rebuild()
   }, [state.missionsAggregates])
 
   useEffect(() => {
     const table = document.getElementById("spaceAggregates")
     stripe(table)
+    ReactTooltip.rebuild()
   }, [state.spaceAggregates])
 
   useEffect(() => {
     const table = document.getElementById("heatAggregates")
     stripe(table)
+    ReactTooltip.rebuild()
   }, [state.heatAggregates])
 
   useEffect(() => {
     const table = document.getElementById("energyAggregates")
     stripe(table)
+    ReactTooltip.rebuild()
   }, [state.energyAggregates])
 
   useEffect(() => {
     const table = document.getElementById("offenseAggregates")
     stripe(table)
+    ReactTooltip.rebuild()
   }, [state.offenseAggregates])
 
   const calcAggregates = () => {
@@ -588,36 +597,43 @@ const BuildAggregates = () => {
       {
         key: 'Shield DPS',
         values: [state.offenseAggregates.shield_dps],
+        valuetips: [!_.isEmpty(state.currentBuild) && <AggregatesTooltip build={state.currentBuild} attribute={'shield_damage'} />],
         hideEmpty: true,
       },
       {
         key: 'Hull DPS',
         values: [state.offenseAggregates.hull_dps],
+        valuetips: [!_.isEmpty(state.currentBuild) && <AggregatesTooltip build={state.currentBuild} attribute={'hull_damage'} />],
         hideEmpty: true,
       },
       {
         key: 'Average DPS',
         values: [state.offenseAggregates.average_dps],
+        valuetips: [!_.isEmpty(state.currentBuild) && <AggregatesTooltip build={state.currentBuild} attribute={'average_damage'} />],
         hideEmpty: true,
       },
       {
         key: 'Heat DPS',
         values: [state.offenseAggregates.heat_dps],
+        valuetips: [!_.isEmpty(state.currentBuild) && <AggregatesTooltip build={state.currentBuild} attribute={'heat_damage'} />],
         hideEmpty: true,
       },
       {
         key: 'Ion DPS',
         values: [state.offenseAggregates.ion_dps],
+        valuetips: [!_.isEmpty(state.currentBuild) && <AggregatesTooltip build={state.currentBuild} attribute={'ion_damage'} />],
         hideEmpty: true,
       },
       {
         key: 'Slowing DPS',
         values: [state.offenseAggregates.slowing_dps],
+        valuetips: [!_.isEmpty(state.currentBuild) && <AggregatesTooltip build={state.currentBuild} attribute={'slowing_damage'} />],
         hideEmpty: true,
       },
       {
         key: 'Disruption DPS',
         values: [state.offenseAggregates.disruption_dps],
+        valuetips: [!_.isEmpty(state.currentBuild) && <AggregatesTooltip build={state.currentBuild} attribute={'disruption_damage'} />],
         hideEmpty: true,
       },
     ]

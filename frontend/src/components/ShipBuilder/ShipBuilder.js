@@ -67,10 +67,6 @@ const ShipBuilder = () => {
   
   return (
     <>
-    <div className="absolute min-h-screen h-full w-screen bg-gray-900/50 z-10 hidden"></div>
-    <div className="absolute h-screen w-screen z-20 flex flex-col justify-center align-center hidden">
-      {state.allOutfits.length > 0 && <OutfitCard key='test' outfit={state.allOutfits[25]}/>}
-    </div>
     <div className="
       container mx-auto
       grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 

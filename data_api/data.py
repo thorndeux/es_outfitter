@@ -240,7 +240,7 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
     # Groups of attributes to parse
     int_attributes = ['cost', 'outfit_space', 'engine_capacity', 'weapon_capacity', 'cargo_space', 'gun_ports', 'turret_mounts', 'spinal_mounts', 'fuel_capacity', 'bunks', 'required_crew', 'cooling_inefficiency', 'depleted_shield_delay', 'energy_capacity', 'radar_jamming', 'jump_fuel', 'hyperdrive', 'jumpdrive', 'cargo_scan_power', 'cargo_scan_speed', 'outfit_scan_power', 'outfit_scan_speed', 'asteroid_scan_power', 'atmosphere_scan', 'tactical_scan_power', 'illegal', 'lifetime', 'range_override', 'firing_force', 'hit_force', 'missile_strength', 'homing', 'trigger_radius', 'blast_radius', 'anti_missile', 'burst_count', 'burst_reload']
     float_attributes = ['mass', 'heat_dissipation', 'ramscoop', 'scan_interference', 'cloak', 'cloaking_energy', 'cloaking_fuel', 'capture_attack', 'capture_defense', 'inaccuracy', 'velocity', 'velocity_override', 'reload', 'firing_fuel', 'firing_heat', 'firing_energy', 'shield_damage', 'hull_damage', 'heat_damage', 'piercing', 'acceleration', 'drag', 'tracking', 'infrared_tracking', 'radar_tracking', 'optical_tracking', 'turret_turn', 'ion_resistance', 'slowing_resistance']
-    float_multi_60 = ['cooling', 'active_cooling', 'cooling_energy', 'solar_collection', 'energy_generation', 'heat_generation', 'energy_consumption', 'shield_generation', 'shield_energy', 'shield_heat', 'hull_repair_rate', 'hull_energy', 'hull_heat', 'thrusting_energy', 'thrusting_heat', 'turn', 'turning_energy', 'turning_heat', 'reverse_thrusting_energy', 'reverse_thrusting_heat', 'afterburner_fuel', 'afterburner_heat', 'afterburner_energy']
+    float_multi_60 = ['cooling', 'active_cooling', 'cooling_energy', 'solar_collection', 'energy_generation', 'heat_generation', 'energy_consumption', 'shield_generation', 'shield_energy', 'shield_heat', 'hull_repair_rate', 'hull_energy', 'hull_heat', 'thrusting_energy', 'thrusting_heat', 'turning_energy', 'turning_heat', 'reverse_thrusting_energy', 'reverse_thrusting_heat', 'afterburner_fuel', 'afterburner_heat', 'afterburner_energy']
     float_multi_3600 = ['thrust', 'reverse_thrust', 'afterburner_thrust']
     float_multi_100 = ['ion_damage', 'slowing_damage', 'disruption_damage']
     bool_attributes = ['automaton', 'unplunderable', 'cluster', 'stream']
@@ -291,6 +291,9 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
     category = re.search('^\tcategory +?"([^"]*)"', outfit_string, re.M)
     if category:
         outfit.category = category[1]
+    if category == 'Engines':
+        turn = parse_attribute_value('turn', outfit_string)
+        turn and setattr(outfit, 'turn', float(turn[1]) * 60)
 
     thumbnail = re.search('^\tthumbnail +?"?([^"]*)"?$', outfit_string, re.M)
     if thumbnail:

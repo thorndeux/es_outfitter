@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { DispatchContext, StateContext } from '../App'
 import { addOutfit, removeOutfit, stripe } from '../Utils'
 import BuildList from './BuildList'
@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight, faFloppyDisk, faMinus, faPlus,  faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
 import ReactTooltip from 'react-tooltip'
+import { renderToStaticMarkup } from 'react-dom/server'
+import OutfitTooltip from './OutfitTooltip'
 
 const BuildDetails = () => {
   const dispatch = useContext(DispatchContext)
@@ -92,14 +94,14 @@ const BuildDetails = () => {
                 state.currentBuild.outfits.length > 0 ?
                 state.currentBuild.outfits.map((outfit_set) => 
                 <tr key={outfit_set.outfit.id}>
-                  <td>{outfit_set.outfit.name}</td>
+                  <td><span data-tip={renderToStaticMarkup(<OutfitTooltip key={outfit_set.outfit.id} state={state} outfit={outfit_set.outfit} />)}>{outfit_set.outfit.name}</span></td>
                   <td className="pl-3 w-16">&times; {outfit_set.amount}</td>
-                  <td className="text-lg leading-none text-lime-600 hover:text-lime-500 cursor-pointer pl-3"
+                  <td className="text-lg text-lime-600 hover:text-lime-500 cursor-pointer pl-3"
                     data-tip="Add"
                     onClick={e => handleAddOutfit(e, outfit_set.outfit)}>
                     <FontAwesomeIcon icon={faPlus} />
                   </td>
-                  <td className="text-lg leading-none text-red-600 hover:text-red-500 cursor-pointer pl-2"
+                  <td className="text-lg text-red-600 hover:text-red-500 cursor-pointer pl-2"
                     data-tip="Remove"
                     onClick={e => handleRemoveOutfit(e, outfit_set.outfit)}>
                     <FontAwesomeIcon icon={faMinus} />

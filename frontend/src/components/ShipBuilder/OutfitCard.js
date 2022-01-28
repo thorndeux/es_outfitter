@@ -75,7 +75,7 @@ const OutfitCard = ({ outfit }) => {
       </div>
       <div className="flex">
         {outfit.thumbnail &&
-          <img className="m-auto drop-shadow-xl py-5" src={`/static/${outfit.thumbnail}`} alt={outfit.name} />}
+          <img className="m-auto max-h-64 drop-shadow-xl py-5" src={`/static/${outfit.thumbnail}`} alt={outfit.name} />}
       </div>
       <div>
         <h3 className="text-lg font-medium">Base Stats</h3>

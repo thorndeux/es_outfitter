@@ -1,4 +1,5 @@
 import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 const AggregatesTable = ({ data }) => {
   const percentages = ['Cooling efficiency', 'Heat level when idle', 'Heat level in action']
@@ -7,7 +8,7 @@ const AggregatesTable = ({ data }) => {
     (!row.hideEmpty || row.values[row.values.length-1] > 0)))
 
   return (
-    <div className="grow border-2 border-gray-200 rounded-lg px-2 py-1 leading-snug mt-1">
+    <div className="grow border-2 border-gray-200 rounded-lg px-2 py-1 mt-1">
         <table id={data.id} className="w-full mb-1">
           <tbody>
             <tr className="text-sm text-gray-300 nostripe">
@@ -20,17 +21,17 @@ const AggregatesTable = ({ data }) => {
             </tr>
             {rows.length > 0 ? rows.map(row => (
                 <tr key={row.key}>
-                  <td><span data-html={true} data-tip={row.keytip && row.keytip}>{row.key}</span></td>
+                  <td><span data-tip={row.keytip && renderToStaticMarkup(row.keytip)} data-class="max-w-xs sm:max-w-prose">{row.key}</span></td>
                   {
                     row.values.map((value, index) => (
                       percentages.includes(row.key) ?
                       <td key={index}>
-                        <span data-html={true} data-tip={row.valuetips && row.valuetips[index] && row.valuetips[index]}>
+                        <span data-tip={row.valuetips && row.valuetips[index] && renderToStaticMarkup(row.valuetips[index])}>
                           {value.toLocaleString(undefined, {style: 'percent', minimumFractionDigits: 2})}
                         </span>
                       </td> :
                       <td key={index}>
-                        <span data-html={true} data-tip={row.valuetips && row.valuetips[index] && row.valuetips[index]}>
+                        <span data-tip={row.valuetips && row.valuetips[index] && renderToStaticMarkup(row.valuetips[index])}>
                           {value.toLocaleString('en', {maximumFractionDigits: '1'})}
                         </span>
                       </td>

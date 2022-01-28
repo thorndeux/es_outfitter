@@ -39,25 +39,33 @@ const BuildWindow = () => {
       {
         key: 'Hull',
         keytip: 'The...hull? What did you expect?',
-        valuetips: [state.defenseAggregates.hull_contributers],
         values: [state.defenseAggregates.hull],
+        valuetips: [state.defenseAggregates.hull_contributers],
       },
       {
         key: 'Shields',
+        keytip: 'How much shields your ship has',
         values: [state.defenseAggregates.shields],
       },
       {
         key: 'Hull regen',
+        keytip: 'Total amount of hull repaired per second',
         values: [state.defenseAggregates.hull_regen],
         hideEmpty: true,
       },
       {
         key: 'Shield regen',
+        keytip: 'Total shield regeneration per second',
         values: [state.defenseAggregates.shield_regen],
         hideEmpty: true,
       },
       {
         key: 'Anti-missile DPS',
+        keytip: <div className="text-justify">
+          <p className="font-medium">Total amount of anti-missile damage per second</p>
+          <p>Note that this is only a ballpark measure of your build's anti-missile capabilities, due to how the game determines whether an anti-missile shot is a hit or not:</p>
+          <p>For each shot it rolls an x-sided die, where x is the 'anti-missile' value of the turret, and a y-sided die, where y is the missile's 'missile strength'. If the anti-missile roll is greater than the missile roll, the missile will be destroyed. Otherwise, no damage is dealt to it.</p>
+        </div>,
         values: [state.defenseAggregates.anti_missile_dps],
         valuetips: [state.defenseAggregates.anti_missile_dps_contributers],
         hideEmpty: true,
@@ -148,9 +156,20 @@ const BuildWindow = () => {
         bg-gradient-to-br from-gray-600 to-gray-500 
         border border-gray-400 rounded-sm p-1 pb-2">
         <div className="select-none sm:px-1 flex flex-col">
-          <div id="spriteContainer" className="grow sm:relative p-2 mt-1 border-2 rounded-lg">
-            <div className="sm:absolute sm:inset-0 flex">
-              <img id="currentHullSprite" className="m-auto max-h-72 xs:max-h-96 p-2" src={`/static/${state.currentHull.sprite}`} alt={state.currentHull.name} />
+          <div id="spriteContainer" className="grow relative p-2 mt-1 border-2 rounded-lg">
+            <div className="absolute inset-0 flex">
+              <img
+                id="currentHullSprite"
+                className="m-auto max-h-72 xs:max-h-96 p-2"
+                src={`/static/${state.currentHull.sprite}`}
+                alt={state.currentHull.name}
+                data-tip={
+                  `<p class="font-bold">${state.currentHull.name}</p>
+                  <p>${state.currentHull.description}</p>`
+                }
+                data-class="max-w-prose"
+                data-arrow-color="transparent"
+              />
             </div>
           </div>
           <AggregatesTable data={defenseData} />

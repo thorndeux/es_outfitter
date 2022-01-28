@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import ReactTooltip from 'react-tooltip';
 
 import { DispatchContext, StateContext } from '../App';
 import FieldProp from '../FieldProp'
@@ -30,6 +31,7 @@ const HullCard = ({ hull }) => {
 
   const loadShipBuilder = (hull) => {
     dispatch({ type: 'shipBuilder', payload:hull })
+    ReactTooltip.hide()
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   }
@@ -46,7 +48,11 @@ const HullCard = ({ hull }) => {
       p-2
       filter hover:brightness-110"
     >
-      <div className="hover:cursor-pointer" data-tip={`Start new build with ${hull.name}`}>
+      <div
+        className="hover:cursor-pointer" 
+        data-tip={`Start new build with ${hull.name}`}
+        data-arrow-color="transparent"
+      >
         <h2 className="text-xl font-medium" onClick={() => loadShipBuilder(hull)}>{hull.name}</h2>
         <p className="text-justify" onClick={() => loadShipBuilder(hull)}>{hull.description}</p>
       </div>
@@ -54,8 +60,9 @@ const HullCard = ({ hull }) => {
         className="flex hover:cursor-pointer"
         onClick={() => loadShipBuilder(hull)}
         data-tip={`Start new build with ${hull.name}`}
+        data-arrow-color="transparent"
       >
-        <img className="m-auto max-h-40 xs:max-h-56 drop-shadow-xl py-5" src={`/static/${hull.sprite}`} alt={hull.name} onClick={() => loadShipBuilder(hull)}/>
+        <img className="m-auto max-h-64 drop-shadow-xl py-5" src={`/static/${hull.sprite}`} alt={hull.name} onClick={() => loadShipBuilder(hull)}/>
       </div>
       <div>
         <h3 className="text-lg font-medium">Base Stats</h3>
