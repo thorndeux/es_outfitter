@@ -1,11 +1,14 @@
 import React, { useContext, useEffect } from 'react'
+
+import { FaPlus } from 'react-icons/fa'
+
 import { DispatchContext, StateContext } from '../App'
+
 import { addOutfit, stripe } from '../Utils'
 
 import FieldProp from '../FieldProp'
+import toast from 'react-hot-toast'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 const OutfitCard = ({ outfit }) => {
   const dispatch = useContext(DispatchContext)
@@ -19,12 +22,17 @@ const OutfitCard = ({ outfit }) => {
 
   const handleAddOutfit = (e, outfit) => {
     const result = addOutfit(e, outfit, state.currentBuild)
-    if (typeof result === 'string') {
-      console.log(result)
-      return
+    if (typeof result.attribute === 'string') {
+      toast.error(
+        <div>
+          <p>Not enough <span className="font-bold">{result.attribute.replaceAll("_", " ")}</span>  to add <span className="font-bold">{outfit.name}</span>.</p>
+          <p className="pt-2">Required: <span className="font-bold text-lime-500">{Math.abs(outfit[result.attribute])}</span> - Remaining: <span className="font-bold text-red-500">{result.remaining}</span></p>
+        </div>
+      ) 
     }
     else {
-      dispatch({ type: 'setBuildOutfits', payload: result})
+      dispatch({ type: 'setBuildOutfits', payload: result.outfits })
+      toast.success(<p>Added <span className="font-bold">{result.amount}</span> &times; <span className="font-bold">{outfit.name}</span>!</p>)
     }
   }
 
@@ -67,7 +75,7 @@ const OutfitCard = ({ outfit }) => {
                   text-lime-600 hover:text-lime-500
                   p-1
                 ">                
-                <FontAwesomeIcon icon={faPlus} />
+                <FaPlus />
               </button>
             </div>
         </h2>

@@ -1,13 +1,14 @@
 import React, { useContext, useEffect } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import toast from 'react-hot-toast'
+
+import { FaCaretRight, FaSave, FaMinus, FaPlus, FaTrashAlt } from 'react-icons/fa'
+import ReactTooltip from 'react-tooltip'
+
 import { DispatchContext, StateContext } from '../App'
 import { addOutfit, removeOutfit, stripe } from '../Utils'
+
 import BuildList from './BuildList'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretRight, faFloppyDisk, faMinus, faPlus,  faTrashCan } from '@fortawesome/free-solid-svg-icons'
-
-import ReactTooltip from 'react-tooltip'
-import { renderToStaticMarkup } from 'react-dom/server'
 import OutfitTooltip from './OutfitTooltip'
 
 const BuildDetails = () => {
@@ -41,23 +42,33 @@ const BuildDetails = () => {
    */
   const handleAddOutfit = (e, outfit) => {
     const result = addOutfit(e, outfit, state.currentBuild)
-    if (typeof result === 'string') {
-      console.log(result)
-      return
+    if (typeof result.attribute === 'string') {
+      toast.error(
+        <div>
+          <p>Not enough <span className="font-bold">{result.attribute.replaceAll("_", " ")}</span>  to add <span className="font-bold">{outfit.name}</span>.</p>
+          <p className="pt-2">Required: <span className="font-bold text-lime-500">{Math.abs(outfit[result.attribute])}</span> - Remaining: <span className="font-bold text-red-500">{result.remaining}</span></p>
+        </div>
+      )      
     }
     else {
-      dispatch({ type: 'setBuildOutfits', payload: result})
+      dispatch({ type: 'setBuildOutfits', payload: result.outfits })
+      toast.success(<p>Added <span className="font-bold">{result.amount}</span> &times; <span className="font-bold">{outfit.name}</span>!</p>)
     }
   }
 
   const handleRemoveOutfit = (e, outfit) => {
     const result = removeOutfit(e, outfit, state.currentBuild)
-    if (typeof result === 'string') {
-      console.log(result)
-      return
+    if (typeof result.attribute === 'string') {      
+      toast.error(
+        <div>
+          <p>Not enough <span className="font-bold">{result.attribute.replaceAll("_", " ")}</span>  to remove <span className="font-bold">{outfit.name}</span>.</p>
+          <p className="pt-2">Required: <span className="font-bold  text-lime-500">{Math.abs(outfit[result.attribute])}</span> - Remaining: <span className="font-bold text-red-500">{result.remaining}</span></p>
+        </div>
+      )       
     }
     else {
-      dispatch({ type: 'setBuildOutfits', payload: result})
+      dispatch({ type: 'setBuildOutfits', payload: result.outfits })
+      toast.success(<p>Removed <span className="font-bold">{result.amount}</span> &times; <span className="font-bold">{outfit.name}</span>!</p>)
     }
   }
   
@@ -98,17 +109,19 @@ const BuildDetails = () => {
                   <td className="pl-3 w-16">&times; {outfit_set.amount}</td>
                   <td className="text-lg text-lime-600 hover:text-lime-500 cursor-pointer pl-3"
                     data-tip="Add"
+                    data-place="bottom"
                     onClick={e => handleAddOutfit(e, outfit_set.outfit)}>
-                    <FontAwesomeIcon icon={faPlus} />
+                    <FaPlus/>
                   </td>
-                  <td className="text-lg text-red-600 hover:text-red-500 cursor-pointer pl-2"
+                  <td className="text-lg text-red-600 hover:text-red-500 cursor-pointer pl-2 pr-1"
                     data-tip="Remove"
+                    data-place="bottom"
                     onClick={e => handleRemoveOutfit(e, outfit_set.outfit)}>
-                    <FontAwesomeIcon icon={faMinus} />
+                    <FaMinus/>
                   </td>
                 </tr>
                 ) :
-                <tr><td>No outfits yet</td></tr>
+                <tr><td colSpan={3}>No outfits yet</td></tr>
                 )
                 
               }
@@ -122,7 +135,7 @@ const BuildDetails = () => {
               brightness-90 hover:brightness-125
               p-2"
             onClick={() => dispatch({ type: 'saveBuild' })}
-            ><FontAwesomeIcon icon={faFloppyDisk}/>
+            ><FaSave className="inline"/>
           </button>
           <button
             data-tip="Save as"
@@ -130,9 +143,9 @@ const BuildDetails = () => {
             brightness-90 hover:brightness-125 hover:bg-gray-600
             p-2"
             onClick={() => dispatch({ type: 'saveNewBuild' }) }
-            ><FontAwesomeIcon icon={faFloppyDisk}/>
-            <FontAwesomeIcon className="px-1" icon={faCaretRight}/>
-            <FontAwesomeIcon icon={faFloppyDisk}/>
+            ><FaSave className="inline"/>
+            <FaCaretRight className="inline"/>
+            <FaSave className="inline"/>
           </button>
           <button
             data-tip="Clear"
@@ -140,7 +153,7 @@ const BuildDetails = () => {
             brightness-90 hover:brightness-125 hover:bg-gray-600
             p-2"
             onClick={() => dispatch({ type: 'clearBuild' })}
-            ><FontAwesomeIcon icon={faTrashCan}/>
+            ><FaTrashAlt className="inline"/>
           </button>
         </div>
       </div>

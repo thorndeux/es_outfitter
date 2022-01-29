@@ -1,12 +1,10 @@
 import React, { useContext, useEffect } from 'react'
-import { DispatchContext, StateContext } from '../App'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCloudArrowDown, faCopy, faTrashCan } from '@fortawesome/free-solid-svg-icons'
-
 import ReactTooltip from 'react-tooltip'
+import { FaCloudDownloadAlt, FaCopy, FaTrashAlt } from 'react-icons/fa'
 
+import { DispatchContext, StateContext } from '../App'
 import { stripe } from '../Utils'
+
 
 const BuildList = () => {
   const state = useContext(StateContext)
@@ -56,7 +54,7 @@ const BuildList = () => {
                 data-tip="Clone"
                 onClick={() => dispatch({ type:'cloneBuild', payload: build })} 
                 className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
-                  <FontAwesomeIcon icon={faCopy} />
+                  <FaCopy />
               </td>
             </tr>
             )
@@ -76,13 +74,13 @@ const BuildList = () => {
                 data-tip="Delete build"
                 onClick={() => dispatch({ type:'deleteBuild', payload: build }, ReactTooltip.hide())} 
                 className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
-                <FontAwesomeIcon icon={faTrashCan} />
+                <FaTrashAlt />
               </td>
               <td
                 data-tip="Load build"
                 onClick={() => dispatch({ type:'loadBuild', payload: build })} 
                 className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110">
-                <FontAwesomeIcon icon={faCloudArrowDown} />
+                <FaCloudDownloadAlt />
               </td>
             </tr>
             )

@@ -2,12 +2,15 @@ import React, { useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 
 import ReactTooltip from 'react-tooltip';
+import { Toaster } from 'react-hot-toast';
+
+import reducer from './Reducers';
+import initialState from './Store';
 
 import HullSelect from './HullSelect/HullSelect';
 import ScrollToTop from './ScrollToTop';
 import ShipBuilder from './ShipBuilder/ShipBuilder';
-import reducer from './Reducers';
-import initialState from './Store';
+import { FaExclamation } from 'react-icons/fa';
 
 export const StateContext = React.createContext()
 export const DispatchContext = React.createContext()
@@ -24,14 +27,6 @@ const App = () => {
 
     getHulls()
   }, [state.release])
-
-  /**
-   * Rebuild tooltips whenever view changes
-   */
-  useEffect(() => {
-    ReactTooltip.rebuild()
-    console.log("Tooltips rebuilt");
-  }, [state.hullSelect, state.shipBuilder])
 
   // Fetch hulls
   const fetchHulls = async () => {
@@ -124,6 +119,15 @@ const App = () => {
     return data
   }
 
+
+  /**
+   * Rebuild tooltips whenever view changes
+   */
+   useEffect(() => {
+    ReactTooltip.rebuild()
+  }, [state.hullSelect, state.shipBuilder])
+
+
   return (
     <DispatchContext.Provider value={dispatch}>
       <StateContext.Provider value={state}>
@@ -133,7 +137,17 @@ const App = () => {
             delayShow={150}
             className="text-gray-200"
             html={true}
-          />          
+          />
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              className: "",
+              // error: {
+              //   className: "bg-red-900 border border-red-500 text-red-100",
+              //   icon: <FaExclamation size="2em" className="text-red-500"/>,
+              // }
+            }}
+          />
           {state.hullSelect && <HullSelect />}
           {state.shipBuilder && <ShipBuilder />}
           <ScrollToTop />

@@ -120,8 +120,12 @@ export const compileAttributeTable = (build, attributeName) => {
  * 
  * @param {Build Object} build Build to check for max capacity
  * @param {Outfit object} outfit Outfit to check for max number
- * @returns Maximum number of outfits that fit in build OR
- *          string containing error message.
+ * @returns Maximum number of outfits that fit in build
+ *          OR
+ *          object containing error info:
+ *            attribute: limiting attribute
+ *            remaining: amount remaining in build
+ *            required: amount required to remove outfit
  */
 export const maxOutfitsToAdd = (build, outfit) => {
   const attributes_to_check = ['gun_ports', 'turret_mounts', 'engine_capacity', 'weapon_capacity', 'outfit_space', 'cargo_space', 'required_crew']
@@ -133,27 +137,30 @@ export const maxOutfitsToAdd = (build, outfit) => {
     // Only check if the attribute is substracted, not added
     if (outfit[attribute] < 0) {
       const freeAttribute = getBuildAttribute(build, attribute)
+      // Check whether this attribute restricts the number of outfits we can add
       max_outfits_to_add = Math.min(max_outfits_to_add, Math.floor(freeAttribute / Math.abs(outfit[attribute])))
+      // If none can be added, return neccessary data to construct an error message
       if (max_outfits_to_add === 0) {
-        return `Not enough ${attribute.replaceAll("_", " ")} (${freeAttribute} remaining) to add ${outfit.name} (${Math.abs(outfit[attribute])} required).`
+        return {attribute: attribute, remaining: freeAttribute, required: Math.abs(outfit[attribute])}
       }
     }
   }
 
-  // Check different ammo capacities
-  // Compile list of ammo_types in build    
-  const ammo_types = new Set(build.outfits.filter(outfit_set => outfit_set.outfit.ammo).map(outfit_set => outfit_set.outfit.ammo && outfit_set.outfit.ammo))
-
-  for (const ammo_type of ammo_types) {
-    if (outfit.ammo_capacity < 0){
-      const capacity = getAmmoCapacity(build, ammo_type)
-      const stock = (build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type) ? build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type).amount : 0)
-      max_outfits_to_add = Math.min(max_outfits_to_add, (capacity - stock))
-      if (max_outfits_to_add === 0) {
-        return `Not enough ammo capacity (${capacity - stock} remaining) to add ${outfit.name} (${Math.abs(outfit.ammo_capacity)} required).`
-      }
+  // Check whether outfit needs ammo_capacity  
+  if (outfit.ammo_capacity < 0){
+    const ammo_type = outfit.id
+    // How many can we store in total?
+    const capacity = getAmmoCapacity(build, ammo_type)
+    // How many do we already have?
+    const stock = (build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type) ? build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type).amount : 0)
+    // Can we add as many as we like?
+    max_outfits_to_add = Math.min(max_outfits_to_add, (capacity - stock))
+    // If none can be added, return neccessary data to construct an error message
+    if (max_outfits_to_add === 0) {
+    return {attribute: 'ammo_capacity', remaining: capacity - stock, required: Math.abs(outfit.ammo_capacity)}
     }
   }
+  
 
   return max_outfits_to_add
 }
@@ -165,17 +172,16 @@ export const maxOutfitsToAdd = (build, outfit) => {
  * 
  * @param {SyntheticEvent} e Event triggering the handler
  * @param {Outfit object} outfit Outfit to be added
- * @returns New outfits or an error message, if there is
- *          not enough room to fit at least one more outfit.
+ * @returns Object containing amount added and array with new outfits OR 
+ *          an object containing error data, if there is not enough room
+ *          to fit at least one more outfit.
  */
  export const addOutfit = (e, outfit, build) => {
   // Check how many of the outfit can be added
   const max_outfit_number = maxOutfitsToAdd(build, outfit)
-  // If there is no more room, return a message specifying
+  // If there is no more room, return an object with info specifying
   // the limiting resource
-  if (isNaN(max_outfit_number)) {
-    return max_outfit_number
-  }
+  if (isNaN(max_outfit_number)) return max_outfit_number
     
   // Adjust amount if Shift and/or Ctrl were pressed
   var amount = 1
@@ -206,22 +212,37 @@ export const maxOutfitsToAdd = (build, outfit) => {
   newOutfits.sort(sortByOutfitCategory())
 
   // Update outfits of current build
-  return newOutfits
+  return {amount: amount, outfits: newOutfits}
 }
 
 
 /**
  * Checks the maximum number of outfits of the provided type
  * that could be removed from the provided build without exceeding
- * any resource requirements
+ * any resource requirements.
+ * 
+ * If the limiting resource is ammo capacity (i.e. if the outfit
+ * to be removed is an ammo storage rack/launcher), returns new
+ * ammo capacity, so that surplus ammo can be removed from the build.
  * 
  * @param {Build Object} build Build to check for max capacity
  * @param {Outfit object} outfit Outfit to check for max number
- * @returns Maximum number of outfits that can be removed OR
- *          string containing error message.
+ * @returns Maximum number of outfits that can be removed
+ *          OR
+ *          object containing error info:
+ *            attribute: limiting attribute
+ *            remaining: amount remaining in build
+ *            required: amount required to remove outfit
+ *          OR
+ *          object containing ammo capacity info:
+ *            attribute: 'ammo_capacity'
+ *            ammo_type: id of the affected ammo
+ *            capacity: current max capacity for that ammo type
+ *            max_outfits_to_remove: maximum number of outfits that can
+ *                                   be removed
  */
  export const maxOutfitsToRemove = (build, outfit) => {
-  const attributes_to_check = ['outfit_space', 'cargo_space', 'ammo_capacity']
+  const attributes_to_check = ['outfit_space', 'cargo_space']
   let max_outfits_to_remove = 100000
 
   // Check maximum amount of outfits that can be removed
@@ -232,24 +253,28 @@ export const maxOutfitsToAdd = (build, outfit) => {
       const freeAttribute = getBuildAttribute(build, attribute)
       max_outfits_to_remove = Math.min(max_outfits_to_remove, Math.floor(freeAttribute / outfit[attribute]))
       if (max_outfits_to_remove === 0) {
-        return `Not enough ${attribute.replaceAll("_", " ")} (${freeAttribute} remaining) to remove ${outfit.name} (${Math.abs(outfit[attribute])} required).`
+        return {attribute: attribute, remaining: freeAttribute, required: Math.abs(outfit[attribute])}
       }
     }
   }
 
-  // Check different ammo capacities
-  // Compile list of ammo_types in build    
-  const ammo_types = new Set(build.outfits.filter(outfit_set => outfit_set.outfit.ammo).map(outfit_set => outfit_set.outfit.ammo && outfit_set.outfit.ammo))
-
-  for (const ammo_type of ammo_types) {
-    // Only check if the outfit adds to the attribute (storage racks), not when it substracts from it
-    if (outfit.ammo_capacity > 0){
-      const capacity = getAmmoCapacity(build, ammo_type)
-      const stock = (build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type) ? build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type).amount : 0)
-      max_outfits_to_remove = Math.min(max_outfits_to_remove, Math.floor((capacity - stock) / outfit.ammo_capacity))
-      if (max_outfits_to_remove === 0) {
-        return `Not enough free ammo capacity (${capacity - stock} remaining) to remove ${outfit.name} (${Math.abs(outfit.ammo_capacity)} required).`
-      }
+  // If outfit can store ammo, check build ammo capacity. If there 
+  // isn't enough ammo capacity to remove an ammo storage racks, we
+  // want to remove the appropriate amount of missiles, so that the
+  // storage rack/launcher can be safely removed.
+  if (outfit.ammo_capacity > 0){
+    const ammo_type = outfit.ammo
+    // Current capacity for the ammo type
+    const capacity = getAmmoCapacity(build, ammo_type)
+    // Current stock of ammo type
+    const stock = (build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type) ? build.outfits.find(outfit_set => outfit_set.outfit.id === ammo_type).amount : 0)
+    // Check whether we need to remove missiles to remove the outfit
+    const can_storage_unit_be_removed = Math.floor((capacity - stock) / outfit.ammo_capacity)
+    // If no outfits can be removed due to lack of ammo capacity,
+    // return information enabling calling function to remove the
+    // appropriate amount of ammo
+    if (can_storage_unit_be_removed === 0) {
+      return { attribute: 'ammo_capacity', ammo_type: ammo_type, max_outfits_to_remove: max_outfits_to_remove, capacity: capacity }        
     }
   }
 
@@ -264,24 +289,39 @@ export const maxOutfitsToAdd = (build, outfit) => {
  * 
  * @param {SyntheticEvent} e Event triggering the handler
  * @param {Outfit object} outfit Outfit to be removed
- * @returns New outfits or an error message, if removing
+ * @returns Object containing amount removed and array with
+ *          new outfits OR 
+ *          an object containing error data, if removing
  *          the outfit would remove needed resources from
  *          the build.
  */
 export const removeOutfit = (e, outfit, build) => {
-  // Check maximum number of outfits that coul be removed
-  const max_outfit_number = maxOutfitsToRemove(build, outfit)
-  // If there is no more room, return a message specifying
-  // the limiting resource
-  if (isNaN(max_outfit_number)) {
-    return max_outfit_number
-  }
-    
+  // Check maximum number of outfits that could be removed
+  let max_outfit_number = maxOutfitsToRemove(build, outfit)
+  
   // Adjust amount if Shift and/or Ctrl were pressed
-  var amount = 1
+  let amount = 1
   e.shiftKey && (amount *= 5)
   e.ctrlKey && (amount *= 20)
-  e.getModifierState('AltGraph') && (amount = max_outfit_number)
+  e.getModifierState('AltGraph') && (amount = isNaN(max_outfit_number) ? max_outfit_number.attribute === 'ammo_capacity' ? max_outfit_number.max_outfits_to_remove : 0 : max_outfit_number)
+
+  // Variables to handle removing ammo storage units
+  let ammo_type = 0
+  let new_capacity = 0
+  
+  if (isNaN(max_outfit_number)) {
+    // If there is no more room, return a message specifying
+    // the limiting resource  
+    if (max_outfit_number.attribute != 'ammo_capacity') {
+      return max_outfit_number
+    }
+    // If the outfit is a storage unit, update variables
+    else {
+      ammo_type = max_outfit_number.ammo_type
+      new_capacity = max_outfit_number.capacity - (outfit.ammo_capacity * Math.min(amount, max_outfit_number.max_outfits_to_remove))
+      max_outfit_number = max_outfit_number.max_outfits_to_remove
+    }
+  }
 
   // Make a temporary copy of the current build
   const newBuild = cloneDeep(build)
@@ -289,6 +329,8 @@ export const removeOutfit = (e, outfit, build) => {
   // Adjust outfits
   const newOutfits = newBuild.outfits
   const outfit_set = newOutfits.find(outfit_set => outfit_set.outfit.id === outfit.id)
+  // Store current amount of outfit
+  const current = outfit_set.amount
   // If the amount to remove is less than current outfits, decrease the amount accordingly
   if (outfit_set.amount > amount) {
     outfit_set.amount -= amount
@@ -297,8 +339,22 @@ export const removeOutfit = (e, outfit, build) => {
     // Remove outfit_set entirely
     newOutfits.splice(newOutfits.indexOf(outfit_set), 1)
   }
+
+  // Adjust amount of ammo, if neccessary
+  if (ammo_type > 0) {
+    const ammo_set = newOutfits.find(ammo_set => ammo_set.outfit.id === ammo_type)
+    // If the new ammo capacity is above 0, decrease the amount of ammo accordingly
+    if (new_capacity > 0) {
+      ammo_set.amount = Math.min(new_capacity, ammo_set.amount)
+    }
+    else {
+    // Else, remove ammo entirely
+      newOutfits.splice(newOutfits.indexOf(ammo_set), 1)
+    }
+  }
+
   // If new build is still valid, update outfits of current build
-    return newOutfits    
+  return {amount: Math.min(amount, current), outfits: newOutfits}
 }
 
 

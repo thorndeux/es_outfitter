@@ -326,7 +326,6 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
     # Calculate some aggregates
     outfit.combined_cooling = float(outfit.cooling + outfit.active_cooling)
     outfit.total_energy_generation = float(outfit.energy_generation + outfit.solar_collection)
-    outfit.average_damage = float(outfit.shield_damage + outfit.hull_damage) / 2
 
     # Handle some special cases
     if outfit.hyperdrive and not outfit.jump_fuel:
@@ -368,6 +367,9 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
                     setattr(outfit, attribute, int(outfit_value + submunition_value if attribute == "lifetime" else submunition_value or outfit.submunition_count == 0 * outfit.submunition_count))
                 else:
                     setattr(outfit, attribute, float(outfit_value + submunition_value if attribute == "lifetime" else submunition_value or outfit.submunition_count == 0 * outfit.submunition_count))
+
+    # Calculate average damage, now that all outfits have their damage values
+    outfit.average_damage = float(outfit.shield_damage + outfit.hull_damage) / 2
 
     # Calculate aggregate values for weapons
     if outfit.category in ['Guns', 'Secondary Weapons', 'Turrets', 'Anti-missile']:
