@@ -52,7 +52,7 @@ const BuildDetails = () => {
     }
     else {
       dispatch({ type: 'setBuildOutfits', payload: result.outfits })
-      toast.success(<p>Added <span className="font-bold">{result.amount}</span> &times; <span className="font-bold">{outfit.name}</span>!</p>)
+      // toast.success(<p>Added <span className="font-bold">{result.amount}</span> &times; <span className="font-bold">{outfit.name}</span>!</p>)
     }
   }
 
@@ -68,7 +68,7 @@ const BuildDetails = () => {
     }
     else {
       dispatch({ type: 'setBuildOutfits', payload: result.outfits })
-      toast.success(<p>Removed <span className="font-bold">{result.amount}</span> &times; <span className="font-bold">{outfit.name}</span>!</p>)
+      // toast.success(<p>Removed <span className="font-bold">{result.amount}</span> &times; <span className="font-bold">{outfit.name}</span>!</p>)
     }
   }
   

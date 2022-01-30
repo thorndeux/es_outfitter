@@ -400,29 +400,8 @@ const BuildAggregates = () => {
     offense.current.ammo_capacities = getAmmoData(state.allOutfits, build)
   }
 
-  // Info that needs to be here:
 
-    // Aggregate stats:
-      // Max Speed
-      // Acceleration
-      // Turn
-      // Mass
-      // Required Crew ?
-      // Bunks
-      // Cargo Space
-
-      // Outfit Space     total - remaining
-      // Engine Capacity  total - remaining
-      // Weapon Capacity  total - remaining
-      // Hardpoints       total - remaining
-
-      // Heat balance
-      // Energy balance
-      // Fuel stuff
-      
-      // DPS stats
-      // Anti-missile
-
+  // Data to populate AggregatesTables
   const spaceData = {
     id: 'spaceAggregates',
     title: 'Space',

@@ -141,7 +141,7 @@ const App = () => {
           <Toaster 
             position="top-right"
             toastOptions={{
-              className: "",
+              className: "bg-gray-900/90 text-gray-300 text-sm",
               // error: {
               //   className: "bg-red-900 border border-red-500 text-red-100",
               //   icon: <FaExclamation size="2em" className="text-red-500"/>,
