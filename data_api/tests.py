@@ -79,3 +79,8 @@ class ParseOutfitsTest(TestCase):
     bullfrog = Outfit.objects.get(name="Bullfrog Anti-Missile")
     self.assertEqual(bullfrog.shots_per_second, decimal.Decimal('3'))
     self.assertEqual(bullfrog.anti_missile_dps, decimal.Decimal('36'))
+
+  def test_hull_variant_aggregates(self):
+    marauder_arrow_engines = Hull.objects.get(name="Marauder Arrow (Engines)")
+    self.assertEqual(marauder_arrow_engines.speed_rating, decimal.Decimal('57.5'))
+    self.assertEqual(marauder_arrow_engines.agility_rating, decimal.Decimal('31.94'))

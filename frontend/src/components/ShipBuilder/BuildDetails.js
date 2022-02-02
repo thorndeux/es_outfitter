@@ -46,7 +46,7 @@ const BuildDetails = () => {
       toast.error(
         <div>
           <p>Not enough <span className="font-bold">{result.attribute.replaceAll("_", " ")}</span>  to add <span className="font-bold">{outfit.name}</span>.</p>
-          <p className="pt-2">Required: <span className="font-bold text-lime-500">{Math.abs(outfit[result.attribute])}</span> - Remaining: <span className="font-bold text-red-500">{result.remaining}</span></p>
+          <p className="pt-2">Required: <span className="font-bold text-blue-400">{Math.abs(outfit[result.attribute])}</span> - Remaining: <span className="font-bold text-red-500">{result.remaining}</span></p>
         </div>
       )      
     }
@@ -62,7 +62,7 @@ const BuildDetails = () => {
       toast.error(
         <div>
           <p>Not enough <span className="font-bold">{result.attribute.replaceAll("_", " ")}</span>  to remove <span className="font-bold">{outfit.name}</span>.</p>
-          <p className="pt-2">Required: <span className="font-bold  text-lime-500">{Math.abs(outfit[result.attribute])}</span> - Remaining: <span className="font-bold text-red-500">{result.remaining}</span></p>
+          <p className="pt-2">Required: <span className="font-bold text-blue-400">{Math.abs(outfit[result.attribute])}</span> - Remaining: <span className="font-bold text-red-500">{result.remaining}</span></p>
         </div>
       )       
     }

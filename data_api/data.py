@@ -291,7 +291,7 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
     category = re.search('^\tcategory +?"([^"]*)"', outfit_string, re.M)
     if category:
         outfit.category = category[1]
-    if category == 'Engines':
+    if outfit.category == 'Engines':
         turn = parse_attribute_value('turn', outfit_string)
         turn and setattr(outfit, 'turn', float(turn[1]) * 60)
 
@@ -667,11 +667,6 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     if engine_capacity:
         hull.engine_capacity = int(engine_capacity[1])
 
-    # some aggregates
-    max_mass = hull.mass + hull.outfit_space + hull.cargo_space
-    hull.speed_rating = hull.engine_capacity / hull.drag
-    hull.agility_rating = hull.engine_capacity / max_mass * 100
-
     ramscoop = re.search(r'^\t+?"ramscoop" +?([\d\.-]*)$', full_ship, re.M)
     if ramscoop:
         hull.ramscoop = float(ramscoop[1])
@@ -816,6 +811,9 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     
     hull.spinal_mount = len(re.findall('\t+?"spinal mount"', full_ship, re.M))
 
+    # Calculate aggregarte values for hull
+    hull = calc_hull_aggregates(hull)
+
     hull.save()
     logger.info(f"Created hull '{hull.name}'")
     
@@ -871,6 +869,25 @@ def parse_build(hull: Hull, outfits_list: str, default=False):
     logger.info(f"'{build.name}' created")
 
     return build
+
+def calc_hull_aggregates(hull: Hull):
+    """
+    Calcuates aggregate hull attributes that are derived from the base
+    hull attributes
+
+    Args:
+        hull (Hull): Hull for which to calculate the aggregate attributes
+
+    Returns:
+        Hull: Hull with calculate aggregate attributes
+    """
+    logger.info(f"Calculating aggregate attributes for {hull.name}")
+
+    max_mass = hull.mass + hull.outfit_space + hull.cargo_space
+    hull.speed_rating = hull.engine_capacity / hull.drag
+    hull.agility_rating = (hull.engine_capacity / max_mass) * 100
+
+    return hull
 
 
 def parse_hull_variant(filename: Path, hull_variant: str, release: str):
@@ -973,6 +990,9 @@ def parse_hull_variant(filename: Path, hull_variant: str, release: str):
         hull.description = re.sub(r'^.\t|^`|`$|^"|"$', '', descriptions[0])
         if len(descriptions) == 2:
             hull.description = hull.description + '\n' + re.sub(r'^.\t|^`|`$|^"|"$', '', descriptions[1])
+
+    # Calculate aggregate values
+    hull = calc_hull_aggregates(hull)
 
     hull.save()
     logger.info(f"Created hull variant '{hull.name}'")
