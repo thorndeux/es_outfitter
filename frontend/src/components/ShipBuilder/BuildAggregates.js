@@ -171,7 +171,6 @@ const BuildAggregates = () => {
     const build = state.currentBuild
     // Hull and shields
     const hull = defense.current.hull = getBuildAttribute(build, 'hull')
-    defense.current.hull_contributers = compileAttributeTable(build, 'hull')
     const shields = defense.current.shields = getBuildAttribute(build, 'shields')
     defense.current.total_hp = hull + shields
 

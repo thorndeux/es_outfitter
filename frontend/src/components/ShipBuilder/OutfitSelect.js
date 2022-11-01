@@ -60,6 +60,7 @@ const OutfitSelect = () => {
       options: [
         { value: 'Thruster', label: 'Thrusters' },
         { value: 'Steering', label: 'Steering' },
+        { value: 'Hyperdrive', label: 'Hyperdrive' },
       ]
     },
     { label: 'Systems',

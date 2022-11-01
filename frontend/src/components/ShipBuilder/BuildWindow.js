@@ -63,8 +63,9 @@ const BuildWindow = () => {
         key: 'Anti-missile DPS',
         keytip: <div className="text-justify">
           <p className="font-medium">Total amount of anti-missile damage per second</p>
-          <p>Note that this is only a ballpark measure of your build's anti-missile capabilities, due to how the game determines whether an anti-missile shot is a hit or not:</p>
-          <p>For each shot it rolls an x-sided die, where x is the 'anti-missile' value of the turret, and a y-sided die, where y is the missile's 'missile strength'. If the anti-missile roll is greater than the missile roll, the missile will be destroyed. Otherwise, no damage is dealt to it.</p>
+          <p className="mt-1">Note that this is only a ballpark measure of your build's anti-missile capabilities, due to how the game determines whether an anti-missile shot is a hit or not:</p>
+          <p className="mt-1">For each shot it rolls an x-sided die, where x is the 'anti-missile' value of the turret, and a y-sided die, where y is the missile's 'missile strength'. If the anti-missile roll is greater than the missile roll, the missile will be destroyed. Otherwise, no damage is dealt to it.</p>
+          <p className="mt-1">That means that an anti-missile turret with 4 shots per second and an anti-missile of 10 will be better against sturdier missiles than a turret with 10 shots per second and an anti-missile of 4, even though both multiply to 40.</p>
         </div>,
         values: [state.defenseAggregates.anti_missile_dps],
         valuetips: [state.defenseAggregates.anti_missile_dps_contributers],
@@ -80,7 +81,9 @@ const BuildWindow = () => {
     rows: [
       {
         key: 'Max speed',
+        keytip: 'Thrust divided by drag',
         values: ['', state.mobilityAggregates.max_speed],
+        valuetips: [''],
       },
       {
         key: 'Acceleration',
