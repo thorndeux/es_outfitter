@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  es-outfitter:
+    image: thorndeux/es-outfitter:prod
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.prod
+    env_file:
+      - ./.env.prod
+    volumes: 
+      - raw_data:/app/data_api/raw_data:rw
+      - static_files:/app/es_outfitter/static:rw
+      - db:/app/db:rw
+    ports:
+      - 8000:8000
+
+  nginx:
+    build:
+      context: nginx
+    volumes:
+      - static_files:/home/app/web/staticfiles
+    ports:
+      - 1337:80
+    depends_on:
+      - es-outfitter
+    
+
+volumes:
+  raw_data:
+  static_files:
+  db:

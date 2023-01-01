@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@+3(z%61m=(!ug2bv_fpq6%$qu2y8())&eocy6n1zkb!brr%(x'
+SECRET_KEY = os.environ.get("SECRET_KEY", default='@+3(z%61m=(!ug2bv_fpq6%$qu2y8())&eocy6n1zkb!brr%(x')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", default=False) == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ") if os.environ.get("DJANGO_ALLOWED_HOSTS") else []
 
 
 # Application definition
@@ -36,16 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'data_api.apps.DataApiConfig',
+    'data_api',
     'rest_framework',
     'corsheaders',
     'frontend',
     'tailwind',
     'theme',
+    'django_browser_reload',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,12 +55,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
   'http://localhost:8000',
-  'http://127.0.0.1:8000'
+  'http://127.0.0.1:8000',
+  'http://localhost:80',
+  'http://127.0.0.1:80',
+  'http://localhost:1337',
+  'http://127.0.0.1:1337',
 )
 
 ROOT_URLCONF = 'es_outfitter.urls'
@@ -92,7 +100,7 @@ INTERNAL_IPS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db' / 'db.sqlite3',
     }
 }
 
@@ -136,8 +144,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-   str(BASE_DIR / 'data_api/static/data_api')
+   BASE_DIR / 'data_api/static/data_api',
+   BASE_DIR / 'frontend/static/frontend',
+   BASE_DIR / 'theme/static/css/dist'
 ]
+
+STATIC_ROOT = 'es_outfitter/static'
 
 STATICFILE_STORAGE = [ 'django.contrib.staticfiles.storage.ManifestStaticFileStorage']
 
@@ -181,7 +193,7 @@ LOGGING = {
     },
 }
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Django Restframework Settings

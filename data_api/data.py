@@ -77,17 +77,17 @@ def get_release(release: str):
         (raw / release).mkdir()
         logger.info(f'Created data directory {str(raw / release)}')
     except FileExistsError:
-        logger.info(f"Data directory for {release} already exists.")
+        logger.info(f'Data directory for {release} already exists.')
 
     try:
         (static / release).mkdir()
         logger.info(f'Created static directory {str(static / release)}')
     except FileExistsError:
-        logger.info(f"Static directory for {release} already exists.")
+        logger.info(f'Static directory for {release} already exists.')
 
     # Copy relevant files to data directory
     # Relevant files include these substrings
-    substrings = ['engines', 'kestrel', 'marauders', 'outfits', 'power', 'pug', 'ships', 'variants', 'weapons']
+    substrings = ['engines', 'kestrel', 'marauders', 'nanobots', 'outfits', 'power', 'pug', 'ships', 'variants', 'weapons']
 
     data = (raw / ('endless-sky-' + release) / 'data')
 
@@ -106,6 +106,14 @@ def get_release(release: str):
 
     for item in images.iterdir():
         if item.name in ['hardpoint', 'outfit', 'ship', 'thumbnail']:
+            
+            # TODO
+            # instead: loop over folders
+            # for each image:
+            # check whether an image with the same name and checksum already exists
+            # if no, copy it
+            # if yes, make symlink to it instead of copying
+
             shutil.copytree(item, (static / release / item.name), dirs_exist_ok=True)
             logger.info(f"Copied image folder '{item.name}'")
 
@@ -141,12 +149,12 @@ def parse_raw(release: str):
     # Outfit files are those text files that contain any of the given substrings
     outfit_files = [file for file in raw.rglob('*.txt') \
                     if any(substring in file.stem for substring in \
-                    ['engines', 'outfits', 'power', 'pug', 'weapons'])]
+                    ['engines', 'outfits', 'nanobots', 'power', 'pug', 'weapons'])]
  
     # Ship files are those text files that contain any of the given substrings
     ship_files = [file for file in raw.rglob('*.txt') \
                   if any(substring in file.stem for substring in \
-                  ['kestrel', 'marauders', 'pug', 'ships'])]
+                  ['kestrel', 'marauders', 'nanotbots', 'pug', 'ships'])]
 
     # Parse outfit files
     for file in outfit_files:
@@ -238,8 +246,8 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
         release (str): Release containing the outfit
     """
     # Groups of attributes to parse
-    int_attributes = ['cost', 'outfit_space', 'engine_capacity', 'weapon_capacity', 'cargo_space', 'gun_ports', 'turret_mounts', 'spinal_mounts', 'fuel_capacity', 'bunks', 'required_crew', 'cooling_inefficiency', 'depleted_shield_delay', 'energy_capacity', 'radar_jamming', 'jump_fuel', 'hyperdrive', 'jumpdrive', 'cargo_scan_power', 'cargo_scan_speed', 'outfit_scan_power', 'outfit_scan_speed', 'asteroid_scan_power', 'atmosphere_scan', 'tactical_scan_power', 'illegal', 'lifetime', 'range_override', 'firing_force', 'hit_force', 'missile_strength', 'homing', 'trigger_radius', 'blast_radius', 'anti_missile', 'burst_count', 'burst_reload']
-    float_attributes = ['mass', 'heat_dissipation', 'ramscoop', 'scan_interference', 'cloak', 'cloaking_energy', 'cloaking_fuel', 'capture_attack', 'capture_defense', 'inaccuracy', 'velocity', 'velocity_override', 'reload', 'firing_fuel', 'firing_heat', 'firing_energy', 'shield_damage', 'hull_damage', 'heat_damage', 'piercing', 'acceleration', 'drag', 'tracking', 'infrared_tracking', 'radar_tracking', 'optical_tracking', 'turret_turn', 'ion_resistance', 'slowing_resistance']
+    int_attributes = ['cost', 'outfit_space', 'engine_capacity', 'weapon_capacity', 'cargo_space', 'gun_ports', 'turret_mounts', 'spinal_mounts', 'fuel_capacity', 'bunks', 'required_crew', 'cooling_inefficiency', 'depleted_shield_delay', 'energy_capacity', 'radar_jamming', 'jump_fuel', 'hyperdrive', 'jumpdrive', 'cargo_scan_power', 'cargo_scan_speed', 'outfit_scan_power', 'outfit_scan_speed', 'asteroid_scan_power', 'atmosphere_scan', 'tactical_scan_power', 'illegal', 'lifetime', 'range_override', 'firing_force', 'missile_strength', 'homing', 'trigger_radius', 'blast_radius', 'anti_missile', 'burst_count', 'burst_reload']
+    float_attributes = ['mass', 'heat_dissipation', 'ramscoop', 'scan_interference', 'cloak', 'cloaking_energy', 'cloaking_fuel', 'capture_attack', 'capture_defense', 'inaccuracy', 'velocity', 'velocity_override', 'reload', 'firing_fuel', 'firing_heat', 'firing_energy', 'shield_damage', 'hull_damage', 'heat_damage', 'hit_force', 'piercing', 'acceleration', 'drag', 'tracking', 'infrared_tracking', 'radar_tracking', 'optical_tracking', 'turret_turn', 'ion_resistance', 'slowing_resistance']
     float_multi_60 = ['cooling', 'active_cooling', 'cooling_energy', 'solar_collection', 'energy_generation', 'heat_generation', 'energy_consumption', 'shield_generation', 'shield_energy', 'shield_heat', 'hull_repair_rate', 'hull_energy', 'hull_heat', 'thrusting_energy', 'thrusting_heat', 'turning_energy', 'turning_heat', 'reverse_thrusting_energy', 'reverse_thrusting_heat', 'afterburner_fuel', 'afterburner_heat', 'afterburner_energy']
     float_multi_3600 = ['thrust', 'reverse_thrust', 'afterburner_thrust']
     float_multi_100 = ['ion_damage', 'slowing_damage', 'disruption_damage']
@@ -408,6 +416,10 @@ def create_outfit(filename: Path, outfit_string: str, release: str):
     for attribute in generic_per_space:
         attribute_per_outfit_space(outfit, attribute)
 
+    fields = outfit.__dict__
+    for key in fields:
+        logger.debug(f"{key}: {fields[key]}")
+
     outfit.save()
     logger.info("Created outfit '" + outfit.name + "'")
 
@@ -469,7 +481,7 @@ def attribute_per_outfit_space(outfit: Outfit, attribute: str):
         attribute_name = f"{attribute}_per_space"
         attribute_value = float(base_attribute_value / abs(outfit.outfit_space))
         setattr(outfit, attribute_name, attribute_value)
-
+        # logger.debug(f"Attribute name: {attribute_name} - Attribute value: {attribute_value}")
 
 def parse_ships(filename: Path, release: str):
     """
@@ -771,17 +783,61 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
     if atmosphere_scan:
         hull.atmosphere_scan = int(atmosphere_scan[1])
 
+    burn_protection = re.search(r'^\t+?"burn protection" +?([\d\.-]*)$', full_ship, re.M)
+    if burn_protection:
+        hull.burn_protection = float(burn_protection[1])
+
+    corrosion_protection = re.search(r'^\t+?"corrosion protection" +?([\d\.-]*)$', full_ship, re.M)
+    if corrosion_protection:
+        hull.corrosion_protection = float(corrosion_protection[1])
+
+    discharge_protection = re.search(r'^\t+?"discharge protection" +?([\d\.-]*)$', full_ship, re.M)
+    if discharge_protection:
+        hull.discharge_protection = float(discharge_protection[1])
+
+    disruption_protection = re.search(r'^\t+?"disruption protection" +?([\d\.-]*)$', full_ship, re.M)
+    if disruption_protection:
+        hull.disruption_protection = float(disruption_protection[1])
+
+    energy_protection = re.search(r'^\t+?"energy protection" +?([\d\.-]*)$', full_ship, re.M)
+    if energy_protection:
+        hull.energy_protection = float(energy_protection[1])
+
     force_protection = re.search(r'^\t+?"force protection" +?([\d\.-]*)$', full_ship, re.M)
     if force_protection:
         hull.force_protection = float(force_protection[1])
+
+    fuel_protection = re.search(r'^\t+?"fuel protection" +?([\d\.-]*)$', full_ship, re.M)
+    if fuel_protection:
+        hull.fuel_protection = float(fuel_protection[1])
 
     heat_protection = re.search(r'^\t+?"heat protection" +?([\d\.-]*)$', full_ship, re.M)
     if heat_protection:
         hull.heat_protection = float(heat_protection[1])
 
+    hull_protection = re.search(r'^\t+?"hull protection" +?([\d\.-]*)$', full_ship, re.M)
+    if hull_protection:
+        hull.hull_protection = float(hull_protection[1])
+
     ion_protection = re.search(r'^\t+?"ion protection" +?([\d\.-]*)$', full_ship, re.M)
     if ion_protection:
         hull.ion_protection = float(ion_protection[1])
+
+    leak_protection = re.search(r'^\t+?"leak protection" +?([\d\.-]*)$', full_ship, re.M)
+    if leak_protection:
+        hull.leak_protection = float(leak_protection[1])
+
+    piercing_protection = re.search(r'^\t+?"piercing protection" +?([\d\.-]*)$', full_ship, re.M)
+    if piercing_protection:
+        hull.piercing_protection = float(piercing_protection[1])
+
+    shield_protection = re.search(r'^\t+?"shield protection" +?([\d\.-]*)$', full_ship, re.M)
+    if shield_protection:
+        hull.shield_protection = float(shield_protection[1])
+
+    slowing_protection = re.search(r'^\t+?"slowing protection" +?([\d\.-]*)$', full_ship, re.M)
+    if slowing_protection:
+        hull.slowing_protection = float(slowing_protection[1])
 
     ion_resistance = re.search(r'^\t+?"ion resistance" +?([\d\.-]*)$', full_ship, re.M)
     if ion_resistance:
@@ -899,8 +955,8 @@ def parse_hull_variant(filename: Path, hull_variant: str, release: str):
         hull_variant (string): String containing all relevant data on the hull variant
         release (string): Release name
     """
-    # Handle special case "Barb" "Barb (Proton)" (i.e. hull variants that have a full ship definition)
-    if re.search('^\tattributes$', hull_variant, re.M|re.S):
+    # Handle special case "Barb" "Barb (Proton)" from 0.9.13 or earler (i.e. hull variants that have a full ship definition)
+    if re.search('^\tattributes$(?!\n\tadd)', hull_variant, re.M|re.S):
         parse_full_ship(filename, hull_variant, release)
         return
     
@@ -958,6 +1014,7 @@ def parse_hull_variant(filename: Path, hull_variant: str, release: str):
             # Get the field value
             if not hasattr(hull, field_name):
                 logger.error(f"Hull does not have field '{field_name}'")
+                continue
 
             else:
                 field_value = getattr(hull, field_name)

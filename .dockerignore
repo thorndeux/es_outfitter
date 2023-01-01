@@ -11,10 +11,11 @@ data_api/raw_data/*
 data_api/static/data_api/*
 !data_api/static/data_api/.gitkeep
 
-es_outfitter/static/*
-!es_outfitter/static/.gitkeep
-
 **/main.js
+
+.git/
+
+db/db.sqlite3
 
 ### Django ###
 *.log

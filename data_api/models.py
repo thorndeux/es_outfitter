@@ -85,9 +85,22 @@ class Hull(models.Model):
     asteroid_scan_power = models.IntegerField(default=0)
     atmosphere_scan = models.IntegerField(default=0)
 
-    force_protection = models.DecimalField(default=0, max_digits=4, decimal_places=2)
-    heat_protection = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+    burn_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    corrosion_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    discharge_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    disruption_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    energy_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    force_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    fuel_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    heat_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    hull_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
     ion_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    leak_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    piercing_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    shield_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    slowing_protection = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+
+
     ion_resistance = models.DecimalField(default=0, max_digits=6, decimal_places=2)
     slowing_resistance = models.DecimalField(default=0, max_digits=6, decimal_places=2)
 
@@ -210,7 +223,7 @@ class Outfit(models.Model):
     reverse_thrusting_energy = models.DecimalField(default=0, max_digits=8, decimal_places=3)
     reverse_thrusting_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     
-    afterburner_thrust = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    afterburner_thrust = models.DecimalField(default=0, max_digits=9, decimal_places=2)
     afterburner_thrust_per_space = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     afterburner_fuel = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     afterburner_heat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
@@ -237,8 +250,8 @@ class Outfit(models.Model):
     heat_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     ion_damage = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     slowing_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
-    disruption_damage = models.DecimalField(default=0, max_digits=7, decimal_places=2)
-    hit_force = models.IntegerField(default=0)
+    disruption_damage = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    hit_force = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     piercing = models.DecimalField(default=0, max_digits=4, decimal_places=2)
 
     # Aggregate values
@@ -309,7 +322,7 @@ class Outfit(models.Model):
 
     anti_missile = models.IntegerField(default=0)
 
-    turret_turn = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+    turret_turn = models.DecimalField(default=0, max_digits=5, decimal_places=2)
 
     ion_resistance = models.DecimalField(default=0, max_digits=4, decimal_places=3)
     slowing_resistance = models.DecimalField(default=0, max_digits=4, decimal_places=3)

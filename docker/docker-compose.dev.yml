@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  es-outfitter:
+    image: es-outfitter:dev
+    container_name: es-outfitter-dev
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.dev
+    env_file:
+      - ./.env.dev
+    volumes: 
+      - ../:/app:rw
+    ports: 
+      - 8000:8000
