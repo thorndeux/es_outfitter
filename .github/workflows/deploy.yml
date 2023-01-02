@@ -2,10 +2,7 @@ name: deploy
 
 on:
   workflow_run:
-    workflows:
-      - 'build'
-    branches:
-      - 'develop'
+    workflows: [ build ]
     types:
       - completed
 
