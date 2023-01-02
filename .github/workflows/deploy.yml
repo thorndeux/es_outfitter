@@ -3,8 +3,7 @@ name: deploy
 on:
   workflow_run:
     workflows: [ build ]
-    types:
-      - completed
+    types: [ completed ]
 
 jobs:
   deploy:
