@@ -22,6 +22,6 @@ jobs:
       - uses: docker/build-push-action@v3
         with:
           file: docker/nginx/Dockerfile
-          context: docker/nginx
+          context: "{{defaultContext}}:docker/nginx"
           push: true
           tags: thorndeux/eso-nginx:latest
