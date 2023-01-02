@@ -11,6 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.ESO_HOST }}
+          username: ${{ secrets.ESO_USERNAME }}
+          key: ${{ secrets.ESO_SSH_KEY }}
+          script: |
+            docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml down || true
       - uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.ESO_HOST }}
@@ -26,5 +33,4 @@ jobs:
           username: ${{ secrets.ESO_USERNAME }}
           key: ${{ secrets.ESO_SSH_KEY }}
           script: |
-            docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml down || true
             docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml up -d
