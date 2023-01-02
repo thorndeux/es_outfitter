@@ -19,6 +19,7 @@ jobs:
           source: "docker/docker-compose.prod.yml,docker/.env.prod"
           target: "/home/${{ secrets.ESO_USERNAME }}/es-outfitter"
           strip_components: 1
+          overwrite: true
       - uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.ESO_HOST }}
