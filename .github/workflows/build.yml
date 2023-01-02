@@ -21,7 +21,6 @@ jobs:
           tags: thorndeux/es-outfitter:latest
       - uses: docker/build-push-action@v3
         with:
-          file: docker/nginx/Dockerfile
           context: "{{defaultContext}}:docker/nginx"
           push: true
           tags: thorndeux/eso-nginx:latest
