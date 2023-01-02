@@ -2,10 +2,7 @@ version: '3'
 
 services:
   es-outfitter:
-    image: thorndeux/es-outfitter:prod
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.prod
+    image: thorndeux/es-outfitter:latest
     env_file:
       - ./.env.prod
     volumes: 
@@ -16,12 +13,9 @@ services:
       - 8000:8000
 
   nginx:
-    build:
-      context: nginx
+    image: thorndeux/eso-nginx:latest
     volumes:
       - static_files:/home/app/web/staticfiles
-    ports:
-      - 1337:80
     depends_on:
       - es-outfitter
     

@@ -1,0 +1,25 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows:
+      - 'build'
+    branches:
+      - 'develop'
+    types:
+      - completed
+
+jobs:
+  deploy-staging:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: burnett01/rsync-deployments@5.2.1
+        with:
+          switches:
+          path:
+          remote_path: /var/www/html/
+          remote_host: example.com
+          remote_user: admin
+          remote_key: ${{ secrets.DEPLOY_KEY }}
