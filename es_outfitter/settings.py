@@ -67,6 +67,8 @@ CORS_ORIGIN_WHITELIST = (
   'http://127.0.0.1:80',
   'http://localhost:1337',
   'http://127.0.0.1:1337',
+  'http://212.227.175.126',
+  'http://eb95bf4.online-server.cloud',
 )
 
 ROOT_URLCONF = 'es_outfitter.urls'
