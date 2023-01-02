@@ -18,7 +18,8 @@ services:
       - static_files:/home/app/web/staticfiles
     depends_on:
       - es-outfitter
-    
+    ports:
+     - 80:80
 
 volumes:
   raw_data:

@@ -10,7 +10,6 @@ import initialState from './Store';
 import HullSelect from './HullSelect/HullSelect';
 import ScrollToTop from './ScrollToTop';
 import ShipBuilder from './ShipBuilder/ShipBuilder';
-import { FaExclamation } from 'react-icons/fa';
 
 export const StateContext = React.createContext()
 export const DispatchContext = React.createContext()
@@ -34,7 +33,7 @@ const App = () => {
     const params = {
       "release": state.release.value,
     };
-    const url = new URL("http://localhost:8000/api/hulls")
+    const url = new URL(`${window.location.origin}/api/hulls`)
     for (let k in params) { 
       if (params[k]) {
         url.searchParams.append(k, params[k])
@@ -68,7 +67,7 @@ const App = () => {
     const params = {
       "release": state.release.value,
     };
-    const url = new URL("http://localhost:8000/api/outfits")
+    const url = new URL(`${window.location.origin}/api/outfits`)
     for (let k in params) { 
       if (params[k]) {
         url.searchParams.append(k, params[k])
@@ -102,7 +101,7 @@ const App = () => {
     const params = {
       "release": state.release.value,
     };
-    const url = new URL("http://localhost:8000/api/builds")
+    const url = new URL(`${window.location.origin}/api/builds`)
     for (let k in params) { 
       if (params[k]) {
         url.searchParams.append(k, params[k])
