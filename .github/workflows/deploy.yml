@@ -38,5 +38,5 @@ jobs:
             echo DOMAIN=${{ secrets.ESO_HOST }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
             crontab docker/crontab
             docker pull thorndeux/es-outfitter
-            docker pull thorndeux/eso-docker
+            docker pull thorndeux/eso-nginx
             docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml up -d
