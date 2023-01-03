@@ -16,8 +16,8 @@ services:
   nginx:
     image: thorndeux/eso-nginx:latest
     restart: unless-stopped
-    env_file:
-      - ./.env.prod
+    environment:
+      - DOMAIN
     volumes:
       - static_files:/home/app/web/staticfiles
       - /etc/letsencrypt:/etc/letsencrypt:ro
@@ -31,8 +31,6 @@ services:
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
-    env_file:
-      - ./.env.prod
     depends_on:
       - nginx
     command: >-
@@ -41,11 +39,11 @@ services:
              -d ${DOMAIN}
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - certbot-data:/var/www/certbot
+      - docker-cerbot-setup_certbot-data:/var/www/certbot
 
 volumes:
   raw_data:
   static_files:
   db:
-  certbot-data:
+  docker-cerbot-setup_certbot-data:
     external: true

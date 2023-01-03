@@ -41,8 +41,8 @@ jobs:
           script: |
             echo SECRET_KEY="'${{ secrets.DJANGO_SECRET_KEY }}'" >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
             echo DJANGO_ALLOWED_HOSTS=${{ secrets.ESO_HOST }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
-            echo EMAIL=${{ secrets.CERTBOT_EMAIL }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
-            echo DOMAIN=${{ secrets.ESO_HOST }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
+            export EMAIL=${{ secrets.CERTBOT_EMAIL }}
+            export DOMAIN=${{ secrets.ESO_HOST }}
             crontab /home/${{ secrets.ESO_USERNAME }}/es-outfitter/crontab
             docker pull thorndeux/es-outfitter
             docker pull thorndeux/eso-nginx
