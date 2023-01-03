@@ -20,7 +20,7 @@ services:
       - DOMAIN
     volumes:
       - static_files:/home/app/web/staticfiles
-      - etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - certbot-data:/var/www/certbot
     depends_on:
       - es-outfitter
