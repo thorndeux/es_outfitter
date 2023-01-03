@@ -33,4 +33,6 @@ jobs:
           username: ${{ secrets.ESO_USERNAME }}
           key: ${{ secrets.ESO_SSH_KEY }}
           script: |
+            docker pull thorndeux/es-outfitter
+            docker pull thourndeux/eso-docker
             docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml up -d

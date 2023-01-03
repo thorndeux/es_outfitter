@@ -10,7 +10,7 @@ const SelectMenu = () => {
 
   // Handles release select
   const getReleases = async () => {
-    const res = await fetch("http://localhost:8000/api/releases")
+    const res = await fetch(`${window.location.origin}/api/releases`)
     const data = await res.json()
     return(data.Releases)
   }
