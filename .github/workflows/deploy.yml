@@ -33,9 +33,9 @@ jobs:
           username: ${{ secrets.ESO_USERNAME }}
           key: ${{ secrets.ESO_SSH_KEY }}
           script: |
-            echo SECRET_KEY='${{ secrets.DJANGO_SECRET_KEY }}' >> docker/.env.prod
-            echo DJANGO_ALLOWED_HOSTS=${{ secrets.ESO_HOST }} >> docker/.env.prod
-            echo DOMAIN=${{ secrets.ESO_HOST }} >> docker/.env.prod
+            echo SECRET_KEY='${{ secrets.DJANGO_SECRET_KEY }}' >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
+            echo DJANGO_ALLOWED_HOSTS=${{ secrets.ESO_HOST }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
+            echo DOMAIN=${{ secrets.ESO_HOST }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
             crontab docker/crontab
             docker pull thorndeux/es-outfitter
             docker pull thorndeux/eso-docker
