@@ -16,8 +16,8 @@ services:
   nginx:
     image: thorndeux/eso-nginx:latest
     restart: unless-stopped
-    environment:
-      - DOMAIN
+    env_file:
+      - ./.env.prod
     volumes:
       - static_files:/home/app/web/staticfiles
       - /etc/letsencrypt:/etc/letsencrypt:ro
@@ -31,6 +31,8 @@ services:
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
+    env_file:
+      - ./.env.prod
     depends_on:
       - nginx
     command: >-
