@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # Stop project, if it is currently running
       - uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.ESO_HOST }}
@@ -18,15 +19,20 @@ jobs:
           key: ${{ secrets.ESO_SSH_KEY }}
           script: |
             docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml down || true
+      # Copy necessary files to server
       - uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.ESO_HOST }}
           username: ${{ secrets.ESO_USERNAME }}
           key: ${{ secrets.ESO_SSH_KEY }}
-          source: "docker/docker-compose.prod.yml,docker/.env.prod,docker/cron.sh"
+          source: "docker/docker-compose.prod.yml,docker/.env.prod,docker/cron.sh,docker/crontab"
           target: "/home/${{ secrets.ESO_USERNAME }}/es-outfitter"
           strip_components: 1
           overwrite: true
+      # Add environment variables to .env file
+      # Add crontab entry
+      # Pull latest images
+      # Start project
       - uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.ESO_HOST }}
@@ -37,7 +43,7 @@ jobs:
             echo DJANGO_ALLOWED_HOSTS=${{ secrets.ESO_HOST }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
             echo EMAIL=${{ secrets.CERTBOT_EMAIL }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
             echo DOMAIN=${{ secrets.ESO_HOST }} >> /home/${{ secrets.ESO_USERNAME }}/es-outfitter/.env.prod
-            crontab docker/crontab
+            crontab /home/${{ secrets.ESO_USERNAME }}/es-outfitter/crontab
             docker pull thorndeux/es-outfitter
             docker pull thorndeux/eso-nginx
             docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml up -d
