@@ -39,7 +39,7 @@ services:
              -d ${DOMAIN}
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - cerbot-data:/var/www/certbot
+      - certbot-data:/var/www/certbot
 
 volumes:
   raw_data:
