@@ -10,7 +10,10 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      # Checkout develop branch
+      - uses: actions/checkout@v3
+        with:
+          ref: develop
       # Stop project, if it is currently running
       - uses: appleboy/ssh-action@v0.1.6
         with:
