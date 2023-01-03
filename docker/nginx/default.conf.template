@@ -5,7 +5,7 @@ upstream es-outfitter {
 server {
     listen [::]:80;
     listen 80;
-    server_name $DOMAIN
+    server_name $DOMAIN;
     return 308 https://$host$request_uri;
 }
 
