@@ -1,4 +1,4 @@
 FROM nginx:1.23-alpine
 
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d
+RUN mkdir /etc/nginx/templates
+COPY default.conf.template /etc/nginx/templates

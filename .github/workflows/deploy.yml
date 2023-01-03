@@ -18,12 +18,16 @@ jobs:
           key: ${{ secrets.ESO_SSH_KEY }}
           script: |
             docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml down || true
+      - run: |
+          echo SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> docker/.env.prod
+          echo DJANGO_ALLOWED_HOSTS=${{ secrets.ESO_HOST }} >> docker/.env.prod
+          echo DOMAIN=${{ secrets.ESO_HOST }} >> docker/.env.prod
       - uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.ESO_HOST }}
           username: ${{ secrets.ESO_USERNAME }}
           key: ${{ secrets.ESO_SSH_KEY }}
-          source: "docker/docker-compose.prod.yml,docker/.env.prod"
+          source: "docker/docker-compose.prod.yml,docker/.env.prod,docker/cron.sh"
           target: "/home/${{ secrets.ESO_USERNAME }}/es-outfitter"
           strip_components: 1
           overwrite: true
@@ -33,6 +37,7 @@ jobs:
           username: ${{ secrets.ESO_USERNAME }}
           key: ${{ secrets.ESO_SSH_KEY }}
           script: |
+            crontab docker/crontab
             docker pull thorndeux/es-outfitter
-            docker pull thourndeux/eso-docker
+            docker pull thorndeux/eso-docker
             docker compose -f /home/${{ secrets.ESO_USERNAME }}/es-outfitter/docker-compose.prod.yml up -d

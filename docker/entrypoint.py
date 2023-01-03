@@ -55,4 +55,4 @@ if __name__=="__main__":
       data.parse_raw('continuous')
 
   call_command('collectstatic', verbosity=0, interactive=False)
-  subprocess.call(['gunicorn', 'es_outfitter.wsgi', '--bind=0.0.0.0:8000'])
+  subprocess.call(['gunicorn', 'es_outfitter.wsgi', '--bind=0.0.0.0:443'])
