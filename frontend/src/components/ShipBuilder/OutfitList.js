@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { StateContext, DispatchContext } from '../App'
 import { fieldSorter } from '../Utils'
 import OutfitCard from './OutfitCard'
+import OutfitCardCompact from './OutfitCardCompact'
 
 import ReactTooltip from 'react-tooltip'
 
@@ -12,7 +13,7 @@ const OutfitList = () => {
 
   useEffect(() => {
     ReactTooltip.rebuild()
-  }, [state.displayedOutfits])
+  }, [state.displayedOutfits, state.detailedList])
 
   // Run filterOutfits() whenever allOutfits, spoiler, faction, or category changes
   useEffect(() => {
@@ -85,12 +86,16 @@ const OutfitList = () => {
         state.outfitSearchQuery 
         ? (state.outfitSearchResults.length!=0
           ? state.displayedOutfits.map((outfit) => (
-            <OutfitCard key={outfit.id} outfit={outfit} />
+            state.detailedList
+              ? <OutfitCard key={outfit.id} outfit={outfit} />
+              : <OutfitCardCompact key={outfit.id} outfit={outfit} />
           ))
           : <p>There are no outfits for this search term</p>) 
         : (state.currentOutfits.length!=0
           ? state.displayedOutfits.map((outfit) => (
-            <OutfitCard key={outfit.id} outfit={outfit} />
+            state.detailedList
+              ? <OutfitCard key={outfit.id} outfit={outfit} />
+              : <OutfitCardCompact key={outfit.id} outfit={outfit} />
           )) 
           : <p>There are no outfits for this selection</p>)
       }

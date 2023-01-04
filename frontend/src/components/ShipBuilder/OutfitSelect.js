@@ -81,6 +81,11 @@ const OutfitSelect = () => {
     dispatch({ type: 'searchOutfits', payload: e.target.value })
   }
 
+  // Toggles between detailed and compact list view
+  const toggleListDetail = () => {
+    dispatch({type: 'toggleListDetail'})
+  }
+
   return (
     <div className="
       w-full self-start 
@@ -120,15 +125,6 @@ const OutfitSelect = () => {
           onChange={changeCategory}
         />
       </div>
-      {/* <div>
-        <label htmlFor="sortSelect" className="text-gray-300 pl-1 hidden sm:block">Sort by</label>
-        <Select
-          id="sortSelect"
-          options={sortOptions}
-          value={state.outfitSortType}
-          onChange={changeSortType}
-        />
-      </div> */}
       <div>
         <label htmlFor="searchOutfits" className="text-gray-300 pl-1 hidden sm:block">Search outfits</label>
         <input
@@ -136,6 +132,16 @@ const OutfitSelect = () => {
           className="rounded w-full py-1.5 px-2.5 text-gray-900" 
           placeholder="Search outfits"
           onChange={filterOutfits} />
+      </div>
+      <div>
+        <button 
+          className="rounded w-full py-1.5 px-2.5 mt-3.5
+          text-gray-900 bg-gray-400
+          hover:text-gray-800 hover:bg-gray-300"
+          onClick={toggleListDetail}
+        >
+          {state.detailedList ? 'Compact view' : 'Detailed view'}
+        </button>
       </div>
     </div>
   )

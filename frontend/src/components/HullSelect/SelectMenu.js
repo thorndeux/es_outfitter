@@ -64,6 +64,7 @@ const SelectMenu = () => {
     },
     { label: 'Support',
       options: [
+        { value: 'Utility', label: 'Utility' },
         { value: 'Fighter', label: 'Fighter' },
         { value: 'Drone', label: 'Drone' },
       ]
@@ -87,6 +88,12 @@ const SelectMenu = () => {
   // Handles search box
   const filterHulls = e => {
     dispatch({ type: 'searchHulls', payload: e.target.value })
+  }
+
+  // Toggles between detailed and compact list view
+  const toggleListDetail = () => {
+    dispatch({type: 'toggleListDetail'})
+    state.detailedList && state.displayedHulls.length <= state.largePageSize && dispatch({ type: 'updateDisplayedHulls' })
   }
   
   return (
@@ -138,15 +145,6 @@ const SelectMenu = () => {
           onChange={changeCategory}
         />
       </div>
-      {/* <div>
-        <label htmlFor="sortSelect" className="text-gray-300 pl-1 hidden sm:block">Sort by</label>
-        <Select
-          id="sortSelect"
-          options={sortOptions}
-          value={state.hullSortType}
-          onChange={changeSortType}
-        />
-      </div> */}
       <div>
         <label htmlFor="searchHulls" className="text-gray-300 pl-1 hidden sm:block">Search hulls</label>
         <input
@@ -154,6 +152,16 @@ const SelectMenu = () => {
           className="rounded w-full py-1.5 px-2.5 text-gray-900" 
           placeholder="Search hulls"
           onChange={filterHulls} />
+      </div>
+      <div>
+        <button 
+          className="rounded w-full py-1.5 px-2.5 mt-3.5
+          text-gray-900 bg-gray-400
+          hover:text-gray-800 hover:bg-gray-300"
+          onClick={toggleListDetail}
+        >
+          {state.detailedList ? 'Compact view' : 'Detailed view'}
+        </button>
       </div>
     </div>
   )

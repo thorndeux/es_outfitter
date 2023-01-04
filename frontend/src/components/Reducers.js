@@ -58,6 +58,8 @@ const reducer = (state, action) => {
       return { ...state, hullFaction: action.payload }
     case 'filterHullCategory':
       return { ...state, hullCategory: action.payload }
+    case 'toggleListDetail':
+      return { ...state, detailedList: !state.detailedList, pageSize: state.detailedList ? state.largePageSize : state.smallPageSize}
     case 'sortHulls': {
       // Determine which selection to sort (current hulls or search results)
       var relevantSelection = state.hullSearchQuery ? cloneDeep(state.hullSearchResults) : cloneDeep(state.currentHulls)      
@@ -87,7 +89,7 @@ const reducer = (state, action) => {
     case 'updateDisplayedHulls': {
       const start = state.displayedHulls.length
       const relevantSelection = state.hullSearchQuery ? state.hullSearchResults : state.currentHulls
-      const end = relevantSelection.length >= start + 12 ? start + 12 : relevantSelection.length
+      const end = relevantSelection.length >= start + state.pageSize ? start + state.pageSize : relevantSelection.length
       const addedHulls = relevantSelection.slice(start, end)
       const newDisplayedHulls = state.displayedHulls.concat(addedHulls)
       return { ...state , displayedHulls: newDisplayedHulls }
@@ -141,7 +143,7 @@ const reducer = (state, action) => {
     case 'updateDisplayedOutfits': {
       const start = state.displayedOutfits.length
       const relevantSelection = state.outfitSearchQuery ? state.outfitSearchResults : state.currentOutfits
-      const end = relevantSelection.length >= start + 12 ? start + 12 : relevantSelection.length
+      const end = relevantSelection.length >= start + state.pageSize ? start + state.pageSize : relevantSelection.length
       const addedOutfits = relevantSelection.slice(start, end)
       const newDisplayedOutfits = state.displayedOutfits.concat(addedOutfits)
       return { ...state , displayedOutfits: newDisplayedOutfits }

@@ -602,7 +602,7 @@ def parse_full_ship(filename: Path, full_ship: str, release: str):
         if len(descriptions) == 2:
             hull.description = hull.description + '\n' + re.sub(r'^.\t|^`|`$|^"|"$', '', descriptions[1])
 
-    category = re.search('^\t+?category +?"([^"]*)"', full_ship, re.M)
+    category = re.search('^\t+?category +?"?([^"]*?)"?$', full_ship, re.M)
     if category:
         hull.category = category[1]
 

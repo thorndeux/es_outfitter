@@ -5,6 +5,7 @@ import { fieldSorter, sortByFieldSum } from '../Utils'
 import HullCard from './HullCard'
 
 import ReactTooltip from 'react-tooltip'
+import HullCardCompact from './HullCardCompact'
 
 const HullList = () => {
   const state = useContext(StateContext)
@@ -15,7 +16,7 @@ const HullList = () => {
    */
   useEffect(() => {
     ReactTooltip.rebuild()    
-  }, [state.displayedHulls])
+  }, [state.displayedHulls, state.detailedList])
     
   // Run filterHulls() whenever allHulls, spoiler, faction, or category changes
   useEffect(() => {
@@ -62,7 +63,7 @@ const HullList = () => {
     dispatch({ type: 'resetDisplayedHulls' })
     dispatch({ type: 'updateDisplayedHulls' })
 
-  }, [state.currentHulls, state.hullSearchResults])
+  }, [state.currentHulls, state.hullSearchResults, state.hullSelect])
 
   // Add event listener to update hull list
   useEffect(() => {
@@ -89,12 +90,16 @@ const HullList = () => {
         state.hullSearchQuery 
         ? (state.hullSearchResults.length!=0
           ? state.displayedHulls.map((hull) => (
-            <HullCard key={hull.id} hull={hull} />
+            state.detailedList
+              ? <HullCard key={hull.id} hull={hull} />
+              : <HullCardCompact key={hull.id} hull={hull} />
           ))
           : <p>There are no hulls for this search term</p>) 
         : (state.currentHulls.length!=0
-          ? state.displayedHulls.map((hull) => (
-            <HullCard key={hull.id} hull={hull} />
+          ? state.displayedHulls.map((hull) => (            
+            state.detailedList
+              ? <HullCard key={hull.id} hull={hull} />
+              : <HullCardCompact key={hull.id} hull={hull} />
           )) 
           : <p>There are no hulls for this selection</p>)
       }

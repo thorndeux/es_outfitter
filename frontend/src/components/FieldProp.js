@@ -12,7 +12,7 @@ const FieldProp = ({ clickHandler, attribute, value, data_tip }) => {
   // Classes to add for clickable FieldProps
   const clickClasses = clickHandler && "hover:cursor-pointer hover:bg-gray-600"
   // Classes to add for attribute being sorted by
-  const sortClasses =  (clickHandler && ((state.shipBuilder && attribute == state.outfitSort) || (state.hullSelect && attribute == state.hullSort))) && "font-bold text-yellow-500"
+  const sortClasses =  (clickHandler && ((state.shipBuilder && attribute == state.outfitSort) || (state.hullSelect && attribute == state.hullSort)) && attribute != 'name') && "font-bold text-yellow-500"
 
   const classes = [clickClasses, sortClasses].join(' ')
 

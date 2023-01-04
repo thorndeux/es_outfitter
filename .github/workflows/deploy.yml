@@ -32,7 +32,7 @@ jobs:
           target: "/home/${{ secrets.ESO_USERNAME }}/es-outfitter"
           strip_components: 1
           overwrite: true
-      # Add environment variables to .env file
+      # Add environment variables to .env file or export them directly
       # Add crontab entry
       # Pull latest images
       # Start project

@@ -1,4 +1,15 @@
 const initialState = {
+  // General settings
+  // Are detailed cards (with image and all stats) enabled?
+  detailedList: true,
+  // Page size of hull/outfit lists
+  pageSize: 20, 
+  // Page size for detailed view
+  smallPageSize: 12,
+  // Page size for compact view
+  largePageSize: 20,
+
+
   // Hull select view
   // Is the hull select view displayed?
   hullSelect: true,
@@ -9,7 +20,7 @@ const initialState = {
   // Subset of currentHulls that match provided search term
   hullSearchResults: [],
   // Subset of currentHulls/hullSearchResults containing the first page
-  // (12 results). Next 12 are added when you scroll to bottom.
+  // (`pageSize` results). Next `pageSize` are added when you scroll to bottom.
   displayedHulls: [],
   // Currently selected release (shared with outfits)
   release: { value: '0.9.14', label: '0.9.14' },
@@ -23,6 +34,7 @@ const initialState = {
   hullSort: 'name',
   // Current search query for hull view
   hullSearchQuery: '',
+  
 
   // Build view
   // Is build view displayed
