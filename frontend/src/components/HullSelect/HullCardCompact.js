@@ -54,10 +54,12 @@ const HullCardCompact = ({ hull }) => {
           </span>
           <button 
             className="
-              text-base float-right
-              p-1 px-2 rounded
-              bg-lime-600
-              hover:cursor-pointer hover:bg-lime-500"
+            float-right
+            p-1 px-2 rounded shadow
+            text-base text-gray-900 bg-blue-400
+            hover:shadow-lg
+            hover:text-gray-800 hover:bg-blue-300
+            hover:cursor-pointer"
             data-arrow-color="transparent"
             onClick={() => loadShipBuilder(hull)}>Start build</button>        
         </h2>
