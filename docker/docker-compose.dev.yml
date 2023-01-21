@@ -13,3 +13,14 @@ services:
       - ../:/app:rw
     ports: 
       - 8000:8000
+
+  npm:
+    image: frontend
+    container_name: npm
+    build:
+      context: ../
+      dockerfile: docker/npm/Dockerfile
+    volumes:
+      - ../frontend:/app:rw
+    entrypoint: entrypoint.npm.sh
+    command: npm run dev
