@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react';
-import ReactTooltip from 'react-tooltip';
+import React, { useContext, useEffect } from "react"
+import ReactTooltip from "react-tooltip"
 
-import { DispatchContext, StateContext } from '../App';
-import FieldProp from '../FieldProp'
-import { stripe } from '../Utils';
+import { DispatchContext, StateContext } from "../App"
+import FieldProp from "../FieldProp"
+import { stripe } from "../Utils"
 
 const HullCardCompact = ({ hull }) => {
   const state = useContext(StateContext)
@@ -12,27 +12,21 @@ const HullCardCompact = ({ hull }) => {
   useEffect(() => {
     const table = document.getElementById(hull.id)
     stripe(table)
-  }, [state.displayedHulls]);
-  
+  }, [state.displayedHulls])
 
   // Fields to exclude from list of attributes
-  const includedAttributes = [
-    "faction",
-    "category",
-    "cost",
-    "hull",
-    "shields",
-  ]
+  const includedAttributes = ["faction", "category", "cost", "hull", "shields"]
 
   const loadShipBuilder = (hull) => {
-    dispatch({ type: 'shipBuilder', payload:hull })
+    dispatch({ type: "shipBuilder", payload: hull })
     ReactTooltip.hide()
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0
+    document.documentElement.scrollTop = 0
   }
 
   return (
-    <div className="
+    <div
+      className="
       flex-grow
       flex flex-col justify-between
       text-gray-200
@@ -47,12 +41,12 @@ const HullCardCompact = ({ hull }) => {
         <h2>
           <span
             className="text-xl font-medium hover:cursor-pointer"
-            onClick={() => dispatch({ type: 'sortHulls', payload: 'name' })}
+            onClick={() => dispatch({ type: "sortHulls", payload: "name" })}
             data-tip="Sort by name"
           >
             {hull.name}
           </span>
-          <button 
+          <button
             className="
             float-right
             p-1 px-2 rounded shadow
@@ -61,24 +55,39 @@ const HullCardCompact = ({ hull }) => {
             hover:text-gray-800 hover:bg-blue-300
             hover:cursor-pointer"
             data-arrow-color="transparent"
-            onClick={() => loadShipBuilder(hull)}>Start build</button>        
+            onClick={() => loadShipBuilder(hull)}
+          >
+            Start build
+          </button>
         </h2>
-      </div>      
+      </div>
       <div>
         <table id={hull.id} className="w-full table-fixed">
           <tbody>
             {Object.keys(hull).map((attribute) => {
-              if (hull[attribute] && 
+              if (
+                hull[attribute] &&
                 Number(hull[attribute]) != 0 &&
                 includedAttributes.includes(attribute) &&
-                (attribute === 'faction' ? state.spoiler.value > 1 ? true : false : true)) {
-                  return (
-                    <FieldProp clickHandler={() => dispatch({ type: 'sortHulls', payload: attribute })} key={attribute} attribute={attribute} value={hull[attribute]} data_tip={`Sort by ${attribute}`}/>
-                  )
-                }
-              })
-            }
-            
+                (attribute === "faction"
+                  ? state.spoiler.value > 1
+                    ? true
+                    : false
+                  : true)
+              ) {
+                return (
+                  <FieldProp
+                    clickHandler={() =>
+                      dispatch({ type: "sortHulls", payload: attribute })
+                    }
+                    key={attribute}
+                    attribute={attribute}
+                    value={hull[attribute]}
+                    data_tip={`Sort by ${attribute}`}
+                  />
+                )
+              }
+            })}
           </tbody>
         </table>
       </div>
@@ -86,4 +95,4 @@ const HullCardCompact = ({ hull }) => {
   )
 }
 
-export default HullCardCompact;
+export default HullCardCompact

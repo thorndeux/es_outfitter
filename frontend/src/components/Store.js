@@ -3,12 +3,11 @@ const initialState = {
   // Are detailed cards (with image and all stats) enabled?
   detailedList: true,
   // Page size of hull/outfit lists
-  pageSize: 20, 
+  pageSize: 20,
   // Page size for detailed view
   smallPageSize: 12,
   // Page size for compact view
   largePageSize: 20,
-
 
   // Hull select view
   // Is the hull select view displayed?
@@ -23,18 +22,17 @@ const initialState = {
   // (`pageSize` results). Next `pageSize` are added when you scroll to bottom.
   displayedHulls: [],
   // Currently selected release (shared with outfits)
-  release: { value: '0.9.14', label: '0.9.14' },
+  release: { value: "0.9.14", label: "0.9.14" },
   // Currently selected spoiler level (shared with outfits)
-  spoiler: { value: '0', label: 'No Spoilers' },
+  spoiler: { value: "0", label: "No Spoilers" },
   // Currently selected faction for hull view
-  hullFaction: { value: 'Human', label: 'Human' },
+  hullFaction: { value: "Human", label: "Human" },
   // Currently selected category for hull view
-  hullCategory: { value: '', label: 'All Categories' },
+  hullCategory: { value: "", label: "All Categories" },
   // Last attribute sorted by (from clicking on an attribute)
-  hullSort: 'name',
+  hullSort: "name",
   // Current search query for hull view
-  hullSearchQuery: '',
-  
+  hullSearchQuery: "",
 
   // Build view
   // Is build view displayed
@@ -49,13 +47,13 @@ const initialState = {
   // (12 results). Next 12 are added when you scroll to bottom.
   displayedOutfits: [],
   // Currently selected faction for outfit view
-  outfitFaction: { value: 'Human', label: 'Human' },
+  outfitFaction: { value: "Human", label: "Human" },
   // Currently selected category for outfit view
-  outiftCategory: { value: '', label: 'All Categories' },
+  outiftCategory: { value: "", label: "All Categories" },
   // Last attribute sorted by
-  outfitSort: 'name',
+  outfitSort: "name",
   // Current search query for outfit view
-  outfitSearchQuery: '',
+  outfitSearchQuery: "",
 
   // All builds for the selected release
   allBuilds: [],
@@ -76,19 +74,19 @@ const initialState = {
   ctrlHeld: false,
   rightAltHeld: false,
   // String with current multiplier information for UI
-  multi: '',
+  multi: "",
   // Collection of aggregate stats calculated from
   // current hull and outfits
   defenseAggregates: {
     hull: 0,
-    hull_contributers: '',
+    hull_contributers: "",
     shields: 0,
     total_hp: 0,
     hull_regen: 0,
     shield_regen: 0,
-    anti_missile_dps_contributers: '',
+    anti_missile_dps_contributers: "",
     anti_missile_dps: 0,
-    average_heat: 0,    
+    average_heat: 0,
   },
   mobilityAggregates: {
     max_speed: 0,
@@ -170,7 +168,7 @@ const initialState = {
     slowing_dps: 0,
     disruption_dps: 0,
     ammo_capacities: [],
-  }
+  },
 }
 
 export default initialState

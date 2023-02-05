@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
-import AsyncSelect from 'react-select/async'
-import Select from 'react-select'
+import React, { useContext } from "react"
+import AsyncSelect from "react-select/async"
+import Select from "react-select"
 
-import { DispatchContext, StateContext } from '../App'
+import { DispatchContext, StateContext } from "../App"
 
 const SelectMenu = () => {
   const state = useContext(StateContext)
@@ -12,92 +12,97 @@ const SelectMenu = () => {
   const getReleases = async () => {
     const res = await fetch(`${window.location.origin}/api/releases`)
     const data = await res.json()
-    return(data.Releases)
+    return data.Releases
   }
-  
-  const defaultRelease = { value: '0.9.14', label: '0.9.14' }
 
-  const changeRelease = e => {
-    dispatch({ type: 'filterRelease', payload: e })
+  const defaultRelease = { value: "0.9.14", label: "0.9.14" }
+
+  const changeRelease = (e) => {
+    dispatch({ type: "filterRelease", payload: e })
   }
 
   // Handles faction select
   const factionOptions = [
-    { value: '', label: 'All Factions' },
-    { value: 'Coalition', label: 'Coalition' },
-    { value: 'Human', label: 'Human' },
-    { value: 'Hai', label: 'Hai' },
-    { value: 'Ka\'het', label: 'Ka\'het' },
-    { value: 'Korath', label: 'Korath' },
-    { value: 'Pug', label: 'Pug' },
-    { value: 'Quarg', label: 'Quarg' },
-    { value: 'Remnant', label: 'Remnant' },
-    { value: 'Sheragi', label: 'Sheragi' },
-    { value: 'Wanderer', label: 'Wanderer' },
+    { value: "", label: "All Factions" },
+    { value: "Coalition", label: "Coalition" },
+    { value: "Human", label: "Human" },
+    { value: "Hai", label: "Hai" },
+    { value: "Ka'het", label: "Ka'het" },
+    { value: "Korath", label: "Korath" },
+    { value: "Pug", label: "Pug" },
+    { value: "Quarg", label: "Quarg" },
+    { value: "Remnant", label: "Remnant" },
+    { value: "Sheragi", label: "Sheragi" },
+    { value: "Wanderer", label: "Wanderer" },
   ]
 
-  const changeFaction = e => {
-    dispatch({ type: 'filterHullFaction', payload: e })
+  const changeFaction = (e) => {
+    dispatch({ type: "filterHullFaction", payload: e })
   }
 
   // Handles spoiler select
   const spoilerOptions = [
-    { value: '0', label: 'No Spoilers' },
-    { value: '1', label: 'Minimal Spoilers' },
-    { value: '2', label: 'Moderate Spoilers' },
-    { value: '3', label: 'All Spoilers' },
+    { value: "0", label: "No Spoilers" },
+    { value: "1", label: "Minimal Spoilers" },
+    { value: "2", label: "Moderate Spoilers" },
+    { value: "3", label: "All Spoilers" },
   ]
-  const changeSpoiler = e => {
-    dispatch({ type: 'filterSpoiler', payload: e})
+  const changeSpoiler = (e) => {
+    dispatch({ type: "filterSpoiler", payload: e })
   }
 
   // Handles category select
   const categoryOptions = [
-    { value: '', label: 'All Categories' },
-    { label: 'Warships',
+    { value: "", label: "All Categories" },
+    {
+      label: "Warships",
       options: [
-        { value: 'Interceptor', label: 'Interceptor' },
-        { value: 'Light Warship', label: 'Light Warship' },
-        { value: 'Medium Warship', label: 'Medium Warship' },
-        { value: 'Heavy Warship', label: 'Heavy Warship' },
-      ]
+        { value: "Interceptor", label: "Interceptor" },
+        { value: "Light Warship", label: "Light Warship" },
+        { value: "Medium Warship", label: "Medium Warship" },
+        { value: "Heavy Warship", label: "Heavy Warship" },
+      ],
     },
-    { label: 'Support',
+    {
+      label: "Support",
       options: [
-        { value: 'Utility', label: 'Utility' },
-        { value: 'Fighter', label: 'Fighter' },
-        { value: 'Drone', label: 'Drone' },
-      ]
+        { value: "Utility", label: "Utility" },
+        { value: "Fighter", label: "Fighter" },
+        { value: "Drone", label: "Drone" },
+      ],
     },
-    { label: 'Freighters',
+    {
+      label: "Freighters",
       options: [
-        { value: 'Light Freighter', label: 'Light Freighter' },
-        { value: 'Heavy Freighter', label: 'Heavy Freighter' },
-      ]
+        { value: "Light Freighter", label: "Light Freighter" },
+        { value: "Heavy Freighter", label: "Heavy Freighter" },
+      ],
     },
-    { label: 'Transport',
-      options: [
-        {value: 'Transport', label: 'Transport' },
-      ]
-    }
+    {
+      label: "Transport",
+      options: [{ value: "Transport", label: "Transport" }],
+    },
   ]
-  const changeCategory = e => {
-    dispatch({ type: 'filterHullCategory', payload: e})
+  const changeCategory = (e) => {
+    dispatch({ type: "filterHullCategory", payload: e })
   }
 
   // Handles search box
-  const filterHulls = e => {
-    dispatch({ type: 'searchHulls', payload: e.target.value })
+  const filterHulls = (e) => {
+    dispatch({ type: "searchHulls", payload: e.target.value })
   }
 
   // Toggles between detailed and compact list view
   const toggleListDetail = () => {
-    dispatch({type: 'toggleListDetail'})
-    state.detailedList && state.displayedHulls.length <= state.largePageSize && dispatch({ type: 'updateDisplayedHulls' })
+    dispatch({ type: "toggleListDetail" })
+    state.detailedList &&
+      state.displayedHulls.length <= state.largePageSize &&
+      dispatch({ type: "updateDisplayedHulls" })
   }
-  
+
   return (
-    <div className="
+    <div
+      className="
       lg:col-span-1 w-full self-start 
       grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 
       gap-1 lg:gap-2 
@@ -106,7 +111,12 @@ const SelectMenu = () => {
       sticky top-0 z-10"
     >
       <div>
-        <label htmlFor="releaseSelect" className="text-gray-300 pl-1 hidden sm:block">Select release</label>
+        <label
+          htmlFor="releaseSelect"
+          className="text-gray-300 pl-1 hidden sm:block"
+        >
+          Select release
+        </label>
         <AsyncSelect
           id="releaseSelect"
           cacheOptions
@@ -117,7 +127,12 @@ const SelectMenu = () => {
         />
       </div>
       <div>
-        <label htmlFor="spoilerSelect" className="text-gray-300 pl-1 hidden sm:block">Select spoiler level</label>
+        <label
+          htmlFor="spoilerSelect"
+          className="text-gray-300 pl-1 hidden sm:block"
+        >
+          Select spoiler level
+        </label>
         <Select
           id="spoilerSelect"
           options={spoilerOptions}
@@ -125,19 +140,29 @@ const SelectMenu = () => {
           onChange={changeSpoiler}
         />
       </div>
-      {state.spoiler.value > 1 &&
+      {state.spoiler.value > 1 && (
+        <div>
+          <label
+            htmlFor="factionSelect"
+            className="text-gray-300 pl-1 hidden sm:block"
+          >
+            Select faction
+          </label>
+          <Select
+            id="factionSelect"
+            options={factionOptions}
+            value={state.hullFaction}
+            onChange={changeFaction}
+          />
+        </div>
+      )}
       <div>
-        <label htmlFor="factionSelect" className="text-gray-300 pl-1 hidden sm:block">Select faction</label>
-        <Select
-          id="factionSelect"
-          options={factionOptions}
-          value={state.hullFaction}
-          onChange={changeFaction}
-        />
-      </div>
-        }
-      <div>
-        <label htmlFor="categorySelect" className="text-gray-300 pl-1 hidden sm:block">Select category</label>
+        <label
+          htmlFor="categorySelect"
+          className="text-gray-300 pl-1 hidden sm:block"
+        >
+          Select category
+        </label>
         <Select
           id="categorySelect"
           options={categoryOptions}
@@ -146,21 +171,28 @@ const SelectMenu = () => {
         />
       </div>
       <div>
-        <label htmlFor="searchHulls" className="text-gray-300 pl-1 hidden sm:block">Search hulls</label>
+        <label
+          htmlFor="searchHulls"
+          className="text-gray-300 pl-1 hidden sm:block"
+        >
+          Search hulls
+        </label>
         <input
-          type="text" id="searchHulls"
-          className="rounded w-full py-1.5 px-2.5 text-gray-900" 
+          type="text"
+          id="searchHulls"
+          className="rounded w-full py-1.5 px-2.5 text-gray-900"
           placeholder="Search hulls"
-          onChange={filterHulls} />
+          onChange={filterHulls}
+        />
       </div>
       <div>
-        <button 
+        <button
           className="rounded w-full py-1.5 px-2.5 mt-3.5
           text-gray-900 bg-gray-400
           hover:text-gray-800 hover:bg-gray-300"
           onClick={toggleListDetail}
         >
-          {state.detailedList ? 'Compact view' : 'Detailed view'}
+          {state.detailedList ? "Compact view" : "Detailed view"}
         </button>
       </div>
     </div>
