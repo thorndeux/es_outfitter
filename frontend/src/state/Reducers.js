@@ -1,5 +1,5 @@
-import { cloneDeep } from "lodash";
-import { fieldSorter } from "./Utils";
+import { cloneDeep } from "lodash"
+import { fieldSorter } from "../util/Utils"
 
 const reducer = (state, action) => {
   /**
@@ -10,27 +10,27 @@ const reducer = (state, action) => {
    */
   const parseBuild = (build) => {
     // Replace hull ID with hull object
-    build.hull = state.allHulls.find((hull) => hull.id === build.hull);
+    build.hull = state.allHulls.find((hull) => hull.id === build.hull)
     // Make a copy of all outfit sets (consisting of amount and outfit id)
-    const outfit_sets = [...build.outfits];
+    const outfit_sets = [...build.outfits]
     // Loop over copy
     for (const outfit_set of outfit_sets) {
       // Find the right outfit
       const outfit = state.allOutfits.find(
         (outfit) => outfit.id === outfit_set.outfit
-      );
+      )
       // Remove first outfit_set from original outfit sets
-      const old_set = build.outfits.shift();
+      const old_set = build.outfits.shift()
       // Make a new outfit_set containing the outfit object
       const new_set = {
         amount: old_set.amount,
         outfit: outfit,
-      };
+      }
       // Add it to the end of original outfit sets
-      build.outfits.push(new_set);
+      build.outfits.push(new_set)
     }
-    return build;
-  };
+    return build
+  }
 
   switch (action.type) {
     case "hullSelect":
@@ -42,18 +42,18 @@ const reducer = (state, action) => {
         defaultBuild: {},
         currentBuild: {},
         hullSearchQuery: "",
-      };
+      }
     case "getHulls":
-      return { ...state, allHulls: action.payload };
+      return { ...state, allHulls: action.payload }
     case "filterHulls":
-      return { ...state, currentHulls: action.payload };
+      return { ...state, currentHulls: action.payload }
     case "filterRelease":
       return {
         ...state,
         release: action.payload,
         outfitSort: "name",
         hullSort: "name",
-      };
+      }
     case "filterSpoiler":
       return {
         ...state,
@@ -67,11 +67,11 @@ const reducer = (state, action) => {
           Number(action.payload.value) < 2
             ? { value: "Human", label: "Human" }
             : { value: "", label: "All Factions" },
-      };
+      }
     case "filterHullFaction":
-      return { ...state, hullFaction: action.payload };
+      return { ...state, hullFaction: action.payload }
     case "filterHullCategory":
-      return { ...state, hullCategory: action.payload };
+      return { ...state, hullCategory: action.payload }
     case "toggleListDetail":
       return {
         ...state,
@@ -79,16 +79,16 @@ const reducer = (state, action) => {
         pageSize: state.detailedList
           ? state.largePageSize
           : state.smallPageSize,
-      };
+      }
     case "sortHulls": {
       // Determine which selection to sort (current hulls or search results)
       var relevantSelection = state.hullSearchQuery
         ? cloneDeep(state.hullSearchResults)
-        : cloneDeep(state.currentHulls);
+        : cloneDeep(state.currentHulls)
       // Reverse hulls if the sort attribute is unchanged
-      const sortAttribute = action.payload;
+      const sortAttribute = action.payload
       if (sortAttribute == state.hullSort) {
-        relevantSelection = relevantSelection.reverse();
+        relevantSelection = relevantSelection.reverse()
       }
       // Else, sort by new attribute
       else {
@@ -99,11 +99,11 @@ const reducer = (state, action) => {
         ) {
           relevantSelection = relevantSelection.sort(
             fieldSorter([sortAttribute])
-          );
+          )
         } else {
           relevantSelection = relevantSelection.sort(
             fieldSorter(["-" + sortAttribute])
-          );
+          )
         }
       }
       // Update sorted hulls and sort attribute
@@ -117,27 +117,27 @@ const reducer = (state, action) => {
             ...state,
             currentHulls: relevantSelection,
             hullSort: sortAttribute,
-          };
+          }
     }
     case "searchHulls":
-      return { ...state, hullSearchQuery: action.payload };
+      return { ...state, hullSearchQuery: action.payload }
     case "showHullSearch":
-      return { ...state, hullSearchResults: action.payload };
+      return { ...state, hullSearchResults: action.payload }
     case "updateDisplayedHulls": {
-      const start = state.displayedHulls.length;
+      const start = state.displayedHulls.length
       const relevantSelection = state.hullSearchQuery
         ? state.hullSearchResults
-        : state.currentHulls;
+        : state.currentHulls
       const end =
         relevantSelection.length >= start + state.pageSize
           ? start + state.pageSize
-          : relevantSelection.length;
-      const addedHulls = relevantSelection.slice(start, end);
-      const newDisplayedHulls = state.displayedHulls.concat(addedHulls);
-      return { ...state, displayedHulls: newDisplayedHulls };
+          : relevantSelection.length
+      const addedHulls = relevantSelection.slice(start, end)
+      const newDisplayedHulls = state.displayedHulls.concat(addedHulls)
+      return { ...state, displayedHulls: newDisplayedHulls }
     }
     case "resetDisplayedHulls":
-      return { ...state, displayedHulls: [] };
+      return { ...state, displayedHulls: [] }
 
     case "shipBuilder":
       return {
@@ -148,24 +148,24 @@ const reducer = (state, action) => {
         outfitCategory: { value: "", label: "All Categories" },
         outfitSearchQuery: "",
         outfitSort: "name",
-      };
+      }
     case "getOutfits":
-      return { ...state, allOutfits: action.payload };
+      return { ...state, allOutfits: action.payload }
     case "filterOutfits":
-      return { ...state, currentOutfits: action.payload };
+      return { ...state, currentOutfits: action.payload }
     case "filterOutfitFaction":
-      return { ...state, outfitFaction: action.payload };
+      return { ...state, outfitFaction: action.payload }
     case "filterOutfitCategory":
-      return { ...state, outfitCategory: action.payload };
+      return { ...state, outfitCategory: action.payload }
     case "sortOutfits": {
       // Determine which selection to sort (current outfits or search results)
       var relevantSelection = state.outfitSearchQuery
         ? cloneDeep(state.outfitSearchResults)
-        : cloneDeep(state.currentOutfits);
+        : cloneDeep(state.currentOutfits)
       // Reverse outfits if the sort attribute is unchanged
-      const sortAttribute = action.payload;
+      const sortAttribute = action.payload
       if (sortAttribute == state.outfitSort) {
-        relevantSelection = relevantSelection.reverse();
+        relevantSelection = relevantSelection.reverse()
       }
       // Else, sort by new attribute
       else {
@@ -189,11 +189,11 @@ const reducer = (state, action) => {
         ) {
           relevantSelection = relevantSelection.sort(
             fieldSorter([sortAttribute])
-          );
+          )
         } else {
           relevantSelection = relevantSelection.sort(
             fieldSorter(["-" + sortAttribute])
-          );
+          )
         }
       }
       // Update sorted outfits and sort attribute
@@ -207,141 +207,141 @@ const reducer = (state, action) => {
             ...state,
             currentOutfits: relevantSelection,
             outfitSort: sortAttribute,
-          };
+          }
     }
     case "searchOutfits":
-      return { ...state, outfitSearchQuery: action.payload };
+      return { ...state, outfitSearchQuery: action.payload }
     case "showOutfitSearch":
-      return { ...state, outfitSearchResults: action.payload };
+      return { ...state, outfitSearchResults: action.payload }
     case "updateDisplayedOutfits": {
-      const start = state.displayedOutfits.length;
+      const start = state.displayedOutfits.length
       const relevantSelection = state.outfitSearchQuery
         ? state.outfitSearchResults
-        : state.currentOutfits;
+        : state.currentOutfits
       const end =
         relevantSelection.length >= start + state.pageSize
           ? start + state.pageSize
-          : relevantSelection.length;
-      const addedOutfits = relevantSelection.slice(start, end);
-      const newDisplayedOutfits = state.displayedOutfits.concat(addedOutfits);
-      return { ...state, displayedOutfits: newDisplayedOutfits };
+          : relevantSelection.length
+      const addedOutfits = relevantSelection.slice(start, end)
+      const newDisplayedOutfits = state.displayedOutfits.concat(addedOutfits)
+      return { ...state, displayedOutfits: newDisplayedOutfits }
     }
     case "resetDisplayedOutfits":
-      return { ...state, displayedOutfits: [] };
+      return { ...state, displayedOutfits: [] }
     case "getBuilds":
-      return { ...state, allBuilds: action.payload };
+      return { ...state, allBuilds: action.payload }
     case "setDefaultBuild": {
       const build = state.allBuilds.find(
         (build) => build.id === state.currentHull.default_build
-      );
-      const parsedBuild = parseBuild(cloneDeep(build));
+      )
+      const parsedBuild = parseBuild(cloneDeep(build))
 
       const currentBuild = {
         ...parsedBuild,
         id: Date.now(),
         name: `${parsedBuild.name} (Copy)`,
-      };
+      }
 
       return {
         ...state,
         currentBuild: currentBuild,
         defaultBuild: parsedBuild,
-      };
+      }
     }
     case "resetDefaultBuild":
-      return { ...state, defaultBuild: {} };
+      return { ...state, defaultBuild: {} }
     case "setHullBuilds": {
       const hullBuilds = state.allBuilds.filter(
         (build) => build.hull === state.currentHull.id
-      );
+      )
       const parsedHullBuilds = hullBuilds.map((build) =>
         parseBuild(cloneDeep(build))
-      );
-      return { ...state, hullBuilds: parsedHullBuilds };
+      )
+      return { ...state, hullBuilds: parsedHullBuilds }
     }
     case "setSavedHullBuilds":
-      return { ...state, savedHullBuilds: action.payload };
+      return { ...state, savedHullBuilds: action.payload }
     case "setCurrentBuild":
-      return { ...state, currentBuild: action.payload };
+      return { ...state, currentBuild: action.payload }
     case "setBuildName":
       return {
         ...state,
         currentBuild: { ...state.currentBuild, name: action.payload },
-      };
+      }
     case "saveBuild": {
-      const newSavedHullBuilds = cloneDeep(state.savedHullBuilds);
+      const newSavedHullBuilds = cloneDeep(state.savedHullBuilds)
       const buildIndex = newSavedHullBuilds.findIndex(
         (build) => build.id === state.currentBuild.id
-      );
+      )
       if (buildIndex === -1) {
-        newSavedHullBuilds.push(state.currentBuild);
+        newSavedHullBuilds.push(state.currentBuild)
       } else {
-        newSavedHullBuilds[buildIndex] = state.currentBuild;
+        newSavedHullBuilds[buildIndex] = state.currentBuild
       }
-      return { ...state, savedHullBuilds: newSavedHullBuilds };
+      return { ...state, savedHullBuilds: newSavedHullBuilds }
     }
     case "saveNewBuild": {
-      const newCurrent = { ...state.currentBuild, id: Date.now() };
-      const newSavedHullBuilds = [...state.savedHullBuilds, newCurrent];
+      const newCurrent = { ...state.currentBuild, id: Date.now() }
+      const newSavedHullBuilds = [...state.savedHullBuilds, newCurrent]
 
       return {
         ...state,
         currentBuild: newCurrent,
         savedHullBuilds: newSavedHullBuilds,
-      };
+      }
     }
     case "loadBuild":
-      return { ...state, currentBuild: action.payload };
+      return { ...state, currentBuild: action.payload }
     case "cloneBuild": {
       const clonedBuild = {
         ...action.payload,
         id: Date.now(),
         name: `${action.payload.name} (Copy)`,
-      };
-      return { ...state, currentBuild: clonedBuild };
+      }
+      return { ...state, currentBuild: clonedBuild }
     }
     case "deleteBuild": {
-      var newSavedHullBuilds = cloneDeep(state.savedHullBuilds);
+      var newSavedHullBuilds = cloneDeep(state.savedHullBuilds)
       newSavedHullBuilds.splice(
         state.savedHullBuilds.indexOf(action.payload),
         1
-      );
-      return { ...state, savedHullBuilds: newSavedHullBuilds };
+      )
+      return { ...state, savedHullBuilds: newSavedHullBuilds }
     }
     case "clearBuild":
-      return { ...state, currentBuild: { ...state.currentBuild, outfits: [] } };
+      return { ...state, currentBuild: { ...state.currentBuild, outfits: [] } }
     case "setBuildOutfits":
       return {
         ...state,
         currentBuild: { ...state.currentBuild, outfits: action.payload },
-      };
+      }
     case "setShiftHeld":
-      return { ...state, shiftHeld: action.payload };
+      return { ...state, shiftHeld: action.payload }
     case "setCtrlHeld":
-      return { ...state, ctrlHeld: action.payload };
+      return { ...state, ctrlHeld: action.payload }
     case "setRightAltHeld":
-      return { ...state, rightAltHeld: action.payload };
+      return { ...state, rightAltHeld: action.payload }
     case "setMulti":
-      return { ...state, multi: action.payload };
+      return { ...state, multi: action.payload }
 
     case "setDefenseAggregates":
-      return { ...state, defenseAggregates: action.payload };
+      return { ...state, defenseAggregates: action.payload }
     case "setMobilityAggregates":
-      return { ...state, mobilityAggregates: action.payload };
+      return { ...state, mobilityAggregates: action.payload }
     case "setMissionsAggregates":
-      return { ...state, missionsAggregates: action.payload };
+      return { ...state, missionsAggregates: action.payload }
     case "setSpaceAggregates":
-      return { ...state, spaceAggregates: action.payload };
+      return { ...state, spaceAggregates: action.payload }
     case "setHeatAggregates":
-      return { ...state, heatAggregates: action.payload };
+      return { ...state, heatAggregates: action.payload }
     case "setEnergyAggregates":
-      return { ...state, energyAggregates: action.payload };
+      return { ...state, energyAggregates: action.payload }
     case "setOffenseAggregates":
-      return { ...state, offenseAggregates: action.payload };
+      return { ...state, offenseAggregates: action.payload }
 
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

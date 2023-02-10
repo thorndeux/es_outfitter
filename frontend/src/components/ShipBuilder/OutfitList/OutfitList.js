@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react"
 
-import { StateContext, DispatchContext } from "../App"
-import { fieldSorter } from "../Utils"
+import { StateContext, DispatchContext } from "../../App"
+import { fieldSorter } from "../../../util/Utils"
 import OutfitCard from "./OutfitCard"
 import OutfitCardCompact from "./OutfitCardCompact"
 

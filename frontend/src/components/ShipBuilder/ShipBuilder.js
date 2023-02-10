@@ -1,14 +1,26 @@
 import React, { useContext, useEffect } from "react"
+import { useParams } from "react-router-dom"
+import { isEmpty } from "lodash"
 
-import BuildWindow from "./BuildWindow"
-import OutfitSelect from "./OutfitSelect"
-import OutfitList from "./OutfitList"
+import BuildWindow from "./BuildWindow/BuildWindow"
+import OutfitSelect from "./OutfitSelect/OutfitSelect"
+import OutfitList from "./OutfitList/OutfitList"
 
 import { DispatchContext, StateContext } from "../App"
 
 const ShipBuilder = () => {
   const dispatch = useContext(DispatchContext)
   const state = useContext(StateContext)
+
+  const { build } = useParams()
+  const hull = state.allHulls.find((hull) => hull.id === JSON.parse(build).hull)
+
+  useEffect(() => {
+    console.log(build)
+    console.log(hull)
+    isEmpty(state.currentHull) &&
+      dispatch({ type: "shipBuilder", payload: hull })
+  }, [])
 
   /**
    * Adds event listener to track whether the
@@ -70,9 +82,13 @@ const ShipBuilder = () => {
       content-start
       bg-gray-600"
       >
-        <BuildWindow />
-        <OutfitSelect />
-        <OutfitList />
+        {state.shipBuilder && (
+          <>
+            <BuildWindow />
+            <OutfitSelect />
+            <OutfitList />
+          </>
+        )}
       </div>
     </>
   )

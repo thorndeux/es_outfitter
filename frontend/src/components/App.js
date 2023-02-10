@@ -5,11 +5,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import ReactTooltip from "react-tooltip"
 import { Toaster } from "react-hot-toast"
 
-import reducer from "./Reducers"
-import initialState from "./Store"
+import reducer from "../state/Reducers"
+import initialState from "../state/Store"
 
-import HullSelect from "./HullSelect/HullSelect"
-import ScrollToTop from "./ScrollToTop"
+import HullSelect from "./HullPicker/HullPicker"
+import ScrollToTop from "../util/ScrollToTop"
 import ShipBuilder from "./ShipBuilder/ShipBuilder"
 
 export const StateContext = React.createContext()
@@ -153,7 +153,7 @@ const App = () => {
             />
             <Routes>
               <Route path="/" element={<HullSelect />} />
-              <Route path="/builder" element={<ShipBuilder />} />
+              <Route path="/builder/:build" element={<ShipBuilder />} />
             </Routes>
             <ScrollToTop />
           </div>

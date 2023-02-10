@@ -1,7 +1,7 @@
 import React from "react"
 
-import HullList from "./HullList"
-import SelectMenu from "./SelectMenu"
+import HullList from "./HullList/HullList"
+import SelectMenu from "./HullSelect/HullSelect"
 
 const HullSelect = () => {
   return (

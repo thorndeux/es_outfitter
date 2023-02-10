@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from "react"
 import ReactTooltip from "react-tooltip"
-import { Link, useNavigate } from "react-router-dom"
 
-import { DispatchContext, StateContext } from "../App"
-import FieldProp from "../FieldProp"
-import { stripe } from "../Utils"
+import { DispatchContext, StateContext } from "../../App"
+import FieldProp from "../../shared/FieldProp"
+import { stripe } from "../../../util/Utils"
 
-const HullCard = ({ hull }) => {
+const HullCardCompact = ({ hull }) => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
 
@@ -16,27 +15,13 @@ const HullCard = ({ hull }) => {
   }, [state.displayedHulls])
 
   // Fields to exclude from list of attributes
-  const excludedAttributes = [
-    "id",
-    "spoiler",
-    "name",
-    "release",
-    "plural",
-    "thumbnail",
-    "sprite",
-    "description",
-    "default_build",
-    "base_model",
-  ]
-
-  const navigate = useNavigate()
+  const includedAttributes = ["faction", "category", "cost", "hull", "shields"]
 
   const loadShipBuilder = (hull) => {
     dispatch({ type: "shipBuilder", payload: hull })
     ReactTooltip.hide()
     document.body.scrollTop = 0
     document.documentElement.scrollTop = 0
-    navigate("/builder")
   }
 
   return (
@@ -47,12 +32,12 @@ const HullCard = ({ hull }) => {
       text-gray-200
       bg-gradient-to-br from-gray-600 to-gray-500 
       border border-gray-400 rounded-sm 
-      w-full sm:w-96 h-auto
+      w-full xs:w-96 h-auto
       text-base
       p-2
       filter hover:brightness-110"
     >
-      <div className="mb-1">
+      <div className="mb-2">
         <h2>
           <span
             className="text-xl font-medium hover:cursor-pointer"
@@ -63,12 +48,12 @@ const HullCard = ({ hull }) => {
           </span>
           <button
             className="
-              float-right
-              p-1 px-2 rounded shadow
-              text-base text-gray-900 bg-blue-400
-              hover:shadow-lg
-              hover:text-gray-800 hover:bg-blue-300
-              hover:cursor-pointer"
+            float-right
+            p-1 px-2 rounded shadow
+            text-base text-gray-900 bg-blue-400
+            hover:shadow-lg
+            hover:text-gray-800 hover:bg-blue-300
+            hover:cursor-pointer"
             data-arrow-color="transparent"
             onClick={() => loadShipBuilder(hull)}
           >
@@ -76,23 +61,14 @@ const HullCard = ({ hull }) => {
           </button>
         </h2>
       </div>
-      <p className="text-justify">{hull.description}</p>
       <div>
-        <img
-          className="m-auto max-h-64 drop-shadow-xl py-5"
-          src={`/static/${hull.sprite}`}
-          alt={hull.name}
-        />
-      </div>
-      <div>
-        <h3 className="text-lg font-medium">Base Stats</h3>
-        <table id={hull.id} className="w-full">
+        <table id={hull.id} className="w-full table-fixed">
           <tbody>
             {Object.keys(hull).map((attribute) => {
               if (
                 hull[attribute] &&
                 Number(hull[attribute]) != 0 &&
-                !excludedAttributes.includes(attribute) &&
+                includedAttributes.includes(attribute) &&
                 (attribute === "faction"
                   ? state.spoiler.value > 1
                     ? true
@@ -119,4 +95,4 @@ const HullCard = ({ hull }) => {
   )
 }
 
-export default HullCard
+export default HullCardCompact

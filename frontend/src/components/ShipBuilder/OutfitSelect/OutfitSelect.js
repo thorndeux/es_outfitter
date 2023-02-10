@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import Select from "react-select"
 
-import { DispatchContext, StateContext } from "../App"
+import { DispatchContext, StateContext } from "../../App"
 
 const OutfitSelect = () => {
   const state = useContext(StateContext)

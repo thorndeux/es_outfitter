@@ -1,5 +1,5 @@
 import React from "react"
-import { getBuildAttribute } from "../Utils"
+import { getBuildAttribute } from "../../../util/Utils"
 
 const AggregatesTooltip = ({ build, attribute }) => {
   // Field type

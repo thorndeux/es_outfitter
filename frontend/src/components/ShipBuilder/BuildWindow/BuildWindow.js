@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
-import { DispatchContext, StateContext } from "../App"
+import { DispatchContext, StateContext } from "../../App"
 import BuildAggregates from "./BuildAggregates"
 import BuildDetails from "./BuildDetails"
 import AggregatesTable from "./AggregatesTable"
@@ -12,6 +12,8 @@ const BuildWindow = () => {
 
   // Load default build for currentHull and set it as current build
   useEffect(() => {
+    console.log(state.currentHull)
+    console.log(state.allBuilds)
     dispatch({ type: "setDefaultBuild" })
     setMinimumHeight()
 

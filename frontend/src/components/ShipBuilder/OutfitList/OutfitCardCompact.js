@@ -2,14 +2,14 @@ import React, { useContext, useEffect } from "react"
 
 import { FaPlus } from "react-icons/fa"
 
-import { DispatchContext, StateContext } from "../App"
+import { DispatchContext, StateContext } from "../../App"
 
-import { addOutfit, stripe } from "../Utils"
+import { addOutfit, stripe } from "../../../util/Utils"
 
-import FieldProp from "../FieldProp"
+import FieldProp from "../../shared/FieldProp"
 import toast from "react-hot-toast"
 
-const OutfitCard = ({ outfit }) => {
+const OutfitCardCompact = ({ outfit }) => {
   const dispatch = useContext(DispatchContext)
   const state = useContext(StateContext)
 
@@ -54,15 +54,32 @@ const OutfitCard = ({ outfit }) => {
   // Fields to exclude from list of attributes
   const excludedAttributes = [
     "id",
+    "release",
     "spoiler",
     "name",
-    "release",
     "plural",
-    "thumbnail",
-    "sprite",
+    "license",
     "description",
+    "thumbnail",
+    "mass",
+    "gun_ports",
+    "turret_mounts",
+    "velocity",
+    "lifetime",
+    "reload",
+    "inaccuracy",
+    "burst",
+    "cluster",
     "ammo",
-    "submunition_type",
+    "submunition",
+    "missile_strength",
+    "hit_force",
+    "turret_turn",
+    "anti_missile",
+    "stream",
+    "_per_space",
+    "_per_second",
+    "_damage",
   ]
 
   return (
@@ -100,25 +117,14 @@ const OutfitCard = ({ outfit }) => {
           </button>
         </div>
       </div>
-      <p className="text-justify">{outfit.description}</p>
-      <div className="flex">
-        {outfit.thumbnail && (
-          <img
-            className="m-auto max-h-64 drop-shadow-xl py-5"
-            src={`/static/${outfit.thumbnail}`}
-            alt={outfit.name}
-          />
-        )}
-      </div>
       <div>
-        <h3 className="text-lg font-medium">Base Stats</h3>
         <table id={outfit.id} className="w-full mb-auto">
           <tbody>
             {Object.keys(outfit).map((attribute) => {
               if (
                 outfit[attribute] &&
                 Number(outfit[attribute]) != 0 &&
-                !excludedAttributes.includes(attribute) &&
+                !excludedAttributes.some((v) => attribute.includes(v)) &&
                 (attribute === "faction"
                   ? state.spoiler.value > 1
                     ? true
@@ -144,4 +150,4 @@ const OutfitCard = ({ outfit }) => {
     </div>
   )
 }
-export default OutfitCard
+export default OutfitCardCompact

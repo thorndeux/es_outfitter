@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import AsyncSelect from "react-select/async"
 import Select from "react-select"
 
-import { DispatchContext, StateContext } from "../App"
+import { DispatchContext, StateContext } from "../../App"
 
 const SelectMenu = () => {
   const state = useContext(StateContext)

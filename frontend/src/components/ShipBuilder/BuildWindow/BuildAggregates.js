@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useRef } from "react"
 import ReactTooltip from "react-tooltip"
-import { DispatchContext, StateContext } from "../App"
+import { DispatchContext, StateContext } from "../../App"
 import {
   compileAttributeTable,
   getAmmoData,
   getBuildAttribute,
   stripe,
-} from "../Utils"
+} from "../../../util/Utils"
 
 import AggregatesTable from "./AggregatesTable"
 import AggregatesTooltip from "./AggregatesTooltip"

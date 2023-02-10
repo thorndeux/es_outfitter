@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { labelize, stripe } from "../Utils"
+import { labelize, stripe } from "../../../util/Utils"
 
 /**
  * Simple component to turn a key-value pair into a presentable

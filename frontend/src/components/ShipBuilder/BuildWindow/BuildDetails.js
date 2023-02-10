@@ -11,11 +11,11 @@ import {
 } from "react-icons/fa"
 import ReactTooltip from "react-tooltip"
 
-import { DispatchContext, StateContext } from "../App"
-import { addOutfit, removeOutfit, stripe } from "../Utils"
+import { DispatchContext, StateContext } from "../../App"
+import { addOutfit, removeOutfit, stripe } from "../../../util/Utils"
 
 import BuildList from "./BuildList"
-import OutfitTooltip from "./OutfitTooltip"
+import OutfitTooltip from "../OutfitList/OutfitTooltip"
 
 const BuildDetails = () => {
   const dispatch = useContext(DispatchContext)

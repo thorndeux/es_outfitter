@@ -2,8 +2,8 @@ import React, { useContext, useEffect } from "react"
 import ReactTooltip from "react-tooltip"
 import { FaCloudDownloadAlt, FaCopy, FaTrashAlt } from "react-icons/fa"
 
-import { DispatchContext, StateContext } from "../App"
-import { stripe } from "../Utils"
+import { DispatchContext, StateContext } from "../../App"
+import { stripe } from "../../../util/Utils"
 
 const BuildList = () => {
   const state = useContext(StateContext)

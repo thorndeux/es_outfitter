@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react"
 
-import { DispatchContext, StateContext } from "../App"
-import { fieldSorter, sortByFieldSum } from "../Utils"
+import { DispatchContext, StateContext } from "../../App"
+import { fieldSorter as sortByField, sortByFieldSum } from "../../../util/Utils"
 import HullCard from "./HullCard"
 
 import ReactTooltip from "react-tooltip"
@@ -45,14 +45,14 @@ const HullList = () => {
       : (filteredHulls = filteredHulls.filter((hull) => hull.category))
 
     if (["cost", "name"].includes(state.hullSort)) {
-      filteredHulls = filteredHulls.sort(fieldSorter([state.hullSort, "name"]))
+      filteredHulls = filteredHulls.sort(sortByField([state.hullSort, "name"]))
     } else if (["totalHP"].includes(state.hullSort)) {
       filteredHulls = filteredHulls.sort(
         sortByFieldSum(["hull", "shields"], "desc")
       )
     } else {
       filteredHulls = filteredHulls.sort(
-        fieldSorter(["-" + state.hullSort, "name"])
+        sortByField(["-" + state.hullSort, "name"])
       )
     }
 
