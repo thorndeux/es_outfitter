@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash"
-import { fieldSorter } from "../util/Utils"
+import { sortByFields } from "../util/sorting"
 
 const reducer = (state, action) => {
   /**
@@ -98,11 +98,11 @@ const reducer = (state, action) => {
           )
         ) {
           relevantSelection = relevantSelection.sort(
-            fieldSorter([sortAttribute])
+            sortByFields([sortAttribute])
           )
         } else {
           relevantSelection = relevantSelection.sort(
-            fieldSorter(["-" + sortAttribute])
+            sortByFields(["-" + sortAttribute])
           )
         }
       }
@@ -188,11 +188,11 @@ const reducer = (state, action) => {
           ].includes(sortAttribute)
         ) {
           relevantSelection = relevantSelection.sort(
-            fieldSorter([sortAttribute])
+            sortByFields([sortAttribute])
           )
         } else {
           relevantSelection = relevantSelection.sort(
-            fieldSorter(["-" + sortAttribute])
+            sortByFields(["-" + sortAttribute])
           )
         }
       }

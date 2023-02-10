@@ -3,7 +3,7 @@ import ReactTooltip from "react-tooltip"
 
 import { DispatchContext, StateContext } from "../../App"
 import FieldProp from "../../shared/FieldProp"
-import { stripe } from "../../../util/Utils"
+import stripeTable from "../../../util/stripeTable"
 
 const HullCardCompact = ({ hull }) => {
   const state = useContext(StateContext)
@@ -11,7 +11,7 @@ const HullCardCompact = ({ hull }) => {
 
   useEffect(() => {
     const table = document.getElementById(hull.id)
-    stripe(table)
+    stripeTable(table)
   }, [state.displayedHulls])
 
   // Fields to exclude from list of attributes

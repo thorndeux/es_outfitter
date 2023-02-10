@@ -12,7 +12,8 @@ import {
 import ReactTooltip from "react-tooltip"
 
 import { DispatchContext, StateContext } from "../../App"
-import { addOutfit, removeOutfit, stripe } from "../../../util/Utils"
+import { addOutfit, removeOutfit } from "../../../util/build"
+import stripeTable from "../../../util/stripeTable"
 
 import BuildList from "./BuildList"
 import OutfitTooltip from "../OutfitList/OutfitTooltip"
@@ -38,7 +39,7 @@ const BuildDetails = () => {
    */
   useEffect(() => {
     const table = document.getElementById("buildOutfits")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.currentBuild.outfits])
 

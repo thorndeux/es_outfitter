@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { StateContext } from "../App"
-import { labelize } from "../../util/Utils"
+import labelize from "../../util/labelize"
 
 const FieldProp = ({ clickHandler, attribute, value, data_tip }) => {
   const state = useContext(StateContext)

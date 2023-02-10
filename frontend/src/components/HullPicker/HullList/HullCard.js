@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import { DispatchContext, StateContext } from "../../App"
 import FieldProp from "../../shared/FieldProp"
-import { stripe } from "../../../util/Utils"
+import stripeTable from "../../../util/stripeTable"
 
 const HullCard = ({ hull }) => {
   const state = useContext(StateContext)
@@ -12,7 +12,7 @@ const HullCard = ({ hull }) => {
 
   useEffect(() => {
     const table = document.getElementById(hull.id)
-    stripe(table)
+    stripeTable(table)
   }, [state.displayedHulls])
 
   // Fields to exclude from list of attributes

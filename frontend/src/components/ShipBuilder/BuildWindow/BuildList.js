@@ -3,7 +3,7 @@ import ReactTooltip from "react-tooltip"
 import { FaCloudDownloadAlt, FaCopy, FaTrashAlt } from "react-icons/fa"
 
 import { DispatchContext, StateContext } from "../../App"
-import { stripe } from "../../../util/Utils"
+import stripeTable from "../../../util/stripeTable"
 
 const BuildList = () => {
   const state = useContext(StateContext)
@@ -29,12 +29,12 @@ const BuildList = () => {
 
   useEffect(() => {
     const table = document.getElementById("hullBuilds")
-    stripe(table)
+    stripeTable(table)
   }, [state.hullBuilds])
 
   useEffect(() => {
     const table = document.getElementById("savedHullBuilds")
-    stripe(table)
+    stripeTable(table)
   }, [state.savedHullBuilds])
 
   return (

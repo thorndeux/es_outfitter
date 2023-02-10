@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
-import { labelize, stripe } from "../../../util/Utils"
+import labelize from "../../../util/labelize"
+import stripeTable from "../../../util/stripeTable"
 
 /**
  * Simple component to turn a key-value pair into a presentable
@@ -169,7 +170,7 @@ const propulsion_attributes = [
 const OutfitTooltip = ({ outfit }) => {
   useEffect(() => {
     const table = document.getElementById(outfit.id)
-    stripe(table)
+    stripeTable(table)
   }, [])
 
   return (

@@ -1,12 +1,8 @@
 import React, { useContext, useEffect, useRef } from "react"
 import ReactTooltip from "react-tooltip"
 import { DispatchContext, StateContext } from "../../App"
-import {
-  compileAttributeTable,
-  getAmmoData,
-  getBuildAttribute,
-  stripe,
-} from "../../../util/Utils"
+import { getAmmoData, getBuildAttribute } from "../../../util/build"
+import stripeTable from "../../../util/stripeTable"
 
 import AggregatesTable from "./AggregatesTable"
 import AggregatesTooltip from "./AggregatesTooltip"
@@ -143,43 +139,43 @@ const BuildAggregates = () => {
 
   useEffect(() => {
     const table = document.getElementById("defenseAggregates")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.defenseAggregates])
 
   useEffect(() => {
     const table = document.getElementById("mobilityAggregates")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.mobilityAggregates])
 
   useEffect(() => {
     const table = document.getElementById("missionsAggregates")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.missionsAggregates])
 
   useEffect(() => {
     const table = document.getElementById("spaceAggregates")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.spaceAggregates])
 
   useEffect(() => {
     const table = document.getElementById("heatAggregates")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.heatAggregates])
 
   useEffect(() => {
     const table = document.getElementById("energyAggregates")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.energyAggregates])
 
   useEffect(() => {
     const table = document.getElementById("offenseAggregates")
-    stripe(table)
+    stripeTable(table)
     ReactTooltip.rebuild()
   }, [state.offenseAggregates])
 

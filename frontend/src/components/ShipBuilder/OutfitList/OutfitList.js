@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react"
 
 import { StateContext, DispatchContext } from "../../App"
-import { fieldSorter } from "../../../util/Utils"
+import { sortByFields } from "../../../util/sorting"
 import OutfitCard from "./OutfitCard"
 import OutfitCardCompact from "./OutfitCardCompact"
 
@@ -43,11 +43,11 @@ const OutfitList = () => {
 
     if (["cost", "name"].includes(state.outfitSort)) {
       filteredOutfits = filteredOutfits.sort(
-        fieldSorter([state.outfitSort, "name"])
+        sortByFields([state.outfitSort, "name"])
       )
     } else {
       filteredOutfits = filteredOutfits.sort(
-        fieldSorter(["-" + state.outfitSort, "name"])
+        sortByFields(["-" + state.outfitSort, "name"])
       )
     }
 

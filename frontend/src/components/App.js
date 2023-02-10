@@ -9,7 +9,7 @@ import reducer from "../state/Reducers"
 import initialState from "../state/Store"
 
 import HullSelect from "./HullPicker/HullPicker"
-import ScrollToTop from "../util/ScrollToTop"
+import ScrollToTop from "./ScrollToTop"
 import ShipBuilder from "./ShipBuilder/ShipBuilder"
 
 export const StateContext = React.createContext()

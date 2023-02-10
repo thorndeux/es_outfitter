@@ -4,7 +4,8 @@ import { FaPlus } from "react-icons/fa"
 
 import { DispatchContext, StateContext } from "../../App"
 
-import { addOutfit, stripe } from "../../../util/Utils"
+import { addOutfit } from "../../../util/build"
+import stripeTable from "../../../util/stripeTable"
 
 import FieldProp from "../../shared/FieldProp"
 import toast from "react-hot-toast"
@@ -15,7 +16,7 @@ const OutfitCard = ({ outfit }) => {
 
   useEffect(() => {
     const table = document.getElementById(outfit.id)
-    stripe(table)
+    stripeTable(table)
   }, [state.displayedOutfits])
 
   const handleAddOutfit = (e, outfit) => {
