@@ -1,27 +1,20 @@
 import React, { useContext, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import { DispatchContext, StateContext } from "../../App"
 import BuildAggregates from "./BuildAggregates"
 import BuildDetails from "./BuildDetails"
 import AggregatesTable from "./AggregatesTable"
+import { isEmpty } from "lodash"
 
 const BuildWindow = () => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
 
-  // Load default build for currentHull and set it as current build
+  // Set minimum height for hull sprite
   useEffect(() => {
-    console.log(state.currentHull)
-    console.log(state.allBuilds)
-    dispatch({ type: "setDefaultBuild" })
     setMinimumHeight()
-
-    return () => {
-      dispatch({ type: "resetDefaultBuild" })
-      dispatch({ type: "setCurrentBuild", payload: {} })
-    }
-  }, [state.currentHull, state.allBuilds])
+  }, [state.currentHull])
 
   /**
    * Make sure build window has enough height to accomodate the hull sprite,
@@ -212,8 +205,8 @@ const BuildWindow = () => {
           <AggregatesTable data={mobilityData} />
           <AggregatesTable data={missionData} />
         </div>
-        <BuildAggregates />
-        <BuildDetails />
+        {!isEmpty(state.currentBuild) && <BuildAggregates />}
+        {!isEmpty(state.currentBuild) && <BuildDetails />}
       </div>
     </div>
   )

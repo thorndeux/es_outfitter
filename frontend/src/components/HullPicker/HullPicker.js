@@ -1,9 +1,9 @@
 import React from "react"
 
 import HullList from "./HullList/HullList"
-import SelectMenu from "./HullSelect/HullSelect"
+import HullSelect from "./HullSelect/HullSelect"
 
-const HullSelect = () => {
+const HullPicker = () => {
   return (
     <div
       className="
@@ -12,10 +12,10 @@ const HullSelect = () => {
       content-start
       bg-gray-600"
     >
-      <SelectMenu />
+      <HullSelect />
       <HullList />
     </div>
   )
 }
 
-export default HullSelect
+export default HullPicker

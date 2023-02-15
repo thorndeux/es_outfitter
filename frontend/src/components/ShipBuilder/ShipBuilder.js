@@ -13,14 +13,18 @@ const ShipBuilder = () => {
   const state = useContext(StateContext)
 
   const { build } = useParams()
-  const hull = state.allHulls.find((hull) => hull.id === JSON.parse(build).hull)
 
   useEffect(() => {
     console.log(build)
-    console.log(hull)
-    isEmpty(state.currentHull) &&
-      dispatch({ type: "shipBuilder", payload: hull })
-  }, [])
+    console.log(state.allHulls.length)
+    !_.isEmpty(state.allOutfits) &&
+      dispatch({ type: "shipBuilder", payload: JSON.parse(build) })
+    console.log(`ShipBuilder loaded: ${state.shipBuilder}`)
+
+    return () =>
+      dispatch({ type: "unloadShipBuilder" }) &&
+      console.log(`ShipBuilder unloaded: ${state.shipBuilder}`)
+  }, [state.allHulls, state.allOutfits])
 
   /**
    * Adds event listener to track whether the
@@ -82,12 +86,12 @@ const ShipBuilder = () => {
       content-start
       bg-gray-600"
       >
-        {state.shipBuilder && (
-          <>
-            <BuildWindow />
-            <OutfitSelect />
-            <OutfitList />
-          </>
+        {!isEmpty(state.currentHull) && !isEmpty(state.currentBuild) && (
+          <BuildWindow />
+        )}
+        {!isEmpty(state.outfitCategory) && <OutfitSelect />}
+        {!isEmpty(state.outfitCategory) && !_.isEmpty(state.allOutfits) && (
+          <OutfitList />
         )}
       </div>
     </>

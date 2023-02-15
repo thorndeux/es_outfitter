@@ -140,15 +140,26 @@ const reducer = (state, action) => {
       return { ...state, displayedHulls: [] }
 
     case "shipBuilder":
+      const build = parseBuild(cloneDeep(action.payload))
+
+      const currentBuild = {
+        ...build,
+        id: Date.now(),
+        name: `${build.name} (Copy)`,
+      }
+      const hull = build.hull
       return {
         ...state,
         hullSelect: false,
         shipBuilder: true,
-        currentHull: action.payload,
+        currentHull: hull,
+        currentBuild: currentBuild,
         outfitCategory: { value: "", label: "All Categories" },
         outfitSearchQuery: "",
         outfitSort: "name",
       }
+    case "unloadShipBuilder":
+      return { ...state, shipBuilder: false }
     case "getOutfits":
       return { ...state, allOutfits: action.payload }
     case "filterOutfits":

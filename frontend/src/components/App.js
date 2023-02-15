@@ -8,7 +8,7 @@ import { Toaster } from "react-hot-toast"
 import reducer from "../state/Reducers"
 import initialState from "../state/Store"
 
-import HullSelect from "./HullPicker/HullPicker"
+import HullPicker from "./HullPicker/HullPicker"
 import ScrollToTop from "./ScrollToTop"
 import ShipBuilder from "./ShipBuilder/ShipBuilder"
 
@@ -49,6 +49,7 @@ const App = () => {
       )
     }
     const data = await res.json()
+    console.log("Fetched hulls...")
 
     return data
   }
@@ -152,7 +153,7 @@ const App = () => {
               }}
             />
             <Routes>
-              <Route path="/" element={<HullSelect />} />
+              <Route path="/" element={<HullPicker />} />
               <Route path="/builder/:build" element={<ShipBuilder />} />
             </Routes>
             <ScrollToTop />

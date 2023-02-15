@@ -4,7 +4,7 @@ import Select from "react-select"
 
 import { DispatchContext, StateContext } from "../../App"
 
-const SelectMenu = () => {
+const HullSelect = () => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
 
@@ -199,4 +199,4 @@ const SelectMenu = () => {
   )
 }
 
-export default SelectMenu
+export default HullSelect
