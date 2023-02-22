@@ -4,19 +4,12 @@ import { DispatchContext, StateContext } from "../../App"
 import { sortByFields, sortByFieldSum } from "../../../util/sorting"
 import HullCard from "./HullCard"
 
-import ReactTooltip from "react-tooltip"
+import { Tooltip } from "react-tooltip"
 import HullCardCompact from "./HullCardCompact"
 
 const HullList = () => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
-
-  /**
-   * Rebuild tooltips whenever displayed hulls change
-   */
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [state.displayedHulls, state.detailedList])
 
   // Run filterHulls() whenever allHulls, spoiler, faction, or category changes
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react"
-import ReactTooltip from "react-tooltip"
+import { TooltipWrapper } from "react-tooltip"
 import { useNavigate } from "react-router-dom"
 
 import { DispatchContext, StateContext } from "../../App"
@@ -32,7 +32,6 @@ const HullCard = ({ hull }) => {
   const navigate = useNavigate()
 
   const loadShipBuilder = (hull) => {
-    ReactTooltip.hide()
     document.body.scrollTop = 0
     document.documentElement.scrollTop = 0
     const build = state.allBuilds.find(
@@ -56,13 +55,15 @@ const HullCard = ({ hull }) => {
     >
       <div className="mb-1">
         <h2>
-          <span
-            className="text-xl font-medium hover:cursor-pointer"
-            onClick={() => dispatch({ type: "sortHulls", payload: "name" })}
-            data-tip="Sort by name"
-          >
-            {hull.name}
-          </span>
+          <TooltipWrapper>
+            <span
+              className="text-xl font-medium hover:cursor-pointer"
+              onClick={() => dispatch({ type: "sortHulls", payload: "name" })}
+              data-tooltip-content="Sort by name"
+            >
+              {hull.name}
+            </span>
+          </TooltipWrapper>
           <button
             className="
               float-right
@@ -71,7 +72,6 @@ const HullCard = ({ hull }) => {
               hover:shadow-lg
               hover:text-gray-800 hover:bg-blue-300
               hover:cursor-pointer"
-            data-arrow-color="transparent"
             onClick={() => loadShipBuilder(hull)}
           >
             Start build

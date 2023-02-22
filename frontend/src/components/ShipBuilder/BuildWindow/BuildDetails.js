@@ -9,7 +9,6 @@ import {
   FaPlus,
   FaTrashAlt,
 } from "react-icons/fa"
-import ReactTooltip from "react-tooltip"
 
 import { DispatchContext, StateContext } from "../../App"
 import { addOutfit, removeOutfit } from "../../../util/build"
@@ -40,7 +39,6 @@ const BuildDetails = () => {
   useEffect(() => {
     const table = document.getElementById("buildOutfits")
     stripeTable(table)
-    ReactTooltip.rebuild()
   }, [state.currentBuild.outfits])
 
   /**
@@ -148,7 +146,7 @@ const BuildDetails = () => {
                   <tr key={outfit_set.outfit.id}>
                     <td>
                       <span
-                        data-tip={renderToStaticMarkup(
+                        data-tooltip-content={renderToStaticMarkup(
                           <OutfitTooltip
                             key={outfit_set.outfit.id}
                             state={state}
@@ -162,7 +160,7 @@ const BuildDetails = () => {
                     <td className="pl-3 w-16">&times; {outfit_set.amount}</td>
                     <td
                       className="text-lg text-lime-600 hover:text-lime-500 cursor-pointer pl-3"
-                      data-tip="Add"
+                      data-tooltip-content="Add"
                       data-place="bottom"
                       onClick={(e) => handleAddOutfit(e, outfit_set.outfit)}
                     >
@@ -170,7 +168,7 @@ const BuildDetails = () => {
                     </td>
                     <td
                       className="text-lg text-red-600 hover:text-red-500 cursor-pointer pl-2 pr-1"
-                      data-tip="Remove"
+                      data-tooltip-content="Remove"
                       data-place="bottom"
                       onClick={(e) => handleRemoveOutfit(e, outfit_set.outfit)}
                     >
@@ -188,7 +186,7 @@ const BuildDetails = () => {
 
         <div className="w-full grid grid-cols-3 gap-1 mb-1">
           <button
-            data-tip="Save"
+            data-tooltip-content="Save"
             className="border border-gray-300 rounded
               brightness-90 hover:brightness-125
               p-2"
@@ -197,7 +195,7 @@ const BuildDetails = () => {
             <FaSave className="inline" />
           </button>
           <button
-            data-tip="Save as"
+            data-tooltip-content="Save as"
             className="border border-gray-300 rounded
             brightness-90 hover:brightness-125 hover:bg-gray-600
             p-2"
@@ -208,7 +206,7 @@ const BuildDetails = () => {
             <FaSave className="inline" />
           </button>
           <button
-            data-tip="Clear"
+            data-tooltip-content="Clear"
             className="border border-gray-300 rounded
             brightness-90 hover:brightness-125 hover:bg-gray-600
             p-2"

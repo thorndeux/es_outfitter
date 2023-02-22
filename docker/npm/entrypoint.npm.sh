@@ -4,7 +4,6 @@
 npm install npm@latest -g
 
 # Install and update frontend dependencies
-npm install
 npm update
 
 # Pass through command

@@ -34,7 +34,9 @@ const AggregatesTable = ({ data }) => {
               <tr key={row.key}>
                 <td>
                   <span
-                    data-tip={row.keytip && renderToStaticMarkup(row.keytip)}
+                    data-tooltip-content={
+                      row.keytip && renderToStaticMarkup(row.keytip)
+                    }
                     data-class="max-w-xs sm:max-w-prose"
                   >
                     {row.key}
@@ -44,7 +46,7 @@ const AggregatesTable = ({ data }) => {
                   percentages.includes(row.key) ? (
                     <td key={index}>
                       <span
-                        data-tip={
+                        data-tooltip-content={
                           row.valuetips &&
                           row.valuetips[index] &&
                           renderToStaticMarkup(row.valuetips[index])
@@ -59,7 +61,7 @@ const AggregatesTable = ({ data }) => {
                   ) : (
                     <td key={index}>
                       <span
-                        data-tip={
+                        data-tooltip-content={
                           row.valuetips &&
                           row.valuetips[index] &&
                           renderToStaticMarkup(row.valuetips[index])

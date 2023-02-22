@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react"
-import ReactTooltip from "react-tooltip"
+import Tooltip from "react-tooltip"
 
 import { DispatchContext, StateContext } from "../../App"
 import FieldProp from "../../shared/FieldProp"
@@ -19,7 +19,7 @@ const HullCardCompact = ({ hull }) => {
 
   const loadShipBuilder = (hull) => {
     dispatch({ type: "shipBuilder", payload: hull })
-    ReactTooltip.hide()
+    Tooltip.hide()
     document.body.scrollTop = 0
     document.documentElement.scrollTop = 0
   }
@@ -42,7 +42,7 @@ const HullCardCompact = ({ hull }) => {
           <span
             className="text-xl font-medium hover:cursor-pointer"
             onClick={() => dispatch({ type: "sortHulls", payload: "name" })}
-            data-tip="Sort by name"
+            data-tooltip-content="Sort by name"
           >
             {hull.name}
           </span>

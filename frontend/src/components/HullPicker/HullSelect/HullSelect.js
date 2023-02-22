@@ -1,6 +1,7 @@
 import React, { useContext } from "react"
 import AsyncSelect from "react-select/async"
 import Select from "react-select"
+import { TooltipWrapper } from "react-tooltip"
 
 import { DispatchContext, StateContext } from "../../App"
 
@@ -186,14 +187,16 @@ const HullSelect = () => {
         />
       </div>
       <div>
-        <button
-          className="rounded w-full py-1.5 px-2.5 mt-3.5
-          text-gray-900 bg-gray-400
-          hover:text-gray-800 hover:bg-gray-300"
-          onClick={toggleListDetail}
-        >
-          {state.detailedList ? "Compact view" : "Detailed view"}
-        </button>
+        <TooltipWrapper content="Toggle between detailed and Compact View">
+          <button
+            className="rounded w-full py-1.5 px-2.5 mt-3.5
+            text-gray-900 bg-gray-400
+            hover:text-gray-800 hover:bg-gray-300"
+            onClick={toggleListDetail}
+          >
+            {state.detailedList ? "Compact view" : "Detailed view"}
+          </button>
+        </TooltipWrapper>
       </div>
     </div>
   )

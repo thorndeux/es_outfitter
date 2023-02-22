@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react"
-import ReactTooltip from "react-tooltip"
 import { FaCloudDownloadAlt, FaCopy, FaTrashAlt } from "react-icons/fa"
 
 import { DispatchContext, StateContext } from "../../App"
@@ -23,9 +22,7 @@ const BuildList = () => {
     }
   }, [])
 
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [state.hullBuilds, state.savedHullBuilds])
+  useEffect(() => {}, [state.hullBuilds, state.savedHullBuilds])
 
   useEffect(() => {
     const table = document.getElementById("hullBuilds")
@@ -54,7 +51,7 @@ const BuildList = () => {
                   {build.name}
                 </td>
                 <td
-                  data-tip="Clone"
+                  data-tooltip-content="Clone"
                   onClick={() =>
                     dispatch({ type: "cloneBuild", payload: build })
                   }
@@ -80,19 +77,16 @@ const BuildList = () => {
                   {build.name}
                 </td>
                 <td
-                  data-tip="Delete build"
+                  data-tooltip-content="Delete build"
                   onClick={() =>
-                    dispatch(
-                      { type: "deleteBuild", payload: build },
-                      ReactTooltip.hide()
-                    )
+                    dispatch({ type: "deleteBuild", payload: build })
                   }
                   className="w-6 hover:cursor-pointer brightness-90 hover:brightness-110"
                 >
                   <FaTrashAlt />
                 </td>
                 <td
-                  data-tip="Load build"
+                  data-tooltip-content="Load build"
                   onClick={() =>
                     dispatch({ type: "loadBuild", payload: build })
                   }

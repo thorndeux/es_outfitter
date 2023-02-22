@@ -194,7 +194,7 @@ const BuildWindow = () => {
                 className="m-auto max-h-72 xs:max-h-96 p-2"
                 src={`/static/${state.currentHull.sprite}`}
                 alt={state.currentHull.name}
-                data-tip={`<p class="font-bold">${state.currentHull.name}</p>
+                data-tooltip-content={`<p class="font-bold">${state.currentHull.name}</p>
                   <p>${state.currentHull.description}</p>`}
                 data-class="max-w-prose"
                 data-arrow-color="transparent"

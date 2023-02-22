@@ -1,8 +1,9 @@
 import React, { useEffect, useReducer } from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 
-import ReactTooltip from "react-tooltip"
+import { Tooltip, TooltipProvider } from "react-tooltip"
+import "react-tooltip/dist/react-tooltip.css"
 import { Toaster } from "react-hot-toast"
 
 import reducer from "../state/Reducers"
@@ -124,40 +125,30 @@ const App = () => {
     return data
   }
 
-  /**
-   * Rebuild tooltips whenever view changes
-   */
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [state.hullSelect, state.shipBuilder])
-
   return (
     <BrowserRouter>
       <DispatchContext.Provider value={dispatch}>
         <StateContext.Provider value={state}>
-          <div className="relative bg-gray-300 text-gray-200 min-h-screen font-sans">
-            <ReactTooltip
-              effect="solid"
-              delayShow={150}
-              className="text-gray-200"
-              html={true}
-            />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                className: "bg-gray-900/90 text-gray-300 text-sm",
-                // error: {
-                //   className: "bg-red-900 border border-red-500 text-red-100",
-                //   icon: <FaExclamation size="2em" className="text-red-500"/>,
-                // }
-              }}
-            />
-            <Routes>
-              <Route path="/" element={<HullPicker />} />
-              <Route path="/builder/:build" element={<ShipBuilder />} />
-            </Routes>
-            <ScrollToTop />
-          </div>
+          <TooltipProvider>
+            <div className="relative bg-gray-300 text-gray-200 min-h-screen font-sans">
+              <Tooltip delayShow={150} className="text-gray-200" />
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  className: "bg-gray-900/90 text-gray-300 text-sm",
+                  // error: {
+                  //   className: "bg-red-900 border border-red-500 text-red-100",
+                  //   icon: <FaExclamation size="2em" className="text-red-500"/>,
+                  // }
+                }}
+              />
+              <Routes>
+                <Route path="/" element={<HullPicker />} />
+                <Route path="/builder/:build" element={<ShipBuilder />} />
+              </Routes>
+              <ScrollToTop />
+            </div>
+          </TooltipProvider>
         </StateContext.Provider>
       </DispatchContext.Provider>
     </BrowserRouter>
@@ -166,4 +157,5 @@ const App = () => {
 
 export default App
 
-ReactDOM.render(<App />, document.getElementById("app"))
+const root = createRoot(document.getElementById("app"))
+root.render(<App />)

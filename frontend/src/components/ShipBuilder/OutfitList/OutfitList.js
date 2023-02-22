@@ -5,15 +5,9 @@ import { sortByFields } from "../../../util/sorting"
 import OutfitCard from "./OutfitCard"
 import OutfitCardCompact from "./OutfitCardCompact"
 
-import ReactTooltip from "react-tooltip"
-
 const OutfitList = () => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
-
-  useEffect(() => {
-    ReactTooltip.rebuild()
-  }, [state.displayedOutfits, state.detailedList])
 
   // Run filterOutfits() whenever allOutfits, spoiler, faction, or category changes
   useEffect(() => {

@@ -82,14 +82,14 @@ const OutfitCard = ({ outfit }) => {
         <span
           className="text-xl font-medium hover:cursor-pointer"
           onClick={() => dispatch({ type: "sortOutfits", payload: "name" })}
-          data-tip="Sort by name"
+          data-tooltip-content="Sort by name"
         >
           {outfit.name}
         </span>
         <div className="float-right">
           {state.multi && <span className="pr-2"> &times; {state.multi}</span>}
           <button
-            data-tip="Add"
+            data-tooltip-content="Add"
             onClick={(e) => handleAddOutfit(e, outfit)}
             className="                  
               text-xl leading-none

@@ -25,7 +25,7 @@ const FieldProp = ({ clickHandler, attribute, value, data_tip }) => {
       <tr
         onClick={clickHandler && clickHandler}
         className={classes}
-        data-tip={data_tip && labelize(data_tip)}
+        data-tooltip-content={data_tip && labelize(data_tip)}
       >
         <td>
           {labelize(attribute)}
